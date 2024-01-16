@@ -3,7 +3,6 @@ package com.archisacademy.ecommercespringboot.enums;
 import java.util.stream.Stream;
 
 public enum UserRole {
-
     USER("user"),
     ADMIN("admin");
 
@@ -27,4 +26,5 @@ public enum UserRole {
                 .findFirst()
                 .orElse(null);
     }
+
 }
