@@ -19,6 +19,9 @@ public class Product {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "uuid")
+    private String uuid;
+
     @Column(name = "description")
     private String description;
 
