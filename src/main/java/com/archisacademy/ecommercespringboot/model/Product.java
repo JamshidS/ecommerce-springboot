@@ -37,10 +37,10 @@ public class Product {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    /*@ManyToOne
+    @ManyToOne
     @JoinColumn(name = "category_id")
     Category category;
 
     @ManyToMany(mappedBy = "productList")
-    private List<User> userLists;*/
+    private List<User> userLists;
 }
