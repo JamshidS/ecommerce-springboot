@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,6 +30,6 @@ public class Category {
     private Date updatedAt;
     @OneToMany
     @JoinColumn(name = "product_id")
-    Product product;
+    private List<Product> productList;
 
 }
