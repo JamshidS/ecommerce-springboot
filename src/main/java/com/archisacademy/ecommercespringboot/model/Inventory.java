@@ -17,8 +17,7 @@ public class Inventory {
     private Long id;
     @Column(name = "quantity")
     private int quantity;
-    @Column(name = "location")
-    private String location;
-
+    @Column(name = "reference_code")
+    private String referenceCode;
 
 }
