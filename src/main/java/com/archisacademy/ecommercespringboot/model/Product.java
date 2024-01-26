@@ -43,4 +43,7 @@ public class Product {
 
     @ManyToMany(mappedBy = "productList")
     private List<User> userLists;
+
+    @OneToMany(mappedBy = "product")
+    private List<Review> reviewList;
 }
