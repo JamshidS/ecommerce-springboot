@@ -44,4 +44,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> productList;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Payment> payment;
+
 }
