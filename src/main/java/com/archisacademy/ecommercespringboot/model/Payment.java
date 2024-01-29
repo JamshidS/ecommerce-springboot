@@ -26,10 +26,13 @@ public class Payment {
     private String expirationDate;
 
     @Column(name = "security_code")
-    private String securityCode;
+    private String cvc;
 
     @Column(name = "amount")
     private Double amount;
+
+    @Column(name = "product_uuid")
+    private String productUuid;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
