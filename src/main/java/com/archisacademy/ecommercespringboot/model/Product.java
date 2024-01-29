@@ -43,4 +43,11 @@ public class Product {
 
     @ManyToMany(mappedBy = "productList")
     private List<User> userLists;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_product",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<Wishlist> wishlists;
 }
