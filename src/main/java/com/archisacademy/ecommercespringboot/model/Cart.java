@@ -23,8 +23,6 @@ public class Cart {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
-    private List<Refund> refunds;
     @OneToOne
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
