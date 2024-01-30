@@ -16,10 +16,7 @@ public class Wishlist {
 
     @Column(name ="uuid")
     private String uuid;
-
-    @Column(name = "name")
-    private String name;
-
+    
     @ManyToMany
     @JoinTable(
             name = "user_wishlist",
