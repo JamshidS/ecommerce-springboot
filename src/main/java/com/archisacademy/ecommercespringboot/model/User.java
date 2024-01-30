@@ -51,4 +51,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "wishlist_id"))
     private List<Wishlist> wishlists;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Payment> payment;
+
+
 }
