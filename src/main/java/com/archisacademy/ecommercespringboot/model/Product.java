@@ -44,6 +44,9 @@ public class Product {
     @ManyToMany(mappedBy = "productList")
     private List<User> userLists;
 
+    @OneToMany(mappedBy = "product")
+    private List<Review> reviewList;
+
     @ManyToMany
     @JoinTable(
             name = "user_product",
@@ -56,5 +59,5 @@ public class Product {
             name = "product_promotion",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "promotion_id"))
-  private List<Promotion> promotionList;
+    private List<Promotion> promotionList;
 }
