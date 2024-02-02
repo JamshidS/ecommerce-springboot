@@ -49,9 +49,15 @@ public class Product {
 
     @ManyToMany
     @JoinTable(
+            name = "user_product",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<Wishlist> wishlists;
+
+  @ManyToMany
+  @JoinTable(
             name = "product_promotion",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "promotion_id"))
     private List<Promotion> promotionList;
-
 }
