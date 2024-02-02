@@ -98,12 +98,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProductByUuid(String uuid) {
-        Optional<Product> productForDeletion = Optional.ofNullable(productRepository.findByUuid(uuid));
+    public void deleteProductById(Long id) {
+        Optional<Product> productForDeletion = productRepository.findById(id);
         if (productForDeletion.isEmpty()){
             throw new RuntimeException("Product not found");
         }
-        productRepository.delete(productForDeletion.get());
+        productRepository.deleteById(id);
     }
 
     @Override
