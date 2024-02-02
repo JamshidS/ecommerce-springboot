@@ -9,7 +9,7 @@ public interface ProductService {
     public String updateProduct(ProductDto productDto);
     public ProductDto getProductByUuid(String uuid);
     public List<ProductDto> getAllProducts();
-    public void deleteProductByUuid(Long id);
+    public void deleteProductById(Long id);
     public List<ProductDto> getProductsByCategory(String categoryUuid);
     public List<ProductDto> getProductsByUser(String userUuid);
     public List<ProductDto> getProductsByPromotion(String promotionUuid);
