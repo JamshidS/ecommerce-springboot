@@ -1,6 +1,7 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.UserDto;
+import com.archisacademy.ecommercespringboot.exceptions.UserNotFoundException;
 import com.archisacademy.ecommercespringboot.model.User;
 import com.archisacademy.ecommercespringboot.repository.UserRepository;
 import com.archisacademy.ecommercespringboot.service.UserService;
@@ -54,8 +55,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(String uuid) {
-        userRepository.deleteByUUID(uuid);
+        User user = userRepository.findByUUID(uuid).orElseThrow(() -> new UserNotFoundException("User could be not delete"));
+        userRepository.delete(user);
+      //  userRepository.deleteByUUID(uuid);
     }
+
     private UserDto convertToDto(User user) {
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(user, userDto);
