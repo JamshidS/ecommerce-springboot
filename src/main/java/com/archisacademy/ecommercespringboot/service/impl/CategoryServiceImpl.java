@@ -36,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public String updateCategory(CategoryDto categoryDto) {
-        Optional<Category> categoryForUpdate = categoryRepository.findByUUID(categoryDto.getUuid());
+        Optional<Category> categoryForUpdate = categoryRepository.findByUuid(categoryDto.getUuid());
         if (categoryForUpdate.isEmpty()) {
             throw new RuntimeException("Category not found");
         }
@@ -70,7 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto getCategoryByUuid(String categoryUuid) {
-        Optional<Category> categoryOptional = categoryRepository.findByUUID(categoryUuid);
+        Optional<Category> categoryOptional = categoryRepository.findByUuid(categoryUuid);
         if (categoryOptional.isEmpty()) {
             throw new RuntimeException("Category not found");
         }
