@@ -26,6 +26,9 @@ public class Order {
     private Double totalAmount;
     @Column(name = "order_status")
     private String orderStatus;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<Return> returnList;
 
