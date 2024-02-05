@@ -31,5 +31,7 @@ public class Return {
     @ManyToOne
     @JoinColumn(name = "cart_id")
     Cart cart;
-
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 }
