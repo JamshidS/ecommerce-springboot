@@ -6,6 +6,7 @@ import com.archisacademy.ecommercespringboot.repository.CategoryRepository;
 import com.archisacademy.ecommercespringboot.service.CategoryService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +28,6 @@ public class CategoryServiceImpl implements CategoryService {
         categoryForDb.setDescription(categoryDto.getDescription());
         categoryForDb.setCreatedAt(categoryDto.getCreatedAt());
         categoryForDb.setUpdatedAt(categoryDto.getUpdatedAt());
-        categoryForDb.setProductList(categoryDto.getProductList());
 
         categoryRepository.save(categoryForDb);
 
@@ -36,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public String updateCategory(CategoryDto categoryDto) {
-        Optional<Category> categoryForUpdate = categoryRepository.findByUUID(categoryDto.getUuid());
+        Optional<Category> categoryForUpdate = categoryRepository.findByUuid(categoryDto.getUuid());
         if (categoryForUpdate.isEmpty()) {
             throw new RuntimeException("Category not found");
         }
@@ -46,7 +46,6 @@ public class CategoryServiceImpl implements CategoryService {
         category.setDescription(categoryDto.getDescription());
         category.setCreatedAt(categoryDto.getCreatedAt());
         category.setUpdatedAt(categoryDto.getUpdatedAt());
-        category.setProductList(categoryDto.getProductList());
 
         categoryRepository.save(category);
 
@@ -64,14 +63,14 @@ public class CategoryServiceImpl implements CategoryService {
                 category.getDescription(),
                 category.getCreatedAt(),
                 category.getUpdatedAt(),
-                category.getProductList()
+                null
         )).toList();
 
     }
 
     @Override
     public CategoryDto getCategoryByUuid(String categoryUuid) {
-        Optional<Category> categoryOptional = categoryRepository.findByUUID(categoryUuid);
+        Optional<Category> categoryOptional = categoryRepository.findByUuid(categoryUuid);
         if (categoryOptional.isEmpty()) {
             throw new RuntimeException("Category not found");
         }
@@ -84,7 +83,7 @@ public class CategoryServiceImpl implements CategoryService {
                 category.getDescription(),
                 category.getCreatedAt(),
                 category.getUpdatedAt(),
-                category.getProductList()
+                Collections.singletonList(category.getProductList())
         );
 
     }
