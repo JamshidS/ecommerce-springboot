@@ -1,10 +1,14 @@
 package com.archisacademy.ecommercespringboot.dto;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
 @Data
+@Getter
+@Setter
 public class UserDto {
     private String uuid;
     private String userName;

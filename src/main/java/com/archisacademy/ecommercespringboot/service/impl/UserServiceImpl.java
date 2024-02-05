@@ -7,7 +7,6 @@ import com.archisacademy.ecommercespringboot.repository.UserRepository;
 import com.archisacademy.ecommercespringboot.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -31,8 +29,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserByUUID(String uuid) {
-        Optional<User> optionalUser=userRepository.findByUUID(uuid);
+    public UserDto getUserByUuıd(String uuid) {
+        Optional<User> optionalUser=userRepository.findByUuıd(uuid);
         return optionalUser.map(this::convertToDto).orElse(null);
     }
 
@@ -46,18 +44,31 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateUser(String uuid, UserDto updatedUserDto) {
-        Optional<User> optionalUser=userRepository.findByUUID(uuid);
+
+        Optional<User> optionalUser=userRepository.findByUuıd(uuid);
+
+        if (optionalUser.isEmpty()){
+            throw new RuntimeException("user not found");
+        }
         optionalUser.ifPresent(user -> {
-            BeanUtils.copyProperties(updatedUserDto,user);
+            user.setUserName(updatedUserDto.getUserName());
+            user.setEmail(updatedUserDto.getEmail());
+            user.setPassword(updatedUserDto.getPassword());
+            user.setTelephone(updatedUserDto.getTelephone());
+            user.setAddress(updatedUserDto.getAddress());
+            user.setUserRole(updatedUserDto.getUserRole());
+            user.setCreatedAt(updatedUserDto.getCreatedAt());
+            user.setUpdatedAt(updatedUserDto.getUpdatedAt());
+            userRepository.save(user);
+
         });
     }
 
     @Override
     @Transactional
     public void deleteUser(String uuid) {
-        User user = userRepository.findByUUID(uuid).orElseThrow(() -> new UserNotFoundException("User could be not delete"));
+        User user = userRepository.findByUuıd(uuid).orElseThrow(() -> new UserNotFoundException("User could be not delete"));
         userRepository.delete(user);
-      //  userRepository.deleteByUUID(uuid);
     }
 
     private UserDto convertToDto(User user) {
