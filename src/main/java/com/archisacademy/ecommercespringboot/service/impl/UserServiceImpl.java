@@ -1,6 +1,7 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.UserDto;
+import com.archisacademy.ecommercespringboot.enums.UserRole;
 import com.archisacademy.ecommercespringboot.exceptions.UserNotFoundException;
 import com.archisacademy.ecommercespringboot.model.User;
 import com.archisacademy.ecommercespringboot.repository.UserRepository;
@@ -29,8 +30,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserByUuıd(String uuid) {
-        Optional<User> optionalUser=userRepository.findByUuıd(uuid);
+    public UserDto getUserByUuid(String uuid) {
+        Optional<User> optionalUser=userRepository.findByUuid(uuid);
         return optionalUser.map(this::convertToDto).orElse(null);
     }
 
@@ -45,7 +46,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateUser(String uuid, UserDto updatedUserDto) {
 
-        Optional<User> optionalUser=userRepository.findByUuıd(uuid);
+        Optional<User> optionalUser=userRepository.findByUuid(uuid);
 
         if (optionalUser.isEmpty()){
             throw new RuntimeException("user not found");
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(updatedUserDto.getPassword());
             user.setTelephone(updatedUserDto.getTelephone());
             user.setAddress(updatedUserDto.getAddress());
-            user.setUserRole(updatedUserDto.getUserRole());
+            user.setUserRole(UserRole.valueOf(updatedUserDto.getUserRole()));
             user.setCreatedAt(updatedUserDto.getCreatedAt());
             user.setUpdatedAt(updatedUserDto.getUpdatedAt());
             userRepository.save(user);
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(String uuid) {
-        User user = userRepository.findByUuıd(uuid).orElseThrow(() -> new UserNotFoundException("User could be not delete"));
+        User user = userRepository.findByUuid(uuid).orElseThrow(() -> new UserNotFoundException("User could be not delete"));
         userRepository.delete(user);
     }
 
