@@ -1,5 +1,6 @@
 package com.archisacademy.ecommercespringboot.model;
 
+import com.archisacademy.ecommercespringboot.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +29,7 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING)
     @Column(name = "user_role")
-    private String userRole;
+    private UserRole userRole;
     @Column(name = "telephone")
     private String telephone;
     @Column(name = "address")
@@ -44,7 +45,15 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> productList;
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_wishlist",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "wishlist_id"))
+    private List<Wishlist> wishlists;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Payment> payment;
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Order> orders;
 }
