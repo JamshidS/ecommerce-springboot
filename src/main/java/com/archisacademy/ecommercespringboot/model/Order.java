@@ -27,6 +27,6 @@ public class Order {
     @Column(name = "order_status")
     private String orderStatus;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<Refund> refunds;
+    private List<Return> returnList;
 
 }
