@@ -17,5 +17,5 @@ public class CategoryDto {
     private String description;
     private Date createdAt;
     private Date updatedAt;
-    private List<Product> productList;
+    private List<Object> productList;
 }
