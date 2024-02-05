@@ -1,8 +1,6 @@
 package com.archisacademy.ecommercespringboot.dto;
 
 import com.archisacademy.ecommercespringboot.model.Category;
-import com.archisacademy.ecommercespringboot.model.Promotion;
-import com.archisacademy.ecommercespringboot.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,7 +27,7 @@ public class ProductDto {
 
     private Category category;
 
-    private List<User> userLists;
+    private List<Object> userLists;
 
-    private List<Promotion> promotionList;
+    private List<Object> promotionList;
 }
