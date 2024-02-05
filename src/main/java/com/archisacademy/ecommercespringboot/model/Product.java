@@ -28,9 +28,6 @@ public class Product {
     @Column(name ="price")
     private double price;
 
-    @Column(name = "quantity")
-    private int quantity;
-
     @Column(name = "created_at")
     private Date createdAt;
 
