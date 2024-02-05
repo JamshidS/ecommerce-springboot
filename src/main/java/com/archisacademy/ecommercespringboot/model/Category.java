@@ -32,4 +32,5 @@ public class Category {
     @JoinColumn(name = "product_id")
     private List<Product> productList;
 
+
 }
