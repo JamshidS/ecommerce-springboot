@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -29,8 +30,7 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-   /* @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<Return> returnList;*/
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<Return> returnList;
 
 }

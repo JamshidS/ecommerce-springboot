@@ -56,4 +56,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Return> returnList;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Order> orderList;
+
 }

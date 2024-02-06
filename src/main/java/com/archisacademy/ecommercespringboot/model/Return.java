@@ -24,13 +24,13 @@ public class Return {
     private Date returnDate;
     @ManyToOne
     @JoinColumn(name = "user_id")
-    User user;
+    private User user;
     @ManyToOne
     @JoinColumn(name = "product_id")
-    Product product;
+    private Product product;
     @ManyToOne
     @JoinColumn(name = "cart_id")
-    Cart cart;
+    private Cart cart;
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
