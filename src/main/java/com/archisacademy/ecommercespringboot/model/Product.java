@@ -28,9 +28,6 @@ public class Product {
     @Column(name ="price")
     private double price;
 
-    @Column(name = "quantity")
-    private int quantity;
-
     @Column(name = "created_at")
     private Date createdAt;
 
@@ -39,7 +36,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    Category category;
+    private Category category;
 
     @ManyToMany(mappedBy = "productList")
     private List<User> userLists;

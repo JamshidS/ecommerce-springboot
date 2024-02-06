@@ -15,9 +15,9 @@ public class Review {
 
     @Column(name = "uuid")
     private String uuid;
-
+    
     @Column(name = "rating")
-    private int rating;
+    private short rating;
 
     @Column(name = "comment")
     private String comment;
