@@ -39,7 +39,6 @@ public class PaymentServiceImpl implements PaymentService {
         existingPayment.setExpirationDate(paymentDto.getExpirationDate());
         existingPayment.setCvc(paymentDto.getCvc());
         existingPayment.setAmount(paymentDto.getAmount());
-        existingPayment.setProductUuid(paymentDto.getProductUuid());
 
         Payment updatedPayment = paymentRepository.save(existingPayment);
         return convertToDto(updatedPayment);
