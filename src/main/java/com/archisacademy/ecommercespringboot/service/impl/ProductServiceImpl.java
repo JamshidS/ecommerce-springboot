@@ -1,4 +1,4 @@
-package com.archisacademy.ecommercespringboot.service.ipml;
+package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.ProductDto;
 import com.archisacademy.ecommercespringboot.model.Product;
