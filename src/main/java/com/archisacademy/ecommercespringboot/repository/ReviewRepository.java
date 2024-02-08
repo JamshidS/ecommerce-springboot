@@ -1,5 +1,6 @@
 package com.archisacademy.ecommercespringboot.repository;
 
+import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.Review;
 import com.archisacademy.ecommercespringboot.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,5 +14,11 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findAllReviewsByUserUuid(String uuid);
 
     List<Review> findAllByUser(User user); // uuid
+
+    List<Review> findAllByProductUuid(String productUuid);
+
+    Review findByUserAndProduct(User user, Product product);
+
+    void deleteByUuid(String uuid);
 
 }
