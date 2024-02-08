@@ -6,6 +6,7 @@ import com.archisacademy.ecommercespringboot.repository.ProductRepository;
 import com.archisacademy.ecommercespringboot.service.ProductService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,8 +29,7 @@ public class ProductServiceImpl implements ProductService {
         product.setCreatedAt(productDto.getCreatedAt());
         product.setUpdatedAt(productDto.getUpdatedAt());
         product.setCategory(productDto.getCategory());
-        product.setUserLists(productDto.getUserLists());
-        product.setPromotionList(productDto.getPromotionList());
+
 
         productRepository.save(product);
 
@@ -51,8 +51,7 @@ public class ProductServiceImpl implements ProductService {
         product.setCreatedAt(productDto.getCreatedAt());
         product.setUpdatedAt(productDto.getUpdatedAt());
         product.setCategory(productDto.getCategory());
-        product.setUserLists(productDto.getUserLists());
-        product.setPromotionList(productDto.getPromotionList());
+
 
         productRepository.save(product);
 
@@ -76,8 +75,8 @@ public class ProductServiceImpl implements ProductService {
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
                 product.getCategory(),
-                product.getUserLists(),
-                product.getPromotionList()
+                Collections.singletonList(product.getUserLists()),
+                Collections.singletonList(product.getPromotionList())
         );
     }
 
@@ -92,8 +91,8 @@ public class ProductServiceImpl implements ProductService {
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
                 product.getCategory(),
-                product.getUserLists(),
-                product.getPromotionList()
+                Collections.singletonList(product.getUserLists()),
+                Collections.singletonList(product.getPromotionList())
         )).toList();
     }
 
@@ -108,27 +107,82 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getProductsByCategory(String categoryUuid) {
-        return null;
+        List<Product> products = productRepository.findByCategoryUuid(categoryUuid);
+        return products.stream().map(product -> new ProductDto(
+                product.getName(),
+                product.getUuid(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getCreatedAt(),
+                product.getUpdatedAt(),
+                product.getCategory(),
+                Collections.singletonList(product.getUserLists()),
+                Collections.singletonList(product.getPromotionList())
+        )).toList();
     }
 
     @Override
     public List<ProductDto> getProductsByUser(String userUuid) {
-        return null;
+        List<Product> products = productRepository.findByUserUuid(userUuid);
+        return products.stream().map(product -> new ProductDto(
+                product.getName(),
+                product.getUuid(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getCreatedAt(),
+                product.getUpdatedAt(),
+                product.getCategory(),
+                Collections.singletonList(product.getUserLists()),
+                Collections.singletonList(product.getPromotionList())
+        )).toList();
     }
 
     @Override
     public List<ProductDto> getProductsByPromotion(String promotionUuid) {
-        return null;
+        List<Product> products = productRepository.findByPromotionUuid(promotionUuid);
+        return products.stream().map(product -> new ProductDto(
+                product.getName(),
+                product.getUuid(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getCreatedAt(),
+                product.getUpdatedAt(),
+                product.getCategory(),
+                Collections.singletonList(product.getUserLists()),
+                Collections.singletonList(product.getPromotionList())
+        )).toList();
     }
 
     @Override
     public List<ProductDto> getProductsByPrice(double price) {
-        return null;
+        List<Product> products = productRepository.findByPrice(price);
+        return products.stream().map(product -> new ProductDto(
+                product.getName(),
+                product.getUuid(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getCreatedAt(),
+                product.getUpdatedAt(),
+                product.getCategory(),
+                Collections.singletonList(product.getUserLists()),
+                Collections.singletonList(product.getPromotionList())
+        )).toList();
     }
 
     @Override
     public List<ProductDto> getProductsByPriceRange(double minPrice, double maxPrice) {
-        return null;
+        List<Product> products = productRepository.findByPriceBetween(minPrice, maxPrice);
+        return products.stream().map(product -> new ProductDto(
+                product.getName(),
+                product.getUuid(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getCreatedAt(),
+                product.getUpdatedAt(),
+                product.getCategory(),
+                Collections.singletonList(product.getUserLists()),
+                Collections.singletonList(product.getPromotionList())
+        )).toList();
     }
 
 }
