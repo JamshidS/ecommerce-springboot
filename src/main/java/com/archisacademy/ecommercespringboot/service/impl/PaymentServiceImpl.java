@@ -1,63 +1,68 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.PaymentDto;
+import com.archisacademy.ecommercespringboot.dto.UserDto;
 import com.archisacademy.ecommercespringboot.model.Payment;
 import com.archisacademy.ecommercespringboot.repository.PaymentRepository;
 import com.archisacademy.ecommercespringboot.service.PaymentService;
-import org.springframework.beans.BeanUtils;
+import com.archisacademy.ecommercespringboot.service.UserService;
+
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
+    private final UserService userService;
+    private final ProductService productService;
 
-    public PaymentServiceImpl(PaymentRepository paymentRepository) {
+
+    public PaymentServiceImpl(PaymentRepository paymentRepository, UserService userService, ProductService productService) {
         this.paymentRepository = paymentRepository;
+        this.userService = userService;
+        this.productService = productService;
     }
 
     @Override
-    public PaymentDto createPayment(PaymentDto paymentDto) {
-        Payment payment = convertToEntity(paymentDto);
-        Payment savedPayment = paymentRepository.save(payment);
-        return convertToDto(savedPayment);
-    }
+    public Payment saveCustomerCartDetails(PaymentDto paymentDto) {
 
-    @Override
-    public PaymentDto getPaymentById(Long id) {
-        Payment payment = paymentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Payment not found with id: " + id));
-        return convertToDto(payment);
-    }
+        UserDto userDto = userService.getUserByUuid(paymentDto.getUserUuid());
+        ProductDto productDto = productService.getProductByUuid(paymentDto.getProductUuid());
 
-    @Override
-    public PaymentDto updatePayment(Long id, PaymentDto paymentDto) {
-        Payment existingPayment = paymentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Payment not found with id: " + id));
+        String name = paymentDto.getName();
+        String cardNumber = paymentDto.getCardNumber();
+        String expirationDate = paymentDto.getExpirationDate();
+        String cvc = paymentDto.getCvc();
+        Double amount = paymentDto.getAmount();
 
-        existingPayment.setName(paymentDto.getName());
-        existingPayment.setCardNumber(paymentDto.getCardNumber());
-        existingPayment.setExpirationDate(paymentDto.getExpirationDate());
-        existingPayment.setCvc(paymentDto.getCvc());
-        existingPayment.setAmount(paymentDto.getAmount());
-
-        Payment updatedPayment = paymentRepository.save(existingPayment);
-        return convertToDto(updatedPayment);
-    }
-
-    @Override
-    public void deletePayment(Long id) {
-        paymentRepository.deleteById(id);
-    }
-
-    private PaymentDto convertToDto(Payment payment) {
-        PaymentDto paymentDto = new PaymentDto();
-        BeanUtils.copyProperties(payment, paymentDto);
-        return paymentDto;
-    }
-
-    private Payment convertToEntity(PaymentDto paymentDto) {
         Payment payment = new Payment();
-        BeanUtils.copyProperties(paymentDto, payment);
-        return payment;
+        payment.setName(name);
+        payment.setCardNumber(cardNumber);
+        payment.setExpirationDate(expirationDate);
+        payment.setCvc(cvc);
+        payment.setAmount(amount);
+        //  payment.setUserUuid(userDto.getUuid());
+        //  payment.setProductUuid(productDto.getUuid());
+
+        return paymentRepository.save(payment);
+    }
+
+    @Override
+    public PaymentDto getCustomerCartWithUserUuid(String userUuid) {
+        Payment payment = paymentRepository.findByUserUuid(userUuid);
+        if (payment == null) {
+            return null;
+        }
+
+        PaymentDto paymentDto = new PaymentDto();
+        //      paymentDto.setUuid(payment.getUuid());
+        paymentDto.setName(payment.getName());
+        paymentDto.setCardNumber(payment.getCardNumber());
+        paymentDto.setExpirationDate(payment.getExpirationDate());
+        paymentDto.setCvc(payment.getCvc());
+        paymentDto.setAmount(payment.getAmount());
+        //   paymentDto.setProductUuid(payment.getProductUuid());
+
+        return paymentDto;
     }
 }

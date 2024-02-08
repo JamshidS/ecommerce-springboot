@@ -33,7 +33,8 @@ public class Payment {
 
     @Column(name = "product_uuid")
     private String productUuid;
-
+    @Column(name = "user_uuid")
+    private String userUuid;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

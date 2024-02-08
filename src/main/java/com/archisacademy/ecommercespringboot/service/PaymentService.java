@@ -1,10 +1,9 @@
 package com.archisacademy.ecommercespringboot.service;
 
 import com.archisacademy.ecommercespringboot.dto.PaymentDto;
+import com.archisacademy.ecommercespringboot.model.Payment;
 
 public interface PaymentService {
-    PaymentDto createPayment(PaymentDto paymentDto);
-    PaymentDto getPaymentById(Long id);
-    PaymentDto updatePayment(Long id, PaymentDto paymentDto);
-    void deletePayment(Long id);
+    Payment saveCustomerCartDetails(PaymentDto paymentDto);
+    PaymentDto getCustomerCartWithUserUuid(String userUuid);
 }

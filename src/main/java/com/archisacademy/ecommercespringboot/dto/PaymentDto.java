@@ -15,6 +15,7 @@ public class PaymentDto {
     private String cvc;
     private Double amount;
     private String productUuid;
+    private String userUuid;
 
 }
 
