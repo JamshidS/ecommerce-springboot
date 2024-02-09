@@ -23,6 +23,7 @@ public class InventoryServiceImpl implements InventoryService {
         inventoryForDb.setQuantity(inventoryDto.getQuantity());
         inventoryForDb.setReferenceCode(inventoryDto.getReferenceCode());
 
+        inventoryRepository.save(inventoryForDb);
         return "Inventory successfully created";
     }
 
