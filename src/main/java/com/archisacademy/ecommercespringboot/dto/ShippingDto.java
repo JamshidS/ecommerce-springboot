@@ -13,8 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ShippingDto {
     private String address;
-    private String shippedAt;
-    private Date createdAt;
+    private Date shippedAt;
     private List<Object> productList;
     private List<Object> userList;
 }
