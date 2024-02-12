@@ -28,10 +28,10 @@ public class Return {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
 }
