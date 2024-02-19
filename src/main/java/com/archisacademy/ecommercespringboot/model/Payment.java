@@ -31,10 +31,10 @@ public class Payment {
     @Column(name = "amount")
     private Double amount;
 
-    @Column(name = "product_uuid")
-    private String productUuid;
-    @Column(name = "user_uuid")
-    private String userUuid;
+    @ManyToOne
+    @JoinColumn(name="product_id")
+    private Product product;
+  
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

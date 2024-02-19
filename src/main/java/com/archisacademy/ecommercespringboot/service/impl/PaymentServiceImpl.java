@@ -15,19 +15,25 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final UserService userService;
     private final ProductService productService;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
 
-    public PaymentServiceImpl(PaymentRepository paymentRepository, UserService userService, ProductService productService) {
+    public PaymentServiceImpl(PaymentRepository paymentRepository, UserService userService, ProductService productService,ProductRepository productRepository
+    ,UserRepository userRepository) {
         this.paymentRepository = paymentRepository;
         this.userService = userService;
         this.productService = productService;
+        this.UserRepository = userRepository;
+        this.ProductRepository = productRepository;
     }
 
     @Override
     public Payment saveCustomerCartDetails(PaymentDto paymentDto) {
+        Product product = productRepository.findByUserUuid(paymentDto.getProductUuid());
+        User user = userRepository.findByUserUuid(paymentDto.getUserUuid());
+        // controll the fetched models
 
-        UserDto userDto = userService.getUserByUuid(paymentDto.getUserUuid());
-        ProductDto productDto = productService.getProductByUuid(paymentDto.getProductUuid());
 
         String name = paymentDto.getName();
         String cardNumber = paymentDto.getCardNumber();
@@ -46,6 +52,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         return paymentRepository.save(payment);
     }
+
+    // getUserCartDetailsWithUserUUID method also should be there
 
     @Override
     public PaymentDto getCustomerCartWithUserUuid(String userUuid) {
