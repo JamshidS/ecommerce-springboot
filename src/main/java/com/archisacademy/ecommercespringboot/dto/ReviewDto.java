@@ -14,4 +14,6 @@ public class ReviewDto {
     private short rating;
     private String comment;
     private Date createdAt;
+    private String userUuid;
+    private String productUuid;
 }
