@@ -1,15 +1,20 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
+import com.archisacademy.ecommercespringboot.dto.ProductDto;
 import com.archisacademy.ecommercespringboot.dto.UserDto;
 import com.archisacademy.ecommercespringboot.enums.UserRole;
 import com.archisacademy.ecommercespringboot.exceptions.UserNotFoundException;
+import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.User;
+import com.archisacademy.ecommercespringboot.repository.ProductRepository;
 import com.archisacademy.ecommercespringboot.repository.UserRepository;
 import com.archisacademy.ecommercespringboot.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,8 +22,10 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    public UserServiceImpl(UserRepository userRepository) {
+    private final ProductRepository productRepository;
+    public UserServiceImpl(UserRepository userRepository, ProductRepository productRepository) {
         this.userRepository = userRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -70,6 +77,34 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String uuid) {
         User user = userRepository.findByUuid(uuid).orElseThrow(() -> new UserNotFoundException("User could be not delete"));
         userRepository.delete(user);
+    }
+
+    @Override
+    public List<ProductDto> getUserProducts(String userUUID) {
+
+        Optional<User> user = userRepository.findByUuid(userUUID);
+        List<ProductDto> response = new ArrayList<>();
+
+        if(user.isPresent()){
+            List<Product> products = productRepository.findByUserLists(Collections.singletonList(user.get()));
+
+            if(!products.isEmpty()){
+
+                products.forEach(product -> {
+                    ProductDto productDto = ProductDto.builder()
+                            .price(product.getPrice())
+                            .name(product.getName())
+                            .updatedAt(product.getUpdatedAt())
+                            .createdAt(product.getCreatedAt())
+                            .categoryUUID(product.getCategory().getUuid())
+                            .uuid(product.getUuid())
+                            .build();
+                    response.add(productDto);
+                });
+            }
+        }
+
+        return response;
     }
 
     private UserDto convertToDto(User user) {
