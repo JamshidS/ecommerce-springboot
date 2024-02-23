@@ -27,7 +27,7 @@ public class ProductDto {
 
     private Category category;
 
-    private List<Object> userLists;
+    private List<UserDto> userLists;
 
     private List<Object> promotionList;
 }
