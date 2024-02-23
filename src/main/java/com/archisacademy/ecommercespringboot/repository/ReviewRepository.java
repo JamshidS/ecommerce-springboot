@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     Review findByUuid(String uuid);
@@ -14,6 +15,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findAllReviewsByUserUuid(String uuid);
 
     List<Review> findAllByUser(User user); // uuid
+    Review findByUserUuid(String uuid);
 
     List<Review> findAllByProductUuid(String productUuid);
 
