@@ -28,11 +28,11 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment saveCustomerCartDetails(PaymentDto paymentDto) {
-        Optional<Product> product = productRepository.findByUuid(paymentDto.getProductUuid());
-        Optional<User> user = userRepository.findByUuid(paymentDto.getUserUuid());
+        Optional<Product> product = productRepository.findByUuid(paymentDto.getProductUuid().trim());
+        Optional<User> user = userRepository.findByUuid(paymentDto.getUserUuid().trim());
 
         if (!product.isPresent() || !user.isPresent()) {
-            return null;
+           throw new RuntimeException("uuid not found");
         }
         Payment payment = new Payment();
         payment.setName(paymentDto.getName());
@@ -68,7 +68,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void updatePaymentByUserUuid(String userUuid, PaymentDto updatedPaymentDto) {
-        Payment existingPayment = paymentRepository.findByUserUuid(userUuid);
+        Payment existingPayment = paymentRepository.findByUserUuid(userUuid.trim());
         if (existingPayment != null) {
             existingPayment.setName(updatedPaymentDto.getName());
             existingPayment.setCardNumber(updatedPaymentDto.getCardNumber());
@@ -80,7 +80,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void deletePaymentByUserUuid(String userUuid) {
-        Payment existingPayment = paymentRepository.findByUserUuid(userUuid);
+        Payment existingPayment = paymentRepository.findByUserUuid(userUuid.trim());
         if (existingPayment != null) {
             paymentRepository.delete(existingPayment);
         }
