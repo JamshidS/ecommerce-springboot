@@ -1,15 +1,14 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.CategoryDto;
+import com.archisacademy.ecommercespringboot.dto.ProductDto;
 import com.archisacademy.ecommercespringboot.model.Category;
 import com.archisacademy.ecommercespringboot.repository.CategoryRepository;
 import com.archisacademy.ecommercespringboot.service.CategoryService;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -76,15 +75,22 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         Category category = categoryOptional.get();
+        List<ProductDto> productDtos = new ArrayList<>();
+        category.getProductList().forEach(product -> {
+            ProductDto productDto = new ProductDto();
+            productDto.setCategoryUuid(product.getUuid());
+            // write the rest of setters here and save it to the productDtos list
+            productDtos.add(productDto);
+        });
 
-        return new CategoryDto(
-                category.getName(),
-                category.getUuid(),
-                category.getDescription(),
-                category.getCreatedAt(),
-                category.getUpdatedAt(),
-                Collections.singletonList(category.getProductList())
-        );
+        return CategoryDto.builder()
+                .productList(productDtos)
+                .uuid(categoryUuid)
+                .createdAt(category.getCreatedAt())
+                .name(category.getName())
+                // write other fields as well
+                .build();
+
 
     }
 
