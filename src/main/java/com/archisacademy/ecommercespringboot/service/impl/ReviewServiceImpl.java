@@ -10,7 +10,9 @@ import com.archisacademy.ecommercespringboot.repository.UserRepository;
 import com.archisacademy.ecommercespringboot.service.ReviewService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,7 +40,8 @@ public class ReviewServiceImpl implements ReviewService {
         review.setUuid(reviewDto.getUuid());
         review.setRating(reviewDto.getRating());
         review.setComment(reviewDto.getComment());
-        review.setCreatedAt(new Date());
+        review.setIsApproved(false);
+        review.setCreatedAt(new Date()); // chnage this to local date
         review.setUser(user.get());
         review.setProduct(product.get());
 
@@ -115,5 +118,26 @@ public class ReviewServiceImpl implements ReviewService {
         if (existingReview != null) {
             reviewRepository.delete(existingReview);
         }
+    }
+
+    @Override
+    public List<ReviewDto> getAllReviewsByProductUUID(String productUUID) {
+        List<Review> reviews = reviewRepository.findAllReviewsByUserUuid(productUUID);
+        if(reviews.isEmpty()){
+            throw new RuntimeException("There is no review present for this product");
+        }
+        List<ReviewDto> response = new ArrayList<>();
+        reviews.forEach(review -> {
+
+            // checks for approved reviews
+            if(review.getIsApproved()){
+                ReviewDto reviewDto = ReviewDto.builder()
+                        .uuid(review.getUuid())
+                        .build(); // write the reset of code here
+                // add review to the dto list
+            }
+        });
+
+        return response;
     }
 }

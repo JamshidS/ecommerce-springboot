@@ -1,6 +1,7 @@
 package com.archisacademy.ecommercespringboot.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ReviewDto {
     private String uuid;
     private short rating;
@@ -16,4 +18,5 @@ public class ReviewDto {
     private Date createdAt;
     private String userUuid;
     private String productUuid;
+    private boolean isApproved;
 }
