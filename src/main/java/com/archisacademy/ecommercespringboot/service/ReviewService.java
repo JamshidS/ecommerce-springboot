@@ -20,5 +20,7 @@ public interface ReviewService {
 
     void deleteReviewByProductUuid(String productUuid);
 
+    String approveReview(String reviewUUID);
+
     List<ReviewDto> getAllReviewsByProductUUID(String productUUID);
 }

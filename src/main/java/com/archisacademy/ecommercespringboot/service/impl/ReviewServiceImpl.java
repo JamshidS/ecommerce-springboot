@@ -121,6 +121,17 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public String approveReview(String reviewUUID) {
+        Optional<Review> review = reviewRepository.findByUuid(reviewUUID);
+        if(review.isEmpty()){
+            throw new RuntimeException("Review not found");
+        }
+        review.get().setIsApproved(true);
+        reviewRepository.save(review.get());
+        return "Review has been approved successfully";
+    }
+
+    @Override
     public List<ReviewDto> getAllReviewsByProductUUID(String productUUID) {
         List<Review> reviews = reviewRepository.findAllReviewsByUserUuid(productUUID);
         if(reviews.isEmpty()){
