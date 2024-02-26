@@ -25,9 +25,9 @@ public class ProductDto {
 
     private Date updatedAt;
 
-    private Category category;
+    private String categoryUuid;
 
     private List<UserDto> userLists;
 
-    private List<Object> promotionList;
+    private List<PromotionDto> promotionList;
 }

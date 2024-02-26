@@ -1,22 +1,32 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.ProductDto;
+import com.archisacademy.ecommercespringboot.dto.PromotionDto;
 import com.archisacademy.ecommercespringboot.dto.UserDto;
 import com.archisacademy.ecommercespringboot.enums.UserRole;
+import com.archisacademy.ecommercespringboot.mapper.CategoryMapper;
+import com.archisacademy.ecommercespringboot.mapper.PromotionMapper;
+import com.archisacademy.ecommercespringboot.mapper.UserMapper;
 import com.archisacademy.ecommercespringboot.model.Product;
+import com.archisacademy.ecommercespringboot.model.Promotion;
 import com.archisacademy.ecommercespringboot.model.User;
 import com.archisacademy.ecommercespringboot.repository.ProductRepository;
+import com.archisacademy.ecommercespringboot.service.CategoryService;
 import com.archisacademy.ecommercespringboot.service.ProductService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
+    private final CategoryService categoryService;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
+
+    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService) {
         this.productRepository = productRepository;
+        this.categoryService = categoryService;
     }
 
     @Override
@@ -28,27 +38,21 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(productDto.getPrice());
         product.setCreatedAt(productDto.getCreatedAt());
         product.setUpdatedAt(productDto.getUpdatedAt());
-        product.setCategory(productDto.getCategory());
+        product.setCategory(CategoryMapper.toCategory(categoryService.getCategoryByUuid(productDto.getCategoryUuid())));
 
         List<User> users = new ArrayList<>();
         for (UserDto userDto : productDto.getUserLists()) {
-            User userForCreate = new User();
-            userForCreate.setUuid(userDto.getUuid());
-            userForCreate.setUserName(userDto.getUserName());
-            userForCreate.setEmail(userDto.getEmail());
-            userForCreate.setPassword(userDto.getPassword());
-            userForCreate.setTelephone(userDto.getTelephone());
-            userForCreate.setAddress(userDto.getAddress());
-            userForCreate.setUserRole(UserRole.valueOf(userDto.getUserRole()));
-            userForCreate.setCreatedAt(userDto.getCreatedAt());
-            userForCreate.setUpdatedAt(userDto.getUpdatedAt());
-
-
-            users.add(userForCreate);
+            users.add(UserMapper.toUser(userDto));
         }
+
         product.setUserLists(users);
 
+        List<Promotion> promotions = new ArrayList<>();
+        for (PromotionDto promotion : productDto.getPromotionList()) {
+            promotions.add(PromotionMapper.toPromotion(promotion));
+        }
 
+        product.setPromotionList(promotions);
 
         productRepository.save(product);
 
@@ -69,25 +73,21 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(productDto.getPrice());
         product.setCreatedAt(productDto.getCreatedAt());
         product.setUpdatedAt(productDto.getUpdatedAt());
-        product.setCategory(productDto.getCategory());
+        product.setCategory(CategoryMapper.toCategory(categoryService.getCategoryByUuid(productDto.getCategoryUuid())));
 
         List<User> users = new ArrayList<>();
         for (UserDto userDto : productDto.getUserLists()) {
-            User userForUpdate = new User();
-            userForUpdate.setUuid(userDto.getUuid());
-            userForUpdate.setUserName(userDto.getUserName());
-            userForUpdate.setEmail(userDto.getEmail());
-            userForUpdate.setPassword(userDto.getPassword());
-            userForUpdate.setTelephone(userDto.getTelephone());
-            userForUpdate.setAddress(userDto.getAddress());
-            userForUpdate.setUserRole(UserRole.valueOf(userDto.getUserRole()));
-            userForUpdate.setCreatedAt(userDto.getCreatedAt());
-            userForUpdate.setUpdatedAt(userDto.getUpdatedAt());
-
-
-            users.add(userForUpdate);
+            users.add(UserMapper.toUser(userDto));
         }
+
         product.setUserLists(users);
+
+        List<Promotion> promotions = new ArrayList<>();
+        for (PromotionDto promotion : productDto.getPromotionList()) {
+            promotions.add(PromotionMapper.toPromotion(promotion));
+        }
+
+        product.setPromotionList(promotions);
 
 
         productRepository.save(product);
@@ -111,9 +111,9 @@ public class ProductServiceImpl implements ProductService {
                 product.getPrice(),
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
-                product.getCategory(),
+                product.getCategory().getUuid(),
                 Collections.singletonList((UserDto) product.getUserLists()),
-                Collections.singletonList(product.getPromotionList())
+                Collections.singletonList((PromotionDto) product.getPromotionList())
         );
     }
 
@@ -127,9 +127,9 @@ public class ProductServiceImpl implements ProductService {
                 product.getPrice(),
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
-                product.getCategory(),
-                Collections.singletonList((UserDto) product.getUserLists()),
-                Collections.singletonList(product.getPromotionList())
+                product.getCategory().getUuid(),
+                product.getUserLists().stream().map(UserMapper::toUserDto).collect(Collectors.toList()),
+                product.getPromotionList().stream().map(PromotionMapper::toPromotionDto).collect(Collectors.toList())
         )).toList();
     }
 
@@ -152,9 +152,9 @@ public class ProductServiceImpl implements ProductService {
                 product.getPrice(),
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
-                product.getCategory(),
-                Collections.singletonList((UserDto) product.getUserLists()),
-                Collections.singletonList(product.getPromotionList())
+                product.getCategory().getUuid(),
+                product.getUserLists().stream().map(UserMapper::toUserDto).collect(Collectors.toList()),
+                product.getPromotionList().stream().map(PromotionMapper::toPromotionDto).collect(Collectors.toList())
         )).toList();
     }
 
@@ -168,9 +168,9 @@ public class ProductServiceImpl implements ProductService {
                 product.getPrice(),
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
-                product.getCategory(),
-                Collections.singletonList((UserDto) product.getUserLists()),
-                Collections.singletonList(product.getPromotionList())
+                product.getCategory().getUuid(),
+                product.getUserLists().stream().map(UserMapper::toUserDto).collect(Collectors.toList()),
+                product.getPromotionList().stream().map(PromotionMapper::toPromotionDto).collect(Collectors.toList())
         )).toList();
     }
 
@@ -184,9 +184,9 @@ public class ProductServiceImpl implements ProductService {
                 product.getPrice(),
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
-                product.getCategory(),
-                Collections.singletonList((UserDto) product.getUserLists()),
-                Collections.singletonList(product.getPromotionList())
+                product.getCategory().getUuid(),
+                product.getUserLists().stream().map(UserMapper::toUserDto).collect(Collectors.toList()),
+                product.getPromotionList().stream().map(PromotionMapper::toPromotionDto).collect(Collectors.toList())
         )).toList();
     }
 
@@ -200,9 +200,9 @@ public class ProductServiceImpl implements ProductService {
                 product.getPrice(),
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
-                product.getCategory(),
-                Collections.singletonList((UserDto) product.getUserLists()),
-                Collections.singletonList(product.getPromotionList())
+                product.getCategory().getUuid(),
+                product.getUserLists().stream().map(UserMapper::toUserDto).collect(Collectors.toList()),
+                product.getPromotionList().stream().map(PromotionMapper::toPromotionDto).collect(Collectors.toList())
         )).toList();
     }
 
@@ -216,9 +216,9 @@ public class ProductServiceImpl implements ProductService {
                 product.getPrice(),
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
-                product.getCategory(),
-                Collections.singletonList((UserDto) product.getUserLists()),
-                Collections.singletonList(product.getPromotionList())
+                product.getCategory().getUuid(),
+                product.getUserLists().stream().map(UserMapper::toUserDto).collect(Collectors.toList()),
+                product.getPromotionList().stream().map(PromotionMapper::toPromotionDto).collect(Collectors.toList())
         )).toList();
     }
 
