@@ -15,7 +15,7 @@ public class Review {
 
     @Column(name = "uuid")
     private String uuid;
-    
+
     @Column(name = "rating")
     private short rating;
 

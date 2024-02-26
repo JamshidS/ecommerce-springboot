@@ -7,28 +7,20 @@ import com.archisacademy.ecommercespringboot.model.User;
 import com.archisacademy.ecommercespringboot.repository.ProductRepository;
 import com.archisacademy.ecommercespringboot.repository.ReviewRepository;
 import com.archisacademy.ecommercespringboot.repository.UserRepository;
-import com.archisacademy.ecommercespringboot.service.ProductService;
 import com.archisacademy.ecommercespringboot.service.ReviewService;
-import com.archisacademy.ecommercespringboot.service.UserService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
-    private final UserService userService;
-    private final ProductService productService;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
 
-    public ReviewServiceImpl(ReviewRepository reviewRepository, UserService userService, ProductService productService, ProductRepository productRepository, UserRepository userRepository) {
+    public ReviewServiceImpl(ReviewRepository reviewRepository, ProductRepository productRepository, UserRepository userRepository) {
         this.reviewRepository = reviewRepository;
-        this.userService = userService;
-        this.productService = productService;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
     }
@@ -38,9 +30,10 @@ public class ReviewServiceImpl implements ReviewService {
         Optional<Product> product = productRepository.findByUuid(reviewDto.getProductUuid());
         Optional<User> user = userRepository.findByUuid(reviewDto.getUserUuid());
 
-        if (!user.isPresent() || !product.isPresent()){
-            return null;
+        if (!user.isPresent() || !product.isPresent()) {
+            throw new RuntimeException("uuid not found");
         }
+
         Review review = new Review();
         review.setUuid(reviewDto.getUuid());
         review.setRating(reviewDto.getRating());
@@ -56,7 +49,7 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewDto getReviewByUserUuid(String userUuid) {
         Review review = reviewRepository.findByUserUuid(userUuid);
         if (review == null) {
-            return null;
+            throw new RuntimeException("userUuid not found");
         }
 
         ReviewDto reviewDto = new ReviewDto();
@@ -74,7 +67,7 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewDto getReviewByProductUuid(String productUuid) {
         Review review = reviewRepository.findByProductUuid(productUuid);
         if (review == null) {
-            return null;
+            throw new RuntimeException("productUuid not found");
         }
 
         ReviewDto reviewDto = new ReviewDto();
