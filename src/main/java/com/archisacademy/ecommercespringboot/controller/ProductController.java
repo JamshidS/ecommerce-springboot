@@ -17,12 +17,12 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<String> createProduct(@RequestBody ProductDto productDto) {
         return ResponseEntity.ok( productService.createProduct(productDto));
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<String> updateProduct(@RequestBody ProductDto productDto) {
         return ResponseEntity.ok(productService.updateProduct(productDto));
     }
@@ -32,7 +32,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductByUuid(uuid));
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<ProductDto>> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
     }
