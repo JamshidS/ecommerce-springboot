@@ -59,4 +59,8 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "promotion_id"))
     private List<Promotion> promotionList;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "inventory_id", referencedColumnName = "id")
+  private Inventory inventory;
 }
