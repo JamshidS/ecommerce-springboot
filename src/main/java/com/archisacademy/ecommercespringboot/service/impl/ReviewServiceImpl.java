@@ -10,8 +10,8 @@ import com.archisacademy.ecommercespringboot.repository.UserRepository;
 import com.archisacademy.ecommercespringboot.service.ReviewService;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -26,12 +26,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review saveReview(ReviewDto reviewDto) {
+    public ReviewDto saveReview(ReviewDto reviewDto) {
         Optional<Product> product = productRepository.findByUuid(reviewDto.getProductUuid());
         Optional<User> user = userRepository.findByUuid(reviewDto.getUserUuid());
 
         if (!user.isPresent() || !product.isPresent()) {
-            throw new RuntimeException("uuid not found");
+            throw new RuntimeException("User or product not found");
         }
 
         Review review = new Review();
@@ -42,14 +42,15 @@ public class ReviewServiceImpl implements ReviewService {
         review.setUser(user.get());
         review.setProduct(product.get());
 
-        return reviewRepository.save(review);
+        reviewRepository.save(review);
+        return reviewDto;
     }
 
     @Override
     public ReviewDto getReviewByUserUuid(String userUuid) {
         Review review = reviewRepository.findByUserUuid(userUuid);
         if (review == null) {
-            throw new RuntimeException("userUuid not found");
+            throw new RuntimeException("Review not found for userUuid: " + userUuid);
         }
 
         ReviewDto reviewDto = new ReviewDto();
@@ -64,56 +65,85 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewDto getReviewByProductUuid(String productUuid) {
-        Review review = reviewRepository.findByProductUuid(productUuid);
-        if (review == null) {
-            throw new RuntimeException("productUuid not found");
+    public List<ReviewDto> getReviewByProductUuid(String productUuid) {
+        List<Review> reviews = reviewRepository.findAllByProductUuid(productUuid);
+        if (reviews.isEmpty()) {
+            throw new RuntimeException("No reviews found for productUuid: " + productUuid);
         }
 
-        ReviewDto reviewDto = new ReviewDto();
-        reviewDto.setUuid(review.getUuid());
-        reviewDto.setRating(review.getRating());
-        reviewDto.setComment(review.getComment());
-        reviewDto.setCreatedAt(review.getCreatedAt());
-        reviewDto.setUserUuid(review.getUser().getUuid());
-        reviewDto.setProductUuid(review.getProduct().getUuid());
-
-        return reviewDto;
+        return reviews.stream()
+                .map(this::convertReviewToDto)
+                .collect(Collectors.toList());
     }
 
+
     @Override
-    public void updateReviewByUserUuid(String userUuid, ReviewDto updatedReviewDto) {
+    public String updateReviewByUserUuid(String userUuid, ReviewDto updatedReviewDto) {
         Review existingReview = reviewRepository.findByUserUuid(userUuid);
         if (existingReview != null) {
             existingReview.setRating(updatedReviewDto.getRating());
             existingReview.setComment(updatedReviewDto.getComment());
             reviewRepository.save(existingReview);
         }
-    }
-
-    @Override
-    public void updateReviewByProductUuid(String productUuid, ReviewDto updatedReviewDto) {
-        Review existingReview = reviewRepository.findByProductUuid(productUuid);
-        if (existingReview != null) {
-            existingReview.setRating(updatedReviewDto.getRating());
-            existingReview.setComment(updatedReviewDto.getComment());
-            reviewRepository.save(existingReview);
-        }
+        return "Review updated successfully";
     }
 
     @Override
     public void deleteReviewByUserUuid(String userUuid) {
         Review existingReview = reviewRepository.findByUserUuid(userUuid);
-        if (existingReview != null) {
-            reviewRepository.delete(existingReview);
+        if (existingReview == null) {
+            throw new RuntimeException("Review not found for userUuid: " + userUuid);
         }
+
+        reviewRepository.delete(existingReview);
     }
 
     @Override
-    public void deleteReviewByProductUuid(String productUuid) {
-        Review existingReview = reviewRepository.findByProductUuid(productUuid);
-        if (existingReview != null) {
-            reviewRepository.delete(existingReview);
+    public void deleteReviewByProductUuid(String reviewUuid) {
+        List<Review> existingReviews = reviewRepository.findAllByReviewUuid(reviewUuid);
+        if (existingReviews.isEmpty()) {
+            throw new RuntimeException("No reviews found for productUuid: " + reviewUuid);
         }
+        reviewRepository.deleteAll(existingReviews);
+    }
+
+    @Override
+    public List<ReviewDto> getAllReviewsByProductUUID(String productUUID) {
+        List<Review> reviews = reviewRepository.findAllReviewsByUserUuid(productUUID);
+        if(reviews.isEmpty()){
+            throw new RuntimeException("There is no reviews present for this product");
+        }
+        List<ReviewDto> response = new ArrayList<>();
+        reviews.forEach(review -> {
+            if (review.getIsApproved()){
+                ReviewDto reviewDto = ReviewDto.builder()
+                        .uuid(review.getUuid())
+                        .build();
+            }
+        });
+        return response;
+    }
+
+    @Override
+    public String approveReview(String reviewUUID) {
+        Optional<Review> review =reviewRepository.findByUuid(reviewUUID);
+        if (review.isEmpty()){
+            throw new RuntimeException("Review not found");
+        }
+        review.get().setIsApproved(true);
+        reviewRepository.save(review.get());
+        return "Review has been approved successfully";
+    }
+
+    private ReviewDto convertReviewToDto(Review review) {
+        ReviewDto reviewDto = new ReviewDto();
+        reviewDto.setUuid(review.getUuid());
+        reviewDto.setRating(review.getRating());
+        reviewDto.setComment(review.getComment());
+        reviewDto.setCreatedAt(review.getCreatedAt());
+        reviewDto.setUserUuid(review.getUser().getUuid());
+        reviewDto.setProductUuid(review.getProduct().getUuid());
+
+        return reviewDto;
     }
 }

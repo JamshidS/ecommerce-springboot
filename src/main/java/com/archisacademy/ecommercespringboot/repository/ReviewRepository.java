@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    Review findByUuid(String uuid);
+    Optional<Review> findByUuid(String uuid);
 
     List<Review> findAllReviewsByUserUuid(String uuid);
 
@@ -18,9 +18,9 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Review findByUserUuid(String uuid);
 
-    Review findByProductUuid(String uuid);
-
     List<Review> findAllByProductUuid(String productUuid);
+
+    List<Review> findAllByReviewUuid(String reviewUuid);
 
     Review findByUserAndProduct(User user, Product product);
 

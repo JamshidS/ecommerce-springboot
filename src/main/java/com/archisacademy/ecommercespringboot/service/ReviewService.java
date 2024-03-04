@@ -6,17 +6,20 @@ import com.archisacademy.ecommercespringboot.model.Review;
 import java.util.List;
 
 public interface ReviewService {
-    Review saveReview(ReviewDto reviewDto);
+    ReviewDto saveReview(ReviewDto reviewDto);
 
     ReviewDto getReviewByUserUuid(String userUuid);
 
-    ReviewDto getReviewByProductUuid(String productUuid);
+    List<ReviewDto> getReviewByProductUuid(String productUuid);
 
-    void updateReviewByUserUuid(String userUuid, ReviewDto updatedReviewDto);
-
-    void updateReviewByProductUuid(String productUuid, ReviewDto updatedReviewDto);
+    String updateReviewByUserUuid(String userUuid, ReviewDto updatedReviewDto);
 
     void deleteReviewByUserUuid(String userUuid);
 
-    void deleteReviewByProductUuid(String productUuid);
+    void deleteReviewByProductUuid(String reviewUuid);
+
+    List<ReviewDto> getAllReviewsByProductUUID(String productUUID);
+
+    String approveReview(String reviewUUID);
+
 }

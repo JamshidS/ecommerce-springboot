@@ -24,6 +24,8 @@ public class Review {
 
     @Column(name = "created_at")
     private Date createdAt;
+    @Column(name = "is_approved")
+    private Boolean isApproved;
 
     @OneToOne
     @JoinColumn(name = "user_id")
