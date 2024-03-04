@@ -99,10 +99,10 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void deleteReviewByProductUuid(String reviewUuid) {
-        List<Review> existingReviews = reviewRepository.findAllByReviewUuid(reviewUuid);
+    public void deleteReviewByProductUuid(String productUuid) {
+        List<Review> existingReviews = reviewRepository.findAllByProductUuid(productUuid);
         if (existingReviews.isEmpty()) {
-            throw new RuntimeException("No reviews found for productUuid: " + reviewUuid);
+            throw new RuntimeException("No reviews found for productUuid: " + productUuid);
         }
         reviewRepository.deleteAll(existingReviews);
     }
