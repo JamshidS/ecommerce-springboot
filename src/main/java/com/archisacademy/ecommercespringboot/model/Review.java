@@ -27,6 +27,9 @@ public class Review {
     @Column(name = "is_approved")
     private Boolean isApproved;
 
+    @Column(name = "is_approved")
+    private Boolean isApproved;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

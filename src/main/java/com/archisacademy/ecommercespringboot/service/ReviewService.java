@@ -16,10 +16,18 @@ public interface ReviewService {
 
     void deleteReviewByUserUuid(String userUuid);
 
+<<<<<<< HEAD
     void deleteReviewByProductUuid(String reviewUuid);
 
     List<ReviewDto> getAllReviewsByProductUUID(String productUUID);
 
     String approveReview(String reviewUUID);
 
+=======
+    void deleteReviewByProductUuid(String productUuid);
+
+    String approveReview(String reviewUUID);
+
+    List<ReviewDto> getAllReviewsByProductUUID(String productUUID);
+>>>>>>> 91cbb2d753978fff1c32abe66b9c55afe0a91666
 }
