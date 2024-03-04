@@ -1,5 +1,6 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
+import com.archisacademy.ecommercespringboot.dto.WishlistDto;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.User;
 import com.archisacademy.ecommercespringboot.model.Wishlist;
@@ -9,8 +10,10 @@ import com.archisacademy.ecommercespringboot.repository.WishlistRepository;
 import com.archisacademy.ecommercespringboot.service.WishlistService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class WishlistServiceImpl implements WishlistService {
@@ -25,7 +28,7 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
-    public void addToWishlist(String userUuid, String productUuid) {
+    public String addToWishlist(String userUuid, String productUuid) {
         Optional<User> userOptional = userRepository.findByUuid(userUuid.trim());
         Optional<Product> productOptional = productRepository.findByUuid(productUuid.trim());
 
@@ -34,13 +37,15 @@ public class WishlistServiceImpl implements WishlistService {
         }
 
         Wishlist wishlist = new Wishlist();
-        wishlist.setUsers((List<User>) userOptional.get());
-        wishlist.setProducts((List<Product>) productOptional.get());
+        wishlist.setUsers(Collections.singletonList(userOptional.get()));
+        wishlist.setProducts(Collections.singletonList(productOptional.get()));
         wishlistRepository.save(wishlist);
+        throw new RuntimeException("whislist is added");
+
     }
 
     @Override
-    public void removeFromWishlist(String userUuid, String productUuid) {
+    public String removeFromWishlist(String userUuid, String productUuid) {
         Optional<Wishlist> wishlistOptional = wishlistRepository.findByUserUuidAndProductUuid(userUuid.trim(), productUuid.trim());
 
         if (!wishlistOptional.isPresent()) {
@@ -48,5 +53,31 @@ public class WishlistServiceImpl implements WishlistService {
         }
 
         wishlistRepository.delete(wishlistOptional.get());
+        throw new RuntimeException("whislist is removed");
+    }
+
+    @Override
+    public List<WishlistDto> getAllWishlistsByUser(String userUuid) {
+        return wishlistRepository.findAllByUserUuid(userUuid).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public WishlistDto getWishlistById(String wishlistUuid) {
+        Optional<Wishlist> wishlistOptional = Optional.ofNullable(wishlistRepository.findByUuid(wishlistUuid));
+        if (wishlistOptional.isPresent()) {
+            return convertToDto(wishlistOptional.get());
+        } else {
+            throw new RuntimeException("Wishlist not found");
+        }
+    }
+
+    private WishlistDto convertToDto(Wishlist wishlist) {
+        WishlistDto dto = new WishlistDto();
+        dto.setUuid(wishlist.getUuid());
+        dto.setUserUuid(wishlist.getUsers().get(0).getUuid());
+        dto.setProductUuid(wishlist.getProducts().get(0).getUuid());
+        return dto;
     }
 }
