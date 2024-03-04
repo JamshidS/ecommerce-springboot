@@ -11,7 +11,6 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class ReviewDto {
     private String uuid;
     private short rating;
@@ -19,9 +18,5 @@ public class ReviewDto {
     private Date createdAt;
     private String userUuid;
     private String productUuid;
-<<<<<<< HEAD
     private Boolean isApproved;
-=======
-    private boolean isApproved;
->>>>>>> 91cbb2d753978fff1c32abe66b9c55afe0a91666
 }
