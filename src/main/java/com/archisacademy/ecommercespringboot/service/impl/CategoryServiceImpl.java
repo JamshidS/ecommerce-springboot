@@ -2,6 +2,7 @@ package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.CategoryDto;
 import com.archisacademy.ecommercespringboot.dto.ProductDto;
+import com.archisacademy.ecommercespringboot.mapper.ProductMapper;
 import com.archisacademy.ecommercespringboot.model.Category;
 import com.archisacademy.ecommercespringboot.repository.CategoryRepository;
 import com.archisacademy.ecommercespringboot.service.CategoryService;
@@ -14,9 +15,11 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ProductMapper productMapper;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, ProductMapper productMapper) {
         this.categoryRepository = categoryRepository;
+        this.productMapper = productMapper;
     }
 
     @Override
@@ -77,9 +80,8 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryOptional.get();
         List<ProductDto> productDtos = new ArrayList<>();
         category.getProductList().forEach(product -> {
-            ProductDto productDto = new ProductDto();
-            productDto.setCategoryUuid(product.getUuid());
-            // write the rest of setters here and save it to the productDtos list
+            ProductDto productDto = productMapper.toProductDto(product);
+
             productDtos.add(productDto);
         });
 
@@ -88,7 +90,8 @@ public class CategoryServiceImpl implements CategoryService {
                 .uuid(categoryUuid)
                 .createdAt(category.getCreatedAt())
                 .name(category.getName())
-                // write other fields as well
+                .description(category.getDescription())
+                .updatedAt(category.getUpdatedAt())
                 .build();
 
 

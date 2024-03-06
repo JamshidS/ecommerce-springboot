@@ -12,8 +12,6 @@ import com.archisacademy.ecommercespringboot.model.Promotion;
 import com.archisacademy.ecommercespringboot.model.User;
 import com.archisacademy.ecommercespringboot.repository.CategoryRepository;
 import com.archisacademy.ecommercespringboot.repository.ProductRepository;
-import com.archisacademy.ecommercespringboot.repository.PromotionRepository;
-import com.archisacademy.ecommercespringboot.repository.UserRepository;
 import com.archisacademy.ecommercespringboot.service.ProductService;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +23,15 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final PromotionRepository promotionRepository;
-    private final UserRepository userRepository;
+    private final PromotionMapper promotionMapper;
+    private final UserMapper userMapper;
 
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, PromotionRepository promotionRepository, UserRepository userRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, PromotionMapper promotionMapper, UserMapper userMapper) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
-        this.promotionRepository = promotionRepository;
-        this.userRepository = userRepository;
+        this.promotionMapper = promotionMapper;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -78,21 +76,6 @@ public class ProductServiceImpl implements ProductService {
 
         product.setCategory(category.get());
 
-        List<User> users = productDto.getUserLists().stream()
-                .map(userDto -> {
-                    Optional<User> userOptional = userRepository.findByUuid(userDto.getUuid());
-                    return userOptional.orElseThrow(() -> new RuntimeException("User not found with UUID: " + userDto.getUuid()));
-                }).collect(Collectors.toList());
-
-        product.setUserLists(users);
-
-
-        List<Promotion> promotions = productDto.getPromotionList().stream()
-                .map(promotionDto -> {
-                    Optional<Promotion> promotionOptional = Optional.ofNullable(promotionRepository.findByUuid(promotionDto.getUuid()));
-                    return promotionOptional.orElseThrow(() -> new RuntimeException("Promotion not found with UUID: " + promotionDto.getUuid()));
-                }).collect(Collectors.toList());
-
         productRepository.save(product);
 
         return "Product updated successfully";
@@ -115,8 +98,8 @@ public class ProductServiceImpl implements ProductService {
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
                 product.getCategory().getUuid(),
-                product.getUserLists().stream().map(UserMapper::toUserDto).collect(Collectors.toList()),
-                product.getPromotionList().stream().map(PromotionMapper::toPromotionDto).collect(Collectors.toList())
+                product.getUserLists().stream().map(userMapper::toUserDto).collect(Collectors.toList()),
+                product.getPromotionList().stream().map(promotionMapper::toPromotionDto).collect(Collectors.toList())
         );
     }
 
@@ -131,8 +114,8 @@ public class ProductServiceImpl implements ProductService {
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
                 product.getCategory().getUuid(),
-                product.getUserLists().stream().map(UserMapper::toUserDto).collect(Collectors.toList()),
-                product.getPromotionList().stream().map(PromotionMapper::toPromotionDto).collect(Collectors.toList())
+                product.getUserLists().stream().map(userMapper::toUserDto).collect(Collectors.toList()),
+                product.getPromotionList().stream().map(promotionMapper::toPromotionDto).collect(Collectors.toList())
         )).toList();
     }
 
@@ -202,7 +185,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return userList.stream()
-                .map(UserMapper::toUserDto)
+                .map(userMapper::toUserDto)
                 .collect(Collectors.toList());
     }
 
@@ -212,7 +195,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return promotionList.stream()
-                .map(PromotionMapper::toPromotionDto)
+                .map(promotionMapper::toPromotionDto)
                 .collect(Collectors.toList());
     }
 
