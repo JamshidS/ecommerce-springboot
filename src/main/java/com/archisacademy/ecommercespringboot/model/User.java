@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Table(name ="users")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,12 +45,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> productList;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_wishlist",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "wishlist_id"))
-    private List<Wishlist> wishlists;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Wishlist wishlists;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Payment> payment;

@@ -37,10 +37,10 @@ public class WishlistServiceImpl implements WishlistService {
         }
 
         Wishlist wishlist = new Wishlist();
-        wishlist.setUsers(Collections.singletonList(userOptional.get()));
+        wishlist.setUser(userOptional.get());
         wishlist.setProducts(Collections.singletonList(productOptional.get()));
         wishlistRepository.save(wishlist);
-        throw new RuntimeException("whislist is added");
+        return "Product added to the Wishlist";
 
     }
 
@@ -53,7 +53,7 @@ public class WishlistServiceImpl implements WishlistService {
         }
 
         wishlistRepository.delete(wishlistOptional.get());
-        throw new RuntimeException("whislist is removed");
+        return "Product removed from the Wishlist";
     }
 
     @Override
@@ -76,7 +76,8 @@ public class WishlistServiceImpl implements WishlistService {
     private WishlistDto convertToDto(Wishlist wishlist) {
         WishlistDto dto = new WishlistDto();
         dto.setUuid(wishlist.getUuid());
-        dto.setUserUuid(wishlist.getUsers().get(0).getUuid());
+        //.get(0) ilk elemanı kaldırdım liste olmadığı için tam emin değilim
+        dto.setUserUuid(wishlist.getUser().getUuid());
         dto.setProductUuid(wishlist.getProducts().get(0).getUuid());
         return dto;
     }
