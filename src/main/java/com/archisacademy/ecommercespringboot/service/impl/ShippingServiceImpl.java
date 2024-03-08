@@ -1,10 +1,17 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.ShippingDto;
+import com.archisacademy.ecommercespringboot.dto.UserDto;
+import com.archisacademy.ecommercespringboot.enums.UserRole;
+import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.Shipping;
+import com.archisacademy.ecommercespringboot.model.User;
+import com.archisacademy.ecommercespringboot.repository.ProductRepository;
 import com.archisacademy.ecommercespringboot.repository.ShippingRepository;
+import com.archisacademy.ecommercespringboot.repository.UserRepository;
 import com.archisacademy.ecommercespringboot.service.ShippingService;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -12,9 +19,13 @@ import java.util.Optional;
 public class ShippingServiceImpl implements ShippingService {
 
     private final ShippingRepository shippingRepository;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
-    public ShippingServiceImpl(ShippingRepository shippingRepository) {
+    public ShippingServiceImpl(ShippingRepository shippingRepository, UserRepository userRepository, ProductRepository productRepository) {
         this.shippingRepository = shippingRepository;
+        this.userRepository = userRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -22,6 +33,32 @@ public class ShippingServiceImpl implements ShippingService {
         Shipping shippingForDb = new Shipping();
         shippingForDb.setAddress(shippingDto.getAddress());
         shippingForDb.setShippedAt(shippingDto.getShippedAt());
+
+        /*List<Product> productList = new ArrayList<>();
+        for (ProductDto product : shippingDto.getProductList()) {
+            Optional<Product> existingProduct = productRepository.findByUuid(product.getUuid());
+            if (!existingUser.isPresent()) {
+                throw new RuntimeException("Product not found");
+            }
+            productList.add(existingProduct.get());
+
+        }
+        shippingForDb.setProductList(productList);*/
+
+
+        List<User> userList = new ArrayList<>();
+        for (UserDto userDto : shippingDto.getUserList()) {
+            Optional<User> existingUser = userRepository.findByUuid(userDto.getUuid());
+            if (!existingUser.isPresent()) {
+                throw new RuntimeException("User not found");
+            }
+            userList.add(existingUser.get());
+
+        }
+        shippingForDb.setUserList(userList);
+
+
+
 
         shippingRepository.save(shippingForDb);
         return "Shipping successfully created";
@@ -36,6 +73,30 @@ public class ShippingServiceImpl implements ShippingService {
         Shipping shipping = shippingForUpdate.get();
         shipping.setAddress(shippingDto.getAddress());
         shipping.setShippedAt(shippingDto.getShippedAt());
+
+        /*List<Product> productList = new ArrayList<>();
+        for (ProductDto product : shippingDto.getProductList()) {
+            Optional<Product> existingProduct = productRepository.findByUuid(product.getUuid());
+            if (!existingUser.isPresent()) {
+                throw new RuntimeException("Product not found");
+            }
+            productList.add(existingProduct.get());
+
+        }
+        shipping.setProductList(productList);*/
+
+
+        List<User> userList = new ArrayList<>();
+        for (UserDto userDto : shippingDto.getUserList()) {
+            Optional<User> existingUser = userRepository.findByUuid(userDto.getUuid());
+            if (!existingUser.isPresent()) {
+                throw new RuntimeException("User not found");
+            }
+            userList.add(existingUser.get());
+
+        }
+
+        shipping.setUserList(userList);
 
         shippingRepository.save(shipping);
 
@@ -60,7 +121,8 @@ public class ShippingServiceImpl implements ShippingService {
         return new ShippingDto(shipping.getAddress(),
                 shipping.getShippedAt(),
                 Collections.singletonList(shipping.getProductList()),
-                Collections.singletonList(shipping.getUserList()));
+                Collections.singletonList((UserDto) shipping.getUserList())
+        );
     }
 
     @Override
@@ -71,7 +133,7 @@ public class ShippingServiceImpl implements ShippingService {
                 shipping.getAddress(),
                 shipping.getShippedAt(),
                 Collections.singletonList(shipping.getProductList()),
-                Collections.singletonList(shipping.getUserList())
+                Collections.singletonList((UserDto) shipping.getUserList())
         )).toList();
     }
 }

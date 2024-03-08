@@ -15,5 +15,5 @@ public class ShippingDto {
     private String address;
     private Date shippedAt;
     private List<Object> productList;
-    private List<Object> userList;
+    private List<UserDto> userList;
 }
