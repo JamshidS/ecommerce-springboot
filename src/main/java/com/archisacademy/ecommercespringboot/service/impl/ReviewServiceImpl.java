@@ -30,12 +30,12 @@ public class ReviewServiceImpl implements ReviewService {
         Optional<Product> product = productRepository.findByUuid(reviewDto.getProductUuid());
         Optional<User> user = userRepository.findByUuid(reviewDto.getUserUuid());
 
-        if (!user.isPresent() || !product.isPresent()) {
+        if (user.isEmpty() || product.isEmpty()) {
             throw new RuntimeException("User or product not found");
         }
 
         Review review = new Review();
-        review.setUuid(reviewDto.getUuid());
+        review.setUuid(UUID.randomUUID().toString());
         review.setRating(reviewDto.getRating());
         review.setComment(reviewDto.getComment());
         review.setCreatedAt(new Date());
@@ -48,38 +48,22 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewDto getReviewByUserUuid(String userUuid) {
-        Review review = reviewRepository.findByUserUuid(userUuid);
+        Optional<User> user = userRepository.findByUuid(userUuid);
+        if(user.isEmpty()){
+            throw new RuntimeException("User not found with this uuid: "+userUuid);
+        }
+        List<Review> review = reviewRepository.findAllByUser(user.get());
         if (review == null) {
             throw new RuntimeException("Review not found for userUuid: " + userUuid);
         }
+        // map all the review to the review dto and then return it.
 
-        ReviewDto reviewDto = new ReviewDto();
-        reviewDto.setUuid(review.getUuid());
-        reviewDto.setRating(review.getRating());
-        reviewDto.setComment(review.getComment());
-        reviewDto.setCreatedAt(review.getCreatedAt());
-        reviewDto.setUserUuid(review.getUser().getUuid());
-        reviewDto.setProductUuid(review.getProduct().getUuid());
-
-        return reviewDto;
+        return null;
     }
 
     @Override
-    public List<ReviewDto> getReviewByProductUuid(String productUuid) {
-        List<Review> reviews = reviewRepository.findAllByProductUuid(productUuid);
-        if (reviews.isEmpty()) {
-            throw new RuntimeException("No reviews found for productUuid: " + productUuid);
-        }
-
-        return reviews.stream()
-                .map(this::convertReviewToDto)
-                .collect(Collectors.toList());
-    }
-
-
-    @Override
-    public String updateReviewByUserUuid(String userUuid, ReviewDto updatedReviewDto) {
-        Review existingReview = reviewRepository.findByUserUuid(userUuid);
+    public String updateReviewByUserUuidAndProductUuid(String userUuid, ReviewDto updatedReviewDto) {
+        Review existingReview = reviewRepository.findAllByUserUuidAndProductUuid(userUuid,updatedReviewDto.getProductUuid());
         if (existingReview != null) {
             existingReview.setRating(updatedReviewDto.getRating());
             existingReview.setComment(updatedReviewDto.getComment());
@@ -89,8 +73,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void deleteReviewByUserUuid(String userUuid) {
-        Review existingReview = reviewRepository.findByUserUuid(userUuid);
+    public void deleteReviewByUserUuid(String userUuid,String productUuid) {
+        Review existingReview = reviewRepository.findAllByUserUuidAndProductUuid(userUuid,productUuid);
         if (existingReview == null) {
             throw new RuntimeException("Review not found for userUuid: " + userUuid);
         }

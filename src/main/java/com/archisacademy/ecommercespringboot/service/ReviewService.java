@@ -9,12 +9,9 @@ public interface ReviewService {
     ReviewDto saveReview(ReviewDto reviewDto);
 
     ReviewDto getReviewByUserUuid(String userUuid);
+    String updateReviewByUserUuidAndProductUuid(String userUuid, ReviewDto updatedReviewDto);
 
-    List<ReviewDto> getReviewByProductUuid(String productUuid);
-
-    String updateReviewByUserUuid(String userUuid, ReviewDto updatedReviewDto);
-
-    void deleteReviewByUserUuid(String userUuid);
+    void deleteReviewByUserUuid(String userUuid,String productUuid);
 
     void deleteReviewByProductUuid(String reviewUuid);
 

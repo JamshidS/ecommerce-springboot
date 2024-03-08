@@ -16,7 +16,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findAllByUser(User user); // uuid
 
-    Review findByUserUuid(String uuid);
+    Review findAllByUserUuidAndProductUuid(String userUuid,String ProductUuid);
 
     List<Review> findAllByProductUuid(String productUuid);
 
