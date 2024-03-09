@@ -47,8 +47,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewDto getReviewByUserUuid(String userUuid) {
-        Review review = reviewRepository.findByUserUuid(userUuid);
+    public ReviewDto getReviewByUserUuid(String userUuid,String productUuid) {
+        Review review = reviewRepository.findByUserAndProduct(userUuid,productUuid);
         if (review == null) {
             throw new RuntimeException("Review not found for userUuid: " + userUuid);
         }
@@ -89,8 +89,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void deleteReviewByUserUuid(String userUuid) {
-        Review existingReview = reviewRepository.findByUserUuid(userUuid);
+    public void deleteReviewByUserUuid(String userUuid,String productUuid)  {
+        Review existingReview = reviewRepository.findByUserAndProduct(userUuid,productUuid);
         if (existingReview == null) {
             throw new RuntimeException("Review not found for userUuid: " + userUuid);
         }

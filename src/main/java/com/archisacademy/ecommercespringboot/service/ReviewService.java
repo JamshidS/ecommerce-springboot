@@ -8,13 +8,13 @@ import java.util.List;
 public interface ReviewService {
     ReviewDto saveReview(ReviewDto reviewDto);
 
-    ReviewDto getReviewByUserUuid(String userUuid);
+    ReviewDto getReviewByUserUuid(String userUuid,String productUuid);
 
     List<ReviewDto> getReviewByProductUuid(String productUuid);
 
     String updateReviewByUserUuid(String userUuid, ReviewDto updatedReviewDto);
 
-    void deleteReviewByUserUuid(String userUuid);
+    void deleteReviewByUserUuid(String userUuid,String productUuid);
 
     void deleteReviewByProductUuid(String reviewUuid);
 
