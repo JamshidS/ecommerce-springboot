@@ -6,6 +6,9 @@ import com.archisacademy.ecommercespringboot.mapper.UserMapper;
 import com.archisacademy.ecommercespringboot.model.User;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class UserMapperImpl implements UserMapper {
     @Override
@@ -37,4 +40,16 @@ public class UserMapperImpl implements UserMapper {
         user.setUpdatedAt(userDto.getUpdatedAt());
         return user;
     }
+
+    @Override
+    public List<UserDto> toUserDtoList(List<User> userList) {
+        if (userList == null) {
+            return null;
+        }
+
+        return userList.stream()
+                .map(this::toUserDto)
+                .collect(Collectors.toList());
+    }
+
 }

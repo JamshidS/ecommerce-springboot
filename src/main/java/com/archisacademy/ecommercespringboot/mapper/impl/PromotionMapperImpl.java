@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class PromotionMapperImpl implements PromotionMapper {
@@ -51,5 +52,16 @@ public class PromotionMapperImpl implements PromotionMapper {
         }
         promotion.setProductList(productList);
         return promotion;
+    }
+
+    @Override
+    public List<PromotionDto> toPromotionDtoList(List<Promotion> promotionList) {
+        if (promotionList == null) {
+            return null;
+        }
+
+        return promotionList.stream()
+                .map(this::toPromotionDto)
+                .collect(Collectors.toList());
     }
 }

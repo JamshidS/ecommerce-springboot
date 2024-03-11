@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface ProductMapper {
     ProductDto toProductDto(Product product);
-
-    Product toProduct(ProductDto productDto) ;
+    Product toProduct(ProductDto productDto);
+    List<ProductDto> toProductDtoList(List<Product> productList);
 }

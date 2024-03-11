@@ -2,14 +2,11 @@ package com.archisacademy.ecommercespringboot.service.impl;
 
 
 import com.archisacademy.ecommercespringboot.dto.ProductDto;
-import com.archisacademy.ecommercespringboot.dto.PromotionDto;
-import com.archisacademy.ecommercespringboot.dto.UserDto;
+import com.archisacademy.ecommercespringboot.mapper.ProductMapper;
 import com.archisacademy.ecommercespringboot.mapper.PromotionMapper;
 import com.archisacademy.ecommercespringboot.mapper.UserMapper;
 import com.archisacademy.ecommercespringboot.model.Category;
 import com.archisacademy.ecommercespringboot.model.Product;
-import com.archisacademy.ecommercespringboot.model.Promotion;
-import com.archisacademy.ecommercespringboot.model.User;
 import com.archisacademy.ecommercespringboot.repository.CategoryRepository;
 import com.archisacademy.ecommercespringboot.repository.ProductRepository;
 import com.archisacademy.ecommercespringboot.service.ProductService;
@@ -23,15 +20,18 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final PromotionMapper promotionMapper;
     private final UserMapper userMapper;
+    private final PromotionMapper promotionMapper;
+    private final ProductMapper productMapper;
 
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, PromotionMapper promotionMapper, UserMapper userMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, UserMapper userMapper, PromotionMapper promotionMapper, ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
-        this.promotionMapper = promotionMapper;
         this.userMapper = userMapper;
+        this.promotionMapper = promotionMapper;
+        this.productMapper = productMapper;
+
     }
 
     @Override
@@ -131,72 +131,32 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> getProductsByCategory(String categoryUuid) {
         List<Product> products = productRepository.findByCategoryUuid(categoryUuid);
-        return mapToProductDtoList(products);
+        return productMapper.toProductDtoList(products);
     }
 
     @Override
     public List<ProductDto> getProductsByUser(String userUuid) {
         List<Product> products = productRepository.findByUserUuid(userUuid);
-        return mapToProductDtoList(products);
+        return productMapper.toProductDtoList(products);
     }
 
     @Override
     public List<ProductDto> getProductsByPromotion(String promotionUuid) {
         List<Product> products = productRepository.findByPromotionUuid(promotionUuid);
-        return mapToProductDtoList(products);
+        return productMapper.toProductDtoList(products);
     }
 
     @Override
     public List<ProductDto> getProductsByPrice(double price) {
         List<Product> products = productRepository.findByPrice(price);
-        return mapToProductDtoList(products);
+        return productMapper.toProductDtoList(products);
     }
 
     @Override
     public List<ProductDto> getProductsByPriceRange(double minPrice, double maxPrice) {
         List<Product> products = productRepository.findByPriceBetween(minPrice, maxPrice);
-        return mapToProductDtoList(products);
+        return productMapper.toProductDtoList(products);
     }
 
-    private List<ProductDto> mapToProductDtoList(List<Product> productList) {
-        if (productList == null) {
-            return null;
-        }
-
-        return productList.stream()
-                .filter(Objects::nonNull)
-                .map(product -> new ProductDto(
-                        product.getName(),
-                        product.getUuid(),
-                        product.getDescription(),
-                        product.getPrice(),
-                        product.getCreatedAt(),
-                        product.getUpdatedAt(),
-                        product.getCategory().getUuid(),
-                        mapToUserDtoList(product.getUserLists()),
-                        mapToPromotionDtoList(product.getPromotionList())
-                ))
-                .collect(Collectors.toList());
-    }
-
-    private List<UserDto> mapToUserDtoList(List<User> userList) {
-        if (userList == null) {
-            return null;
-        }
-
-        return userList.stream()
-                .map(userMapper::toUserDto)
-                .collect(Collectors.toList());
-    }
-
-    private List<PromotionDto> mapToPromotionDtoList(List<Promotion> promotionList) {
-        if (promotionList == null) {
-            return null;
-        }
-
-        return promotionList.stream()
-                .map(promotionMapper::toPromotionDto)
-                .collect(Collectors.toList());
-    }
 
 }

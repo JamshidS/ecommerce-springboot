@@ -12,4 +12,5 @@ import java.util.List;
 public interface PromotionMapper {
     PromotionDto toPromotionDto(Promotion promotion);
     Promotion toPromotion(PromotionDto promotionDto);
+    List<PromotionDto> toPromotionDtoList(List<Promotion> promotionList);
 }
