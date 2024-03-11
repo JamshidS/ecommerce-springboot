@@ -7,6 +7,7 @@ import com.archisacademy.ecommercespringboot.mapper.UserMapper;
 import com.archisacademy.ecommercespringboot.model.Product;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -50,23 +51,25 @@ public class ProductMapperImpl implements ProductMapper {
 
     @Override
     public List<ProductDto> toProductDtoList(List<Product> productList) {
-        if (productList == null) {
-            return null;
+        List<ProductDto> productDtoList = new ArrayList<>();
+
+        if (productList != null) {
+            return productList.stream()
+                    .filter(Objects::nonNull)
+                    .map(product -> new ProductDto(
+                            product.getName(),
+                            product.getUuid(),
+                            product.getDescription(),
+                            product.getPrice(),
+                            product.getCreatedAt(),
+                            product.getUpdatedAt(),
+                            product.getCategory().getUuid(),
+                            userMapper.toUserDtoList(product.getUserLists()),
+                            promotionMapper.toPromotionDtoList(product.getPromotionList())
+                    ))
+                    .collect(Collectors.toList());
         }
 
-        return productList.stream()
-                .filter(Objects::nonNull)
-                .map(product -> new ProductDto(
-                        product.getName(),
-                        product.getUuid(),
-                        product.getDescription(),
-                        product.getPrice(),
-                        product.getCreatedAt(),
-                        product.getUpdatedAt(),
-                        product.getCategory().getUuid(),
-                        userMapper.toUserDtoList(product.getUserLists()),
-                        promotionMapper.toPromotionDtoList(product.getPromotionList())
-                ))
-                .collect(Collectors.toList());
+        return productDtoList;
     }
 }

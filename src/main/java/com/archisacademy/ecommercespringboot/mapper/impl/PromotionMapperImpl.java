@@ -56,12 +56,14 @@ public class PromotionMapperImpl implements PromotionMapper {
 
     @Override
     public List<PromotionDto> toPromotionDtoList(List<Promotion> promotionList) {
-        if (promotionList == null) {
-            return null;
+        List<PromotionDto> promotionDtoList = new ArrayList<>();
+
+        if (promotionList != null) {
+            return promotionList.stream()
+                    .map(this::toPromotionDto)
+                    .collect(Collectors.toList());
         }
 
-        return promotionList.stream()
-                .map(this::toPromotionDto)
-                .collect(Collectors.toList());
+        return promotionDtoList;
     }
 }
