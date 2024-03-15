@@ -47,22 +47,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewDto getReviewByUserUuid(String userUuid,String productUuid) {
-        Review review = reviewRepository.findByUserAndProduct(userUuid,productUuid);
-        if (review == null) {
-            throw new RuntimeException("Review not found for userUuid: " + userUuid);
+    public ReviewDto getReviewByUserUuid(String userUuid, String productUuid) {
+        Review review = reviewRepository.findByUserUuid(userUuid);
+        if (review == null || !review.getProduct().getUuid().equals(productUuid)) {
+            throw new RuntimeException("Review not found for userUuid: " + userUuid + " and productUuid: " + productUuid);
         }
 
-        ReviewDto reviewDto = new ReviewDto();
-        reviewDto.setUuid(review.getUuid());
-        reviewDto.setRating(review.getRating());
-        reviewDto.setComment(review.getComment());
-        reviewDto.setCreatedAt(review.getCreatedAt());
-        reviewDto.setUserUuid(review.getUser().getUuid());
-        reviewDto.setProductUuid(review.getProduct().getUuid());
-
-        return reviewDto;
+        return convertReviewToDto(review);
     }
+
 
     @Override
     public List<ReviewDto> getReviewByProductUuid(String productUuid) {
@@ -89,8 +82,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void deleteReviewByUserUuid(String userUuid,String productUuid)  {
-        Review existingReview = reviewRepository.findByUserAndProduct(userUuid,productUuid);
+    public void deleteReviewByUserUuid(String userUuid, String productUuid) {
+        Review existingReview = reviewRepository.findByUserUuidAndProductUuid(userUuid, productUuid);
         if (existingReview == null) {
             throw new RuntimeException("Review not found for userUuid: " + userUuid);
         }
@@ -100,7 +93,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void deleteReviewByProductUuid(String reviewUuid) {
-        List<Review> existingReviews = reviewRepository.findAllByReviewUuid(reviewUuid);
+        List<Review> existingReviews = reviewRepository.findAllByUuid(reviewUuid);
         if (existingReviews.isEmpty()) {
             throw new RuntimeException("No reviews found for productUuid: " + reviewUuid);
         }
@@ -109,25 +102,24 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ReviewDto> getAllReviewsByProductUUID(String productUUID) {
-        List<Review> reviews = reviewRepository.findAllReviewsByUserUuid(productUUID);
-        if(reviews.isEmpty()){
-            throw new RuntimeException("There is no reviews present for this product");
+        List<Review> reviews = reviewRepository.findAllByProductUuid(productUUID);
+        if (reviews.isEmpty()) {
+            throw new RuntimeException("There are no reviews present for this product");
         }
         List<ReviewDto> response = new ArrayList<>();
-        reviews.forEach(review -> {
-            if (review.getIsApproved()){
-                ReviewDto reviewDto = ReviewDto.builder()
-                        .uuid(review.getUuid())
-                        .build();
+        for (Review review : reviews) {
+            if (review.getIsApproved()) {
+                response.add(convertReviewToDto(review));
             }
-        });
+        }
         return response;
     }
 
+
     @Override
     public String approveReview(String reviewUUID) {
-        Optional<Review> review =reviewRepository.findByUuid(reviewUUID);
-        if (review.isEmpty()){
+        Optional<Review> review = reviewRepository.findByUuid(reviewUUID);
+        if (review.isEmpty()) {
             throw new RuntimeException("Review not found");
         }
         review.get().setIsApproved(true);
