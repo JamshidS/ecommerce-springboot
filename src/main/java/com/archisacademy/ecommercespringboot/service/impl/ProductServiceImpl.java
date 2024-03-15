@@ -2,6 +2,7 @@ package com.archisacademy.ecommercespringboot.service.impl;
 
 
 import com.archisacademy.ecommercespringboot.dto.ProductDto;
+import com.archisacademy.ecommercespringboot.dto.UserDto;
 import com.archisacademy.ecommercespringboot.mapper.ProductMapper;
 import com.archisacademy.ecommercespringboot.mapper.PromotionMapper;
 import com.archisacademy.ecommercespringboot.mapper.UserMapper;
@@ -90,6 +91,8 @@ public class ProductServiceImpl implements ProductService {
         }
         Product product = productForDb.get();
 
+
+
         return new ProductDto(
                 product.getName(),
                 product.getUuid(),
@@ -98,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
                 product.getCategory().getUuid(),
-                product.getUserLists().stream().map(userMapper::toUserDto).collect(Collectors.toList()),
+                null,
                 product.getPromotionList().stream().map(promotionMapper::toPromotionDto).collect(Collectors.toList())
         );
     }
@@ -114,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
                 product.getCategory().getUuid(),
-                product.getUserLists().stream().map(userMapper::toUserDto).collect(Collectors.toList()),
+                null,
                 product.getPromotionList().stream().map(promotionMapper::toPromotionDto).collect(Collectors.toList())
         )).toList();
     }
