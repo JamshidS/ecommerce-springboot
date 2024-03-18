@@ -1,10 +1,12 @@
 package com.archisacademy.ecommercespringboot.mapper.impl;
 
 import com.archisacademy.ecommercespringboot.dto.ProductDto;
+import com.archisacademy.ecommercespringboot.mapper.CategoryMapper;
 import com.archisacademy.ecommercespringboot.mapper.ProductMapper;
 import com.archisacademy.ecommercespringboot.mapper.PromotionMapper;
 import com.archisacademy.ecommercespringboot.mapper.UserMapper;
 import com.archisacademy.ecommercespringboot.model.Product;
+import com.archisacademy.ecommercespringboot.service.CategoryService;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,62 +16,53 @@ import java.util.stream.Collectors;
 
 @Component
 public class ProductMapperImpl implements ProductMapper {
-    private final UserMapper userMapper;
-    private final PromotionMapper promotionMapper;
 
-    public ProductMapperImpl(UserMapper userMapper, PromotionMapper promotionMapper) {
-        this.userMapper = userMapper;
-        this.promotionMapper = promotionMapper;
-    }
 
     @Override
     public ProductDto toProductDto(Product product) {
-        ProductDto productDto = new ProductDto();
-        productDto.setUuid(product.getUuid());
-        productDto.setName(product.getName());
-        productDto.setDescription(product.getDescription());
-        productDto.setPrice(product.getPrice());
-        productDto.setCreatedAt(product.getCreatedAt());
-        productDto.setUpdatedAt(product.getUpdatedAt());
-        productDto.setCategoryUuid(product.getCategory().getUuid());
-
-        return productDto;
+        if (product == null) {
+            return null;
+        }
+        return new ProductDto(
+                product.getName(),
+                product.getUuid(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getCreatedAt(),
+                product.getUpdatedAt(),
+                product.getCategory().getUuid(),
+                null // PromotionList burada atanmadı
+        );
     }
+
 
     @Override
     public Product toProduct(ProductDto productDto) {
+        if (productDto == null) {
+            return null;
+        }
         Product product = new Product();
-        product.setUuid(productDto.getUuid());
         product.setName(productDto.getName());
+        product.setUuid(productDto.getUuid());
         product.setDescription(productDto.getDescription());
         product.setPrice(productDto.getPrice());
         product.setCreatedAt(productDto.getCreatedAt());
         product.setUpdatedAt(productDto.getUpdatedAt());
-
+        // Category ve PromotionList burada atanmadı
         return product;
     }
 
     @Override
     public List<ProductDto> toProductDtoList(List<Product> productList) {
-        List<ProductDto> productDtoList = new ArrayList<>();
+        return productList.stream()
+                .map(this::toProductDto)
+                .collect(Collectors.toList());
+    }
 
-        if (productList != null) {
-            return productList.stream()
-                    .filter(Objects::nonNull)
-                    .map(product -> new ProductDto(
-                            product.getName(),
-                            product.getUuid(),
-                            product.getDescription(),
-                            product.getPrice(),
-                            product.getCreatedAt(),
-                            product.getUpdatedAt(),
-                            product.getCategory().getUuid(),
-                            userMapper.toUserDtoList(product.getUserLists()),
-                            promotionMapper.toPromotionDtoList(product.getPromotionList())
-                    ))
-                    .collect(Collectors.toList());
-        }
-
-        return productDtoList;
+    @Override
+    public List<Product> toProductList(List<ProductDto> productDtoList) {
+        return productDtoList.stream()
+                .map(this::toProduct)
+                .collect(Collectors.toList());
     }
 }

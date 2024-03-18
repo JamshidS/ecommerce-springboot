@@ -22,23 +22,25 @@ public class PromotionMapperImpl implements PromotionMapper {
 
     @Override
     public PromotionDto toPromotionDto(Promotion promotion) {
-        PromotionDto promotionDto = new PromotionDto();
-        promotionDto.setUuid(promotion.getUuid());
-        promotionDto.setName(promotion.getName());
-        promotionDto.setDescription(promotion.getDescription());
-        promotionDto.setDiscount(promotion.getDiscount());
-        promotionDto.setCode(promotion.getCode());
-
-        List<ProductDto> productDtoList = new ArrayList<>();
-        for (Product product : promotion.getProductList()) {
-            productDtoList.add(productMapper.toProductDto(product));
+        if (promotion == null) {
+            throw new IllegalArgumentException("Null promotion can not be mapped to promotionDto");
         }
-        promotionDto.setProductList(productDtoList);
-        return promotionDto;
+
+        return new PromotionDto(
+                promotion.getUuid(),
+                promotion.getName(),
+                promotion.getDescription(),
+                promotion.getDiscount(),
+                promotion.getCode(),
+                productMapper.toProductDtoList(promotion.getProductList())
+        );
     }
 
     @Override
     public Promotion toPromotion(PromotionDto promotionDto) {
+        if (promotionDto == null) {
+            throw new IllegalArgumentException("Null promotionDto can not be mapped to promotion");
+        }
         Promotion promotion = new Promotion();
         promotion.setUuid(promotionDto.getUuid());
         promotion.setName(promotionDto.getName());
@@ -46,11 +48,7 @@ public class PromotionMapperImpl implements PromotionMapper {
         promotion.setDiscount(promotionDto.getDiscount());
         promotion.setCode(promotionDto.getCode());
 
-        List<Product> productList = new ArrayList<>();
-        for (ProductDto productDto : promotionDto.getProductList()) {
-            productList.add(productMapper.toProduct(productDto));
-        }
-        promotion.setProductList(productList);
+        promotion.setProductList(productMapper.toProductList(promotionDto.getProductList()));
         return promotion;
     }
 

@@ -21,15 +21,13 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final UserMapper userMapper;
     private final PromotionMapper promotionMapper;
     private final ProductMapper productMapper;
 
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, UserMapper userMapper, PromotionMapper promotionMapper, ProductMapper productMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, PromotionMapper promotionMapper, ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
-        this.userMapper = userMapper;
         this.promotionMapper = promotionMapper;
         this.productMapper = productMapper;
 
@@ -101,7 +99,6 @@ public class ProductServiceImpl implements ProductService {
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
                 product.getCategory().getUuid(),
-                null,
                 product.getPromotionList().stream().map(promotionMapper::toPromotionDto).collect(Collectors.toList())
         );
     }
@@ -117,7 +114,6 @@ public class ProductServiceImpl implements ProductService {
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
                 product.getCategory().getUuid(),
-                null,
                 product.getPromotionList().stream().map(promotionMapper::toPromotionDto).collect(Collectors.toList())
         )).toList();
     }

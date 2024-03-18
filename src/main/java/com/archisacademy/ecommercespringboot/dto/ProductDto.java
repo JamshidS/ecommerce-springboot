@@ -28,7 +28,5 @@ public class ProductDto {
 
     private String categoryUuid;
 
-    private String userUuid;
-
     private List<PromotionDto> promotionList;
 }

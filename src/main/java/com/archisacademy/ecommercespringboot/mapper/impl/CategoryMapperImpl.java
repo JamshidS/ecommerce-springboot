@@ -21,6 +21,9 @@ public class CategoryMapperImpl implements CategoryMapper {
     }
     @Override
     public CategoryDto toCategoryDto(Category category) {
+        if (category == null) {
+            throw new IllegalArgumentException("Null category can not be mapped to categoryDto");
+        }
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setUuid(category.getUuid());
         categoryDto.setName(category.getName());
