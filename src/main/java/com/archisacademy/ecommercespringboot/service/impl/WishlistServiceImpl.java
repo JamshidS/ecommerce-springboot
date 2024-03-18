@@ -1,6 +1,7 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.WishlistDto;
+import com.archisacademy.ecommercespringboot.dto.response.WishlistResponse;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.User;
 import com.archisacademy.ecommercespringboot.model.Wishlist;
@@ -11,9 +12,8 @@ import com.archisacademy.ecommercespringboot.service.WishlistService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 public class WishlistServiceImpl implements WishlistService {
@@ -57,26 +57,19 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
-    public List<WishlistDto> getAllWishlistsByUser(String userUuid) {
-        return wishlistRepository.findAllByUserUuid(userUuid).stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+    public WishlistResponse getWishlistByUserUuid(String userUuid) {
+        return null;
     }
 
     @Override
-    public WishlistDto getWishlistById(String wishlistUuid) {
-        Optional<Wishlist> wishlistOptional = Optional.ofNullable(wishlistRepository.findByUuid(wishlistUuid));
-        if (wishlistOptional.isPresent()) {
-            return convertToDto(wishlistOptional.get());
-        } else {
-            throw new RuntimeException("Wishlist not found");
-        }
+    public WishlistResponse getWishlistByUuid(String wishlistUuid) {
+        return null;
     }
 
-    private WishlistDto convertToDto(Wishlist wishlist) {
+//response degistir
+    private WishlistDto convertToResponse(Wishlist wishlist) {
         WishlistDto dto = new WishlistDto();
         dto.setUuid(wishlist.getUuid());
-        //.get(0) ilk elemanı kaldırdım liste olmadığı için tam emin değilim
         dto.setUserUuid(wishlist.getUser().getUuid());
         dto.setProductUuid(wishlist.getProducts().get(0).getUuid());
         return dto;

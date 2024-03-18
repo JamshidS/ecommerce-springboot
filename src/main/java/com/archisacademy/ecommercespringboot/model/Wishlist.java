@@ -16,9 +16,6 @@ public class Wishlist {
 
     @Column(name = "uuid")
     private String uuid;
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
     @ManyToMany
     @JoinTable(
             name = "user_product",

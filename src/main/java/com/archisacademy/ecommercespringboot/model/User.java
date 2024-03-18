@@ -45,7 +45,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> productList;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "whistlist_id", nullable = false, unique = true)
     private Wishlist wishlists;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
