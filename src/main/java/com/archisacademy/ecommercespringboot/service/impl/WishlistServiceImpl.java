@@ -12,7 +12,9 @@ import com.archisacademy.ecommercespringboot.service.WishlistService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -29,49 +31,68 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public String addToWishlist(String userUuid, String productUuid) {
-        Optional<User> userOptional = userRepository.findByUuid(userUuid.trim());
-        Optional<Product> productOptional = productRepository.findByUuid(productUuid.trim());
+        Optional<User> userOptional = userRepository.findByUuid(userUuid);
+        Optional<Product> productOptional = productRepository.findByUuid(productUuid);
 
-        if (!userOptional.isPresent() || !productOptional.isPresent()) {
+        if (userOptional.isEmpty() || productOptional.isEmpty()) {
             throw new RuntimeException("User or product not found");
         }
+        User user = userOptional.get();
+        Product product = productOptional.get();
 
-        Wishlist wishlist = new Wishlist();
-        wishlist.setUser(userOptional.get());
-        wishlist.setProducts(Collections.singletonList(productOptional.get()));
+        Wishlist wishlist = wishlistRepository.findByUserUuid(user.getUuid());
+        if (wishlist == null) {
+            wishlist = new Wishlist();
+            wishlist.setProducts(Collections.singletonList(product));
+            wishlist.setUuid(user.getUuid());
+        } else {
+            wishlist.getProducts().add(product);
+        }
         wishlistRepository.save(wishlist);
         return "Product added to the Wishlist";
-
     }
 
     @Override
     public String removeFromWishlist(String userUuid, String productUuid) {
-        Optional<Wishlist> wishlistOptional = wishlistRepository.findByUserUuidAndProductUuid(userUuid.trim(), productUuid.trim());
+        Optional<User> userOptional = userRepository.findByUuid(userUuid);
 
-        if (!wishlistOptional.isPresent()) {
-            throw new RuntimeException("Wishlist item not found");
+        if (userOptional.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+        User user = userOptional.get();
+
+        Wishlist wishlist = wishlistRepository.findByUserUuid(user.getUuid());
+        if (wishlist == null) {
+            throw new RuntimeException("Wishlist not found for user");
         }
 
-        wishlistRepository.delete(wishlistOptional.get());
+        List<Product> products = wishlist.getProducts().stream()
+                .filter(product -> !product.getUuid().equals(productUuid))
+                .collect(Collectors.toList());
+        wishlist.setProducts(products);
+
+        wishlistRepository.save(wishlist);
         return "Product removed from the Wishlist";
     }
 
     @Override
     public WishlistResponse getWishlistByUserUuid(String userUuid) {
-        return null;
+        Wishlist wishlist = wishlistRepository.findByUserUuid(userUuid);
+        return convertToResponse(wishlist);
     }
 
     @Override
     public WishlistResponse getWishlistByUuid(String wishlistUuid) {
-        return null;
+        Wishlist wishlist = wishlistRepository.findByUuid(wishlistUuid);
+        return convertToResponse(wishlist);
     }
 
-//response degistir
-    private WishlistDto convertToResponse(Wishlist wishlist) {
-        WishlistDto dto = new WishlistDto();
-        dto.setUuid(wishlist.getUuid());
-        dto.setUserUuid(wishlist.getUser().getUuid());
-        dto.setProductUuid(wishlist.getProducts().get(0).getUuid());
-        return dto;
+    private WishlistResponse convertToResponse(Wishlist wishlist) {
+        WishlistResponse response = new WishlistResponse();
+        if (wishlist != null) {
+            response.setProductList(wishlist.getProducts());
+            response.setUserUuid(wishlist.getUuid());
+        }
+        return response;
     }
 }
