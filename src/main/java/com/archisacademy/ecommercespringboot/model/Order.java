@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -19,10 +20,12 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(name = "uuid")
+    private String uuid;
     @Column(name = "order_number")
     private String orderNumber;
     @Column(name = "order_date")
-    private Date orderDate;
+    private Timestamp orderDate;
     @Column(name = "total_amount")
     private Double totalAmount;
     @Column(name = "order_status")
