@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
@@ -20,7 +21,8 @@ public class Cart {
     @Column(name = "uuid")
     private String uuid;
     @Column(name = "order_date")
-    private Date orderDate;
+    private Timestamp orderDate;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
