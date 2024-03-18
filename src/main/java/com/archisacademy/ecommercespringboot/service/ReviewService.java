@@ -8,17 +8,17 @@ import java.util.List;
 public interface ReviewService {
     ReviewDto saveReview(ReviewDto reviewDto);
 
-    ReviewDto getReviewByUserUuid(String userUuid,String productUuid);
+    ReviewDto getReviewByUserUuid(String userUuid, String productUuid);
 
     List<ReviewDto> getReviewByProductUuid(String productUuid);
 
     String updateReviewByUserUuid(String userUuid, ReviewDto updatedReviewDto);
 
-    void deleteReviewByUserUuid(String userUuid,String productUuid);
+    String deleteReviewByUserUuid(String userUuid, String productUuid);
 
-    void deleteReviewByProductUuid(String reviewUuid);
-
-    List<ReviewDto> getAllReviewsByProductUUID(String productUUID);
+    String deleteReviewsByReviewUuid(String reviewUuid);
 
     String approveReview(String reviewUUID);
+
+    List<ReviewDto> getAllReviewsByProductUUID(String productUUID);
 }

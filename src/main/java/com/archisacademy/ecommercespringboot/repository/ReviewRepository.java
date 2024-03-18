@@ -12,17 +12,13 @@ import java.util.Optional;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<Review> findByUuid(String uuid);
 
-    List<Review> findAllReviewsByUserUuid(String uuid);
-
     List<Review> findAllByUser(User user); // uuid
 
     List<Review> findAllByProductUuid(String productUuid);
 
-    Review findByReviewUuid(String reviewUuid);
-
     Review findByUserUuidAndProductUuid(String userUuid, String productUuid);
 
-    void deleteByUuid(String uuid);
+    String deleteByUuid(String uuid);
 
     List<Review> findAllByUuid(String uuid);
 
