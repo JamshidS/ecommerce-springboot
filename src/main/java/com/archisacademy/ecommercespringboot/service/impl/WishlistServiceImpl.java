@@ -40,7 +40,7 @@ public class WishlistServiceImpl implements WishlistService {
         User user = userOptional.get();
         Product product = productOptional.get();
 
-        Wishlist wishlist = wishlistRepository.findByUserUuid(user.getUuid());
+        Wishlist wishlist = wishlistRepository.findByUserUuid(userUuid);
         if (wishlist == null) {
             wishlist = new Wishlist();
             wishlist.setProducts(Collections.singletonList(product));

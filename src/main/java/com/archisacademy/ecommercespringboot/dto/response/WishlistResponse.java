@@ -1,7 +1,6 @@
 package com.archisacademy.ecommercespringboot.dto.response;
 
 import com.archisacademy.ecommercespringboot.model.Product;
-import com.archisacademy.ecommercespringboot.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
