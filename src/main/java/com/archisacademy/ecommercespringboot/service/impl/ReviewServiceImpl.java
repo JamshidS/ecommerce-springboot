@@ -71,8 +71,8 @@ public class ReviewServiceImpl implements ReviewService {
 
 
     @Override
-    public String updateReviewByUserUuid(String userUuid, ReviewDto updatedReviewDto) {
-        Review existingReview = reviewRepository.findByUserUuid(userUuid);
+    public String updateReviewByUserUuid(String userUuid, String productUuid, ReviewDto updatedReviewDto) {
+        Review existingReview = reviewRepository.findByUserUuidAndProductUuid(userUuid,productUuid);
         if (existingReview != null) {
             existingReview.setRating(updatedReviewDto.getRating());
             existingReview.setComment(updatedReviewDto.getComment());
@@ -106,7 +106,7 @@ public class ReviewServiceImpl implements ReviewService {
     public List<ReviewDto> getAllReviewsByProductUUID(String productUUID) {
         List<Review> reviews = reviewRepository.findAllByProductUuid(productUUID);
         if (reviews.isEmpty()) {
-            throw new RuntimeException("There are no reviews present for this product");
+            return new ArrayList<>();
         }
         List<ReviewDto> response = new ArrayList<>();
         for (Review review : reviews) {

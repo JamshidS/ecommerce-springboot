@@ -12,7 +12,7 @@ public interface ReviewService {
 
     List<ReviewDto> getReviewByProductUuid(String productUuid);
 
-    String updateReviewByUserUuid(String userUuid, ReviewDto updatedReviewDto);
+    String updateReviewByUserUuid(String userUuid, String productUuid, ReviewDto updatedReviewDto);
 
     String deleteReviewByUserUuid(String userUuid, String productUuid);
 
