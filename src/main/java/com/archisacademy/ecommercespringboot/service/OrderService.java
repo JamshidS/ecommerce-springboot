@@ -10,5 +10,5 @@ public interface OrderService {
     void deleteOrder(String orderUuid);
     List<OrderDto> getAllOrders();
     OrderDto getOrderByUuid(String orderUuid);
-    OrderDto getOrderByUserUuid(String userUuid);
+    List<OrderDto> getAllOrdersByUserUuid(String userUuid);
 }
