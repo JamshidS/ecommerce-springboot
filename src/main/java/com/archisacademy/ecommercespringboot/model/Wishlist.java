@@ -1,12 +1,16 @@
 package com.archisacademy.ecommercespringboot.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "wishlists")
 public class Wishlist {
     @Id
@@ -14,15 +18,11 @@ public class Wishlist {
     @Column(name = "id")
     private long id;
 
-    @Column(name ="uuid")
+    @Column(name = "uuid")
     private String uuid;
-    
-    @ManyToMany
-    @JoinTable(
-            name = "user_wishlist",
-            joinColumns = @JoinColumn(name = "wishlist_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> users;
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
 
     @ManyToMany
     @JoinTable(
