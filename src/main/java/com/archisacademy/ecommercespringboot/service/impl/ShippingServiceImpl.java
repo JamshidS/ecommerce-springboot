@@ -121,7 +121,7 @@ public class ShippingServiceImpl implements ShippingService {
         return new ShippingDto(shipping.getAddress(),
                 shipping.getShippedAt(),
                 Collections.singletonList(shipping.getProductList()),
-                Collections.singletonList((UserDto) shipping.getUserList())
+                convertUserListToUserDtoList(shipping.getUserList())
         );
     }
 
@@ -133,7 +133,25 @@ public class ShippingServiceImpl implements ShippingService {
                 shipping.getAddress(),
                 shipping.getShippedAt(),
                 Collections.singletonList(shipping.getProductList()),
-                Collections.singletonList((UserDto) shipping.getUserList())
+                convertUserListToUserDtoList(shipping.getUserList())
         )).toList();
+    }
+
+    private List<UserDto> convertUserListToUserDtoList(List<User> userList) { // when product pushed to git , the method will be removed
+        List<UserDto> userDtoList = new ArrayList<>();
+        for (User user : userList) {
+            UserDto userDto = new UserDto();
+            userDto.setUuid(user.getUuid());
+            userDto.setUserName(user.getUserName());
+            userDto.setEmail(user.getEmail());
+            userDto.setPassword(user.getPassword());
+            userDto.setTelephone(user.getTelephone());
+            userDto.setAddress(user.getAddress());
+            userDto.setUserRole(String.valueOf(UserRole.valueOf(user.getUserRole().name())));
+            userDto.setCreatedAt(user.getCreatedAt());
+            userDto.setUpdatedAt(user.getUpdatedAt());
+            userDtoList.add(userDto);
+        }
+        return userDtoList;
     }
 }
