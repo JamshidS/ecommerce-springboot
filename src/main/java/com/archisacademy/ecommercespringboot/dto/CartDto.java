@@ -11,7 +11,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class CartDto {
     private String uuid;
-    private LocalDate order_date;
+    private LocalDate orderDate;
     private String userUuid;
     private String promotionUuid;
+    private String productUuid;
 }

@@ -29,5 +29,8 @@ public class Cart {
     @OneToOne
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
+    @OneToMany
+    @JoinColumn(name = "product_id")
+    private Product product;
 
 }

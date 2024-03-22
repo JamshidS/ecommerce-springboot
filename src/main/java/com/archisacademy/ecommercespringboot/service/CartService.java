@@ -8,7 +8,6 @@ public interface CartService {
     String saveCart(CartDto cartDto);
     String updateCart(CartDto cartDto, String cartUuid);
     void deleteCart(String cartUuid);
-    List<CartDto> getAllCarts();
     CartDto getCartByUuid(String cartUuid);
     CartDto getCartByUserUuid(String userUuid);
 
