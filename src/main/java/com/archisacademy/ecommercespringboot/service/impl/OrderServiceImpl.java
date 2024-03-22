@@ -33,7 +33,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         order.setUuid(orderDto.getUuid());
         order.setOrderNumber(orderDto.getOrderNumber());
-        order.setOrderDate(Timestamp.valueOf(orderDto.getOrderDate().toString()));
+        order.setOrderDate(new Timestamp(System.currentTimeMillis()));
         order.setTotalAmount(orderDto.getTotalAmount());
         order.setOrderStatus(orderDto.getOrderStatus());
         order.setUser(user.get());
