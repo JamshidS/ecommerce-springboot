@@ -14,16 +14,21 @@ import java.util.stream.Collectors;
 
 @Component
 public class PromotionMapperImpl implements PromotionMapper {
-    private final ProductMapper productMapper;
-
-    public PromotionMapperImpl(ProductMapper productMapper) {
-        this.productMapper = productMapper;
-    }
 
     @Override
     public PromotionDto toPromotionDto(Promotion promotion) {
         if (promotion == null) {
             throw new IllegalArgumentException("Null promotion can not be mapped to promotionDto");
+        }
+
+        List<ProductDto> productDtoList = new ArrayList<>();
+        for (Product product : promotion.getProductList()) {
+            ProductDto productDto = new ProductDto();
+            productDto.setUuid(product.getUuid());
+            productDto.setName(product.getName());
+            productDto.setDescription(product.getDescription());
+            productDto.setPrice(product.getPrice());
+            productDtoList.add(productDto);
         }
 
         return new PromotionDto(
@@ -32,7 +37,7 @@ public class PromotionMapperImpl implements PromotionMapper {
                 promotion.getDescription(),
                 promotion.getDiscount(),
                 promotion.getCode(),
-                productMapper.toProductDtoList(promotion.getProductList())
+                productDtoList
         );
     }
 
@@ -41,6 +46,17 @@ public class PromotionMapperImpl implements PromotionMapper {
         if (promotionDto == null) {
             throw new IllegalArgumentException("Null promotionDto can not be mapped to promotion");
         }
+
+        List<Product> productList = new ArrayList<>();
+        for (ProductDto productDto : promotionDto.getProductList()) {
+            Product product = new Product();
+            product.setUuid(productDto.getUuid());
+            product.setName(productDto.getName());
+            product.setDescription(productDto.getDescription());
+            product.setPrice(productDto.getPrice());
+            productList.add(product);
+        }
+
         Promotion promotion = new Promotion();
         promotion.setUuid(promotionDto.getUuid());
         promotion.setName(promotionDto.getName());
@@ -48,7 +64,7 @@ public class PromotionMapperImpl implements PromotionMapper {
         promotion.setDiscount(promotionDto.getDiscount());
         promotion.setCode(promotionDto.getCode());
 
-        promotion.setProductList(productMapper.toProductList(promotionDto.getProductList()));
+        promotion.setProductList(productList);
         return promotion;
     }
 

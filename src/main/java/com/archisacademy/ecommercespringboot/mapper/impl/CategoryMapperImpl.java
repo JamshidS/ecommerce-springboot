@@ -14,11 +14,6 @@ import java.util.List;
 @Component
 public class CategoryMapperImpl implements CategoryMapper {
 
-    private final ProductMapper productMapper;
-
-    public CategoryMapperImpl(ProductMapper productMapper) {
-        this.productMapper = productMapper;
-    }
     @Override
     public CategoryDto toCategoryDto(Category category) {
         if (category == null) {
@@ -30,9 +25,15 @@ public class CategoryMapperImpl implements CategoryMapper {
         categoryDto.setDescription(category.getDescription());
         categoryDto.setCreatedAt(category.getCreatedAt());
         categoryDto.setUpdatedAt(category.getUpdatedAt());
+
         List<ProductDto> productDtoList = new ArrayList<>();
         for (Product product : category.getProductList()) {
-            productDtoList.add(productMapper.toProductDto(product));
+            ProductDto productDto = new ProductDto();
+            productDto.setUuid(product.getUuid());
+            productDto.setName(product.getName());
+            productDto.setDescription(product.getDescription());
+            productDto.setPrice(product.getPrice());
+            productDtoList.add(productDto);
         }
         categoryDto.setProductList(productDtoList);
 
@@ -47,9 +48,15 @@ public class CategoryMapperImpl implements CategoryMapper {
         category.setDescription(categoryDto.getDescription());
         category.setCreatedAt(categoryDto.getCreatedAt());
         category.setUpdatedAt(categoryDto.getUpdatedAt());
+
         List<Product> productList = new ArrayList<>();
         for (ProductDto productDto : categoryDto.getProductList()) {
-            productList.add(productMapper.toProduct(productDto));
+            Product product = new Product();
+            product.setUuid(productDto.getUuid());
+            product.setName(productDto.getName());
+            product.setDescription(productDto.getDescription());
+            product.setPrice(productDto.getPrice());
+            productList.add(product);
         }
         category.setProductList(productList);
 

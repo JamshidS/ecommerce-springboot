@@ -1,11 +1,15 @@
 package com.archisacademy.ecommercespringboot.mapper.impl;
 
+import com.archisacademy.ecommercespringboot.dto.CategoryDto;
 import com.archisacademy.ecommercespringboot.dto.ProductDto;
+import com.archisacademy.ecommercespringboot.dto.PromotionDto;
 import com.archisacademy.ecommercespringboot.mapper.CategoryMapper;
 import com.archisacademy.ecommercespringboot.mapper.ProductMapper;
 import com.archisacademy.ecommercespringboot.mapper.PromotionMapper;
 import com.archisacademy.ecommercespringboot.mapper.UserMapper;
+import com.archisacademy.ecommercespringboot.model.Category;
 import com.archisacademy.ecommercespringboot.model.Product;
+import com.archisacademy.ecommercespringboot.model.Promotion;
 import com.archisacademy.ecommercespringboot.service.CategoryService;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +27,21 @@ public class ProductMapperImpl implements ProductMapper {
         if (product == null) {
             return null;
         }
+
+
+        List<PromotionDto> promotionDtoList = new ArrayList<>();
+        for (Promotion promotion : product.getPromotionList()) {
+            PromotionDto promotionDto = new PromotionDto(
+                    promotion.getUuid(),
+                    promotion.getName(),
+                    promotion.getDescription(),
+                    promotion.getDiscount(),
+                    promotion.getCode(),
+                    null
+            );
+            promotionDtoList.add(promotionDto);
+        }
+
         return new ProductDto(
                 product.getName(),
                 product.getUuid(),
@@ -31,7 +50,7 @@ public class ProductMapperImpl implements ProductMapper {
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
                 product.getCategory().getUuid(),
-                null // PromotionList burada atanmadı
+                promotionDtoList
         );
     }
 
@@ -48,7 +67,26 @@ public class ProductMapperImpl implements ProductMapper {
         product.setPrice(productDto.getPrice());
         product.setCreatedAt(productDto.getCreatedAt());
         product.setUpdatedAt(productDto.getUpdatedAt());
-        // Category ve PromotionList burada atanmadı
+
+        Category category = new Category();
+        category.setUuid(productDto.getCategoryUuid());
+        product.setCategory(category);
+
+        List<Promotion> promotionList = new ArrayList<>();
+        for (PromotionDto promotionDto : productDto.getPromotionList()) {
+
+            Promotion promotion = new Promotion();
+
+            promotion.setUuid(promotionDto.getUuid());
+            promotion.setName(promotionDto.getName());
+            promotion.setDescription(promotionDto.getDescription());
+            promotion.setDiscount(promotionDto.getDiscount());
+            promotion.setCode(promotionDto.getCode());
+
+            promotionList.add(promotion);
+        }
+        product.setPromotionList(promotionList);
+
         return product;
     }
 
