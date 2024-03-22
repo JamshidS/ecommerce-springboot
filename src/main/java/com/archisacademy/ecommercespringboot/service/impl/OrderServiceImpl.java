@@ -30,6 +30,9 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public String saveOrder(OrderDto orderDto) {
         Optional<User> user = userRepository.findByUuid(orderDto.getUserUuid());
+        if(user.isEmpty()){
+            throw new RuntimeException("User not found!");
+        }
         Order order = new Order();
         order.setUuid(orderDto.getUuid());
         order.setOrderNumber(orderDto.getOrderNumber());
