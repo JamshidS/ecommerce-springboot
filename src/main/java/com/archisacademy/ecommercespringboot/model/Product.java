@@ -61,4 +61,7 @@ public class Product {
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "inventory_id", referencedColumnName = "id")
   private Inventory inventory;
+
+    @ManyToMany(mappedBy = "productList")
+    private List<Order> orderList;
 }

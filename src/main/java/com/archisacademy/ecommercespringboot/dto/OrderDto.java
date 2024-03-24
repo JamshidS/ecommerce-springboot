@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -17,4 +18,5 @@ public class OrderDto {
     private Double totalAmount;
     private String orderStatus;
     private String userUuid;
+    private List<String> productUuid;
 }

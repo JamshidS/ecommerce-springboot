@@ -3,8 +3,10 @@ package com.archisacademy.ecommercespringboot.service.impl;
 import com.archisacademy.ecommercespringboot.dto.OrderDto;
 import com.archisacademy.ecommercespringboot.dto.UserDto;
 import com.archisacademy.ecommercespringboot.model.Order;
+import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.User;
 import com.archisacademy.ecommercespringboot.repository.OrderRepository;
+import com.archisacademy.ecommercespringboot.repository.ProductRepository;
 import com.archisacademy.ecommercespringboot.repository.UserRepository;
 import com.archisacademy.ecommercespringboot.service.OrderService;
 import jakarta.transaction.Transactional;
@@ -12,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,48 +23,62 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository,ProductRepository productRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
     @Transactional
     public String saveOrder(OrderDto orderDto) {
         Optional<User> user = userRepository.findByUuid(orderDto.getUserUuid());
-        if(user.isEmpty()){
-            throw new RuntimeException("User not found!");
+        List<Product> productList = new ArrayList<>();
+        for(String productUuid : orderDto.getProductUuid()){
+            productList.add(productRepository.findByUuid(productUuid).get());
+        }
+        if(user.isEmpty() || productList.isEmpty()){
+            throw new RuntimeException("An error occurred during the save!");
         }
         Order order = new Order();
         order.setUuid(orderDto.getUuid());
-        order.setOrderNumber(orderDto.getOrderNumber());
+        order.setOrderNumber(generateOrderNumber(order.getId()));
         order.setOrderDate(new Timestamp(System.currentTimeMillis()));
         order.setTotalAmount(orderDto.getTotalAmount());
         order.setOrderStatus(orderDto.getOrderStatus());
         order.setUser(user.get());
+        order.setProductList(productList);
         orderRepository.save(order);
         return "Order saved successfully!";
     }
 
     @Override
+    @Transactional
     public String updateOrder(OrderDto orderDto, String orderUuid) {
         Optional<Order> order = orderRepository.findByUuid(orderUuid);
         Optional<User> user = userRepository.findByUuid(orderDto.getUserUuid());
-        if(order.isEmpty() || user.isEmpty()){
+        List<Product> productList = new ArrayList<>();
+        for(String productUuid : orderDto.getProductUuid()){
+            productList.add(productRepository.findByUuid(productUuid).get());
+        }
+        if(order.isEmpty() || user.isEmpty() || productList.isEmpty()){
             throw new RuntimeException("An error occurred during the update!");
         }
         Order updatedOrder = new Order();
-        updatedOrder.setOrderNumber(orderDto.getOrderNumber());
+        updatedOrder.setOrderNumber(generateOrderNumber(updatedOrder.getId()));
         updatedOrder.setOrderDate(new Timestamp(System.currentTimeMillis()));
         updatedOrder.setTotalAmount(orderDto.getTotalAmount());
         updatedOrder.setOrderStatus(orderDto.getOrderStatus());
         updatedOrder.setUser(user.get());
+        updatedOrder.setProductList(productList);
         orderRepository.save(updatedOrder);
         return "Order updated successfully!";
     }
 
     @Override
+    @Transactional
     public void deleteOrder(String orderUuid) {
         Optional<Order> order = orderRepository.findByUuid(orderUuid);
         if(order.isEmpty()){
@@ -106,5 +123,10 @@ public class OrderServiceImpl implements OrderService {
         OrderDto orderDto = new OrderDto();
         BeanUtils.copyProperties(order, orderDto);
         return orderDto;
+    }
+
+    private String generateOrderNumber(Long id) {
+        String formattedDate = LocalDate.now().toString().replace("-", "");
+        return formattedDate + id;
     }
 }
