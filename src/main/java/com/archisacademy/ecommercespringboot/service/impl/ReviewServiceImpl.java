@@ -28,10 +28,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewDto saveReview(ReviewDto reviewDto) {
-        Optional<Product> product = Optional.ofNullable(productRepository.findByUuid(reviewDto.getProductUuid()));
+        Optional<Product> product = productRepository.findByUuid(reviewDto.getProductUuid());
         Optional<User> user = userRepository.findByUuid(reviewDto.getUserUuid());
 
-        if (!user.isPresent() || !product.isPresent()) {
+        if (user.isEmpty() || product.isEmpty()) {
             throw new RuntimeException("User or product not found");
         }
 

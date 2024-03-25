@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserByUuid(String uuid) {
         Optional<User> optionalUser=userRepository.findByUuid(uuid);
-        return optionalUser.map(this::convertToDto).orElse(null);
+        return optionalUser.map(this::convertToDto).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override

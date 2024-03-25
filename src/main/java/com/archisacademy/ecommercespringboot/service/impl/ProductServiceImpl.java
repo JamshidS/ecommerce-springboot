@@ -55,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public String  updateProduct(ProductDto productDto) {
-        Optional<Product> productForUpdate = Optional.ofNullable(productRepository.findByUuid(productDto.getUuid()));
+        Optional<Product> productForUpdate = productRepository.findByUuid(productDto.getUuid());
 
         if (productForUpdate.isEmpty()){
             throw new RuntimeException("Product not found");
@@ -84,7 +84,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto getProductByUuid(String uuid) {
-        Optional<Product> productForDb = Optional.ofNullable(productRepository.findByUuid(uuid));
+        Optional<Product> productForDb = productRepository.findByUuid(uuid);
         if (productForDb.isEmpty()){
             throw new RuntimeException("Product not found");
         }

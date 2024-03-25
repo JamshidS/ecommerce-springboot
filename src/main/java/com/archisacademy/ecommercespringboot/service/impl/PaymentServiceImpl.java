@@ -28,10 +28,10 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment saveCustomerCartDetails(PaymentDto paymentDto) {
-        Optional<Product> product = Optional.ofNullable(productRepository.findByUuid(paymentDto.getProductUuid().trim()));
+        Optional<Product> product = productRepository.findByUuid(paymentDto.getProductUuid().trim());
         Optional<User> user = userRepository.findByUuid(paymentDto.getUserUuid().trim());
 
-        if (!product.isPresent() || !user.isPresent()) {
+        if (product.isEmpty() || user.isEmpty()) {
            throw new RuntimeException("uuid not found");
         }
         Payment payment = new Payment();
@@ -53,6 +53,10 @@ public class PaymentServiceImpl implements PaymentService {
             throw new RuntimeException("payment nout found");
         }
 
+        return convertToDto(payment);
+    }
+
+    private PaymentDto convertToDto(Payment payment) {
         PaymentDto paymentDto = new PaymentDto();
         paymentDto.setUuid(payment.getUuid());
         paymentDto.setName(payment.getName());
@@ -91,17 +95,7 @@ public class PaymentServiceImpl implements PaymentService {
             throw new RuntimeException("payment not found");
         }
 
-        PaymentDto paymentDto = new PaymentDto();
-        paymentDto.setUuid(payment.getUuid());
-        paymentDto.setName(payment.getName());
-        paymentDto.setCardNumber(payment.getCardNumber());
-        paymentDto.setExpirationDate(payment.getExpirationDate());
-        paymentDto.setCvc(payment.getCvc());
-        paymentDto.setAmount(payment.getAmount());
-        paymentDto.setProductUuid(payment.getProduct().getUuid());
-        paymentDto.setUserUuid(payment.getUser().getUuid());
-
-        return paymentDto;
+        return convertToDto(payment);
     }
 
     @Override

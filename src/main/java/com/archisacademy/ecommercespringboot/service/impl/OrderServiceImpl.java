@@ -1,7 +1,6 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.OrderDto;
-import com.archisacademy.ecommercespringboot.dto.UserDto;
 import com.archisacademy.ecommercespringboot.model.Order;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.User;
@@ -44,13 +43,7 @@ public class OrderServiceImpl implements OrderService {
         }
         Order order = new Order();
         order.setUuid(orderDto.getUuid());
-        order.setOrderNumber(generateOrderNumber(order.getId()));
-        order.setOrderDate(new Timestamp(System.currentTimeMillis()));
-        order.setTotalAmount(orderDto.getTotalAmount());
-        order.setOrderStatus(orderDto.getOrderStatus());
-        order.setUser(user.get());
-        order.setProductList(productList);
-        orderRepository.save(order);
+        builderForUpdate(orderDto, user, productList, order);
         return "Order saved successfully!";
     }
 
@@ -67,6 +60,11 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("An error occurred during the update!");
         }
         Order updatedOrder = new Order();
+        builderForUpdate(orderDto, user, productList, updatedOrder);
+        return "Order updated successfully!";
+    }
+
+    private void builderForUpdate(OrderDto orderDto, Optional<User> user, List<Product> productList, Order updatedOrder) {
         updatedOrder.setOrderNumber(generateOrderNumber(updatedOrder.getId()));
         updatedOrder.setOrderDate(new Timestamp(System.currentTimeMillis()));
         updatedOrder.setTotalAmount(orderDto.getTotalAmount());
@@ -74,7 +72,6 @@ public class OrderServiceImpl implements OrderService {
         updatedOrder.setUser(user.get());
         updatedOrder.setProductList(productList);
         orderRepository.save(updatedOrder);
-        return "Order updated successfully!";
     }
 
     @Override
