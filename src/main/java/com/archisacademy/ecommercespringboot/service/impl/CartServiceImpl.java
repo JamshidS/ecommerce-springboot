@@ -34,7 +34,7 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public CartResponse saveCart(CartDto cartDto) {
         Optional<User> user = userRepository.findByUuid(cartDto.getUserUuid());
-        Optional<Promotion> promotion = promotionRepository.findByUuid(cartDto.getPromotionUuid());
+        Promotion promotion = promotionRepository.findByUuid(cartDto.getPromotionUuid());
         Optional<Product> product = productRepository.findByUuid(cartDto.getProductUuid());
         if(user.isEmpty()){
             throw new RuntimeException("User not found!");
@@ -43,7 +43,7 @@ public class CartServiceImpl implements CartService {
         cart.setUuid(UUID.randomUUID().toString());
         cart.setOrderDate(new Timestamp(System.currentTimeMillis()));
         cart.setUser(user.get());
-        cart.setPromotion(promotion.get());
+        cart.setPromotion(promotion);
         cart.setProduct(product.get());
         cartRepository.save(cart);
         return createResponse(cart);
@@ -53,14 +53,14 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public CartResponse updateCart(CartDto cartDto, String cartUuid) {
         Optional<Cart> cart = cartRepository.findByUuid(cartUuid);
-        Optional<Promotion> promotion = promotionRepository.findByUuid(cartDto.getPromotionUuid());
+        Promotion promotion = promotionRepository.findByUuid(cartDto.getPromotionUuid());
         Optional<Product> product = productRepository.findByUuid(cartDto.getProductUuid());
         if(cart.isEmpty()){
             throw new RuntimeException("Cart not found!");
         }
         Cart updatedCart = new Cart();
         updatedCart.setOrderDate(new Timestamp(System.currentTimeMillis()));
-        updatedCart.setPromotion(promotion.get());
+        updatedCart.setPromotion(promotion);
         updatedCart.setProduct(product.get());
         cartRepository.save(updatedCart);
         return createResponse(updatedCart);

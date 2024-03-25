@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 @Repository
 public interface PromotionRepository extends JpaRepository<Promotion, Long> {
-    Optional<Promotion> findByUuid(String uuid);
+    Promotion findByUuid(String uuid);
 }
