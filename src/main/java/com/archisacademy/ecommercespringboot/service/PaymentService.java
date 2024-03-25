@@ -8,4 +8,6 @@ public interface PaymentService {
     void updatePaymentByUserUuid(String userUuid, PaymentDto updatedPaymentDto);
     void deletePaymentByUserUuid(String userUuid);
     PaymentDto getUserCartDetailsWithUserUuid(String userUuid);
+    String returnPaymentBackToUser(String userUuid, PaymentDto paymentDto);
+    PaymentDto getPaymentWithPaymentUuid(String paymentUuid);
 }
