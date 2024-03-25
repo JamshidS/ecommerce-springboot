@@ -21,7 +21,7 @@ public class UserMapperImpl implements UserMapper {
         userDto.setPassword(user.getPassword());
         userDto.setTelephone(user.getTelephone());
         userDto.setAddress(user.getAddress());
-        userDto.setUserRole(user.getUserRole().toString());
+        userDto.setUserRole(user.getUserRole());
         userDto.setCreatedAt(user.getCreatedAt());
         userDto.setUpdatedAt(user.getUpdatedAt());
         return userDto;
@@ -36,7 +36,7 @@ public class UserMapperImpl implements UserMapper {
         user.setPassword(userDto.getPassword());
         user.setTelephone(userDto.getTelephone());
         user.setAddress(userDto.getAddress());
-        user.setUserRole(UserRole.valueOf(userDto.getUserRole()));
+        user.setUserRole(userDto.getUserRole());
         user.setCreatedAt(userDto.getCreatedAt());
         user.setUpdatedAt(userDto.getUpdatedAt());
         return user;

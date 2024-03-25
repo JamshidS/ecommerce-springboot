@@ -32,7 +32,7 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     public String addToWishlist(String userUuid, String productUuid) {
         Optional<User> userOptional = userRepository.findByUuid(userUuid);
-        Optional<Product> productOptional = productRepository.findByUuid(productUuid);
+        Optional<Product> productOptional = Optional.ofNullable(productRepository.findByUuid(productUuid));
 
         if (userOptional.isEmpty() || productOptional.isEmpty()) {
             throw new RuntimeException("User or product not found");
