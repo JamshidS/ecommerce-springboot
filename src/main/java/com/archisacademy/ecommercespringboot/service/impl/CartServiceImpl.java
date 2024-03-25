@@ -1,19 +1,18 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.CartDto;
+import com.archisacademy.ecommercespringboot.dto.response.CartResponse;
 import com.archisacademy.ecommercespringboot.model.Cart;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.Promotion;
 import com.archisacademy.ecommercespringboot.model.User;
 import com.archisacademy.ecommercespringboot.repository.*;
 import com.archisacademy.ecommercespringboot.service.CartService;
-import com.fasterxml.jackson.databind.util.BeanUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,7 +32,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public String saveCart(CartDto cartDto) {
+    public CartResponse saveCart(CartDto cartDto) {
         Optional<User> user = userRepository.findByUuid(cartDto.getUserUuid());
         Optional<Promotion> promotion = promotionRepository.findByUuid(cartDto.getPromotionUuid());
         Optional<Product> product = productRepository.findByUuid(cartDto.getProductUuid());
@@ -47,11 +46,12 @@ public class CartServiceImpl implements CartService {
         cart.setPromotion(promotion.get());
         cart.setProduct(product.get());
         cartRepository.save(cart);
-        return "Cart saved successfully!";
+        return createResponse(cart);
     }
 
     @Override
-    public String updateCart(CartDto cartDto, String cartUuid) {
+    @Transactional
+    public CartResponse updateCart(CartDto cartDto, String cartUuid) {
         Optional<Cart> cart = cartRepository.findByUuid(cartUuid);
         Optional<Promotion> promotion = promotionRepository.findByUuid(cartDto.getPromotionUuid());
         Optional<Product> product = productRepository.findByUuid(cartDto.getProductUuid());
@@ -63,7 +63,7 @@ public class CartServiceImpl implements CartService {
         updatedCart.setPromotion(promotion.get());
         updatedCart.setProduct(product.get());
         cartRepository.save(updatedCart);
-        return "Cart updated successfully!";
+        return createResponse(updatedCart);
     }
 
     @Override
@@ -97,5 +97,15 @@ public class CartServiceImpl implements CartService {
         CartDto cartDto = new CartDto();
         BeanUtils.copyProperties(cart,cartDto);
         return cartDto;
+    }
+
+    private CartResponse createResponse(Cart cart){
+        CartResponse cartResponse = new CartResponse();
+        double actualAmount = cart.getProduct().getPrice();
+        double discount = cart.getPromotion().getDiscount();
+        cartResponse.setTotalActualAmount(actualAmount);
+        cartResponse.setPromotionAmount(discount);
+        cartResponse.setTotalAmountAfterPromotion(actualAmount-discount);
+        return cartResponse;
     }
 }

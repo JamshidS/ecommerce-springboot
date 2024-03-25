@@ -23,7 +23,7 @@ public class Cart {
     @Column(name = "order_date")
     private Timestamp orderDate;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
     @OneToOne
