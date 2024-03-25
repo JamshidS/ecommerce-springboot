@@ -28,8 +28,8 @@ public class Category {
     private Date createdAt;
     @Column(name = "updated_at")
     private Date updatedAt;
-    @OneToMany
-    @JoinColumn(name = "product_id")
+
+    @OneToMany(mappedBy = "category")
     private List<Product> productList;
 
 }

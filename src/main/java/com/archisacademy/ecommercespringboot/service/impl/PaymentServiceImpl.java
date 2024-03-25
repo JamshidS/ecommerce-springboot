@@ -28,7 +28,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment saveCustomerCartDetails(PaymentDto paymentDto) {
-        Optional<Product> product = productRepository.findByUuid(paymentDto.getProductUuid().trim());
+        Optional<Product> product = Optional.ofNullable(productRepository.findByUuid(paymentDto.getProductUuid().trim()));
         Optional<User> user = userRepository.findByUuid(paymentDto.getUserUuid().trim());
 
         if (!product.isPresent() || !user.isPresent()) {
