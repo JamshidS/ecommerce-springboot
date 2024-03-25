@@ -1,13 +1,17 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
+import com.archisacademy.ecommercespringboot.dto.PaymentDto;
 import com.archisacademy.ecommercespringboot.dto.ReturnDto;
 import com.archisacademy.ecommercespringboot.model.*;
 import com.archisacademy.ecommercespringboot.repository.*;
+import com.archisacademy.ecommercespringboot.service.PaymentService;
 import com.archisacademy.ecommercespringboot.service.ReturnService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ReturnServiceImpl implements ReturnService {
 
     private final ReturnRepository returnRepository;
@@ -15,29 +19,44 @@ public class ReturnServiceImpl implements ReturnService {
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final PaymentService paymentService;
 
-    public ReturnServiceImpl(ReturnRepository returnRepository, UserRepository userRepository, CartRepository cartRepository, OrderRepository orderRepository, ProductRepository productRepository) {
+    public ReturnServiceImpl(ReturnRepository returnRepository, UserRepository userRepository, CartRepository cartRepository, OrderRepository orderRepository, ProductRepository productRepository, PaymentService paymentService) {
         this.returnRepository = returnRepository;
         this.userRepository = userRepository;
         this.cartRepository = cartRepository;
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
+        this.paymentService = paymentService;
     }
 
     @Override
-    public String createReturn(ReturnDto returnDto) {
-        Return returnForDb = new Return();
-        returnForDb.setAddress(returnDto.getAddress());
-        returnForDb.setReason(returnDto.getReason());
-        returnForDb.setReturnDate(returnDto.getReturnDate());
+    public String createReturn(ReturnDto returnDto, String paymentUuid) {
+        PaymentDto paymentDto = paymentService.getPaymentWithPaymentUuid(paymentUuid); // Get the payment details
 
-        returnForDb.setUser(userRepository.findByUuid(returnDto.getUserUuid()).orElseThrow(() -> new RuntimeException("User not found")));
-        returnForDb.setProduct(productRepository.findByUuid(returnDto.getProductUuid()).orElseThrow(() -> new RuntimeException("Product not found")));
-        returnForDb.setCart(cartRepository.findById(returnDto.getCartId()).orElseThrow(() -> new RuntimeException("Cart not found")));
-        returnForDb.setOrder(orderRepository.findById(returnDto.getOrderId()).orElseThrow(() -> new RuntimeException("Order not found")));
 
-        returnRepository.save(returnForDb);
-        return "Return successfully created";
+        String returnPaymentMessage = paymentService.returnPaymentBackToUser(returnDto.getUserUuid(), paymentDto); // Return the payment to the user
+        if (returnPaymentMessage.equals("Geri ödeme başarılı")) {
+
+            Product product = productRepository.findByUuid(returnDto.getProductUuid()).orElseThrow(() -> new RuntimeException("Product not found"));
+
+            Return returnObj = new Return();
+            returnObj.setAddress(returnDto.getAddress());
+            returnObj.setReason(returnDto.getReason());
+            returnObj.setReturnDate(returnDto.getReturnDate());
+            returnObj.setUser(userRepository.findByUuid(returnDto.getUserUuid()).orElseThrow(() -> new RuntimeException("User not found")));
+            returnObj.setProduct(product);
+            returnObj.setCart(cartRepository.findById(returnDto.getCartId()).orElseThrow(() -> new RuntimeException("Cart not found")));
+            returnObj.setOrder(orderRepository.findById(returnDto.getOrderId()).orElseThrow(() -> new RuntimeException("Order not found")));
+
+            product.getInventory().setQuantity(product.getInventory().getQuantity() + 1); // Increase the quantity of the product in the inventory by 1
+
+            returnRepository.save(returnObj);
+
+            return "Return successfully created";
+        } else {
+            throw new RuntimeException("Geri ödeme işleminde hata oluştu: " + returnPaymentMessage);
+        }
     }
 
     @Override

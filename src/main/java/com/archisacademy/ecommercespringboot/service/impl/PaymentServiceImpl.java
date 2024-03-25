@@ -67,6 +67,44 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    public String  returnPaymentBackToUser(String userUuid, PaymentDto paymentDto) {
+        Payment payment = paymentRepository.findByUserUuid(userUuid.trim());
+        if (payment == null) {
+            throw new RuntimeException("payment not found");
+        }
+
+        double newAmount = payment.getAmount() - paymentDto.getAmount();
+        if (newAmount < 0) {
+            throw new RuntimeException("Insufficient funds for return");
+        }
+
+        payment.setAmount(newAmount);
+        paymentRepository.save(payment);
+
+        return "Payment return successful";
+    }
+
+    @Override
+    public PaymentDto getPaymentWithPaymentUuid(String paymentUuid) {
+        Payment payment = paymentRepository.findByUuid(paymentUuid.trim());
+        if (payment == null) {
+            throw new RuntimeException("payment not found");
+        }
+
+        PaymentDto paymentDto = new PaymentDto();
+        paymentDto.setUuid(payment.getUuid());
+        paymentDto.setName(payment.getName());
+        paymentDto.setCardNumber(payment.getCardNumber());
+        paymentDto.setExpirationDate(payment.getExpirationDate());
+        paymentDto.setCvc(payment.getCvc());
+        paymentDto.setAmount(payment.getAmount());
+        paymentDto.setProductUuid(payment.getProduct().getUuid());
+        paymentDto.setUserUuid(payment.getUser().getUuid());
+
+        return paymentDto;
+    }
+
+    @Override
     public void updatePaymentByUserUuid(String userUuid, PaymentDto updatedPaymentDto) {
         Payment existingPayment = paymentRepository.findByUserUuid(userUuid.trim());
         if (existingPayment != null) {

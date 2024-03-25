@@ -5,7 +5,7 @@ import com.archisacademy.ecommercespringboot.dto.ReturnDto;
 import java.util.List;
 
 public interface ReturnService {
-    String createReturn(ReturnDto returnDto);
+    String createReturn(ReturnDto returnDto, String paymentUuid);
 
     String updateReturn(ReturnDto returnDto);
 
