@@ -72,6 +72,15 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
+    //todo: update user wishlist method
+    //todo: getAllUserProducts ->
+    //todo: getWishlistByUserUUID
+    //todo: getUserOrders
+    //todo: getUserCardDetailsWithUserUUID
+    //todo: deleteCardDetailsWithUserUUID
+    //todo: getUserCartByUserUUID
+    //todo: updateUserCartWithUserUUID
+
     private UserDto convertToDto(User user) {
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(user, userDto);

@@ -20,11 +20,12 @@ public class Cart {
     private Long id;
     @Column(name = "order_date")
     private Date orderDate;
-    @ManyToOne
+    @ManyToOne //todo: this should one to one
     @JoinColumn(name = "user_id")
     private User user;
     @OneToOne
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
+    //todo: this class should has relation with order class
 
 }
