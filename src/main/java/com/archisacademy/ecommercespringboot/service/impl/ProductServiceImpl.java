@@ -1,6 +1,7 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 
+
 import com.archisacademy.ecommercespringboot.dto.ProductDto;
 import com.archisacademy.ecommercespringboot.dto.UserDto;
 import com.archisacademy.ecommercespringboot.mapper.ProductMapper;
@@ -156,6 +157,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findByPriceBetween(minPrice, maxPrice);
         return productMapper.toProductDtoList(products);
     }
+
 
 
 }

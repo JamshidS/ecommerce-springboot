@@ -1,5 +1,6 @@
 package com.archisacademy.ecommercespringboot.dto;
 
+import com.archisacademy.ecommercespringboot.enums.UserRole;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +17,7 @@ public class UserDto {
     private String password;
     private String telephone;
     private String address;
-    private String userRole;
+    private UserRole userRole;
     private Date createdAt;
     private Date updatedAt;
 }

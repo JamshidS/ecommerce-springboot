@@ -1,5 +1,6 @@
 package com.archisacademy.ecommercespringboot.service;
 
+
 import com.archisacademy.ecommercespringboot.dto.ProductDto;
 
 import java.util.List;
@@ -15,5 +16,6 @@ public interface ProductService {
     List<ProductDto> getProductsByPromotion(String promotionUuid);
     List<ProductDto> getProductsByPrice(double price);
     List<ProductDto> getProductsByPriceRange(double minPrice, double maxPrice);
+
 
 }
