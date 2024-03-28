@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserByUuid(String uuid) {
         Optional<User> optionalUser=userRepository.findByUuid(uuid);
-        return optionalUser.map(this::convertToDto).orElse(null);
+        return optionalUser.map(this::convertToDto).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(updatedUserDto.getPassword());
             user.setTelephone(updatedUserDto.getTelephone());
             user.setAddress(updatedUserDto.getAddress());
-            user.setUserRole(UserRole.valueOf(updatedUserDto.getUserRole()));
+            user.setUserRole(UserRole.valueOf(updatedUserDto.getUserRole().toString()));
             user.setCreatedAt(updatedUserDto.getCreatedAt());
             user.setUpdatedAt(updatedUserDto.getUpdatedAt());
             userRepository.save(user);
@@ -71,6 +71,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUuid(uuid).orElseThrow(() -> new UserNotFoundException("User could be not delete"));
         userRepository.delete(user);
     }
+
+    //todo: update user wishlist method
+    //todo: getAllUserProducts ->
+    //todo: getWishlistByUserUUID
+    //todo: getUserOrders
+    //todo: getUserCardDetailsWithUserUUID
+    //todo: deleteCardDetailsWithUserUUID
+    //todo: getUserCartByUserUUID
+    //todo: updateUserCartWithUserUUID
 
     private UserDto convertToDto(User user) {
         UserDto userDto = new UserDto();

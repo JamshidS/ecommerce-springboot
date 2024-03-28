@@ -1,8 +1,10 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
+import com.archisacademy.ecommercespringboot.dto.ProductDto;
 import com.archisacademy.ecommercespringboot.dto.ShippingDto;
 import com.archisacademy.ecommercespringboot.dto.UserDto;
 import com.archisacademy.ecommercespringboot.enums.UserRole;
+import com.archisacademy.ecommercespringboot.mapper.ShippingMapper;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.Shipping;
 import com.archisacademy.ecommercespringboot.model.User;
@@ -21,11 +23,13 @@ public class ShippingServiceImpl implements ShippingService {
     private final ShippingRepository shippingRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final ShippingMapper shippingMapper;
 
-    public ShippingServiceImpl(ShippingRepository shippingRepository, UserRepository userRepository, ProductRepository productRepository) {
+    public ShippingServiceImpl(ShippingRepository shippingRepository, UserRepository userRepository, ProductRepository productRepository, ShippingMapper shippingMapper) {
         this.shippingRepository = shippingRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.shippingMapper = shippingMapper;
     }
 
     @Override
@@ -34,16 +38,16 @@ public class ShippingServiceImpl implements ShippingService {
         shippingForDb.setAddress(shippingDto.getAddress());
         shippingForDb.setShippedAt(shippingDto.getShippedAt());
 
-        /*List<Product> productList = new ArrayList<>();
+        List<Product> productList = new ArrayList<>();
         for (ProductDto product : shippingDto.getProductList()) {
             Optional<Product> existingProduct = productRepository.findByUuid(product.getUuid());
-            if (!existingUser.isPresent()) {
+            if (!existingProduct.isPresent()) {
                 throw new RuntimeException("Product not found");
             }
             productList.add(existingProduct.get());
 
         }
-        shippingForDb.setProductList(productList);*/
+        shippingForDb.setProductList(productList);
 
 
         List<User> userList = new ArrayList<>();
@@ -74,16 +78,16 @@ public class ShippingServiceImpl implements ShippingService {
         shipping.setAddress(shippingDto.getAddress());
         shipping.setShippedAt(shippingDto.getShippedAt());
 
-        /*List<Product> productList = new ArrayList<>();
+        List<Product> productList = new ArrayList<>();
         for (ProductDto product : shippingDto.getProductList()) {
             Optional<Product> existingProduct = productRepository.findByUuid(product.getUuid());
-            if (!existingUser.isPresent()) {
+            if (!existingProduct.isPresent()) {
                 throw new RuntimeException("Product not found");
             }
             productList.add(existingProduct.get());
 
         }
-        shipping.setProductList(productList);*/
+        shipping.setProductList(productList);
 
 
         List<User> userList = new ArrayList<>();
@@ -118,40 +122,15 @@ public class ShippingServiceImpl implements ShippingService {
         }
         Shipping shipping = shippingOptional.get();
 
-        return new ShippingDto(shipping.getAddress(),
-                shipping.getShippedAt(),
-                Collections.singletonList(shipping.getProductList()),
-                convertUserListToUserDtoList(shipping.getUserList())
-        );
+        return shippingMapper.toDto(shipping);
     }
 
     @Override
     public List<ShippingDto> getAllShippings() {
         List<Shipping> shippingList = shippingRepository.findAll();
 
-        return shippingList.stream().map(shipping -> new ShippingDto(
-                shipping.getAddress(),
-                shipping.getShippedAt(),
-                Collections.singletonList(shipping.getProductList()),
-                convertUserListToUserDtoList(shipping.getUserList())
-        )).toList();
+        return shippingMapper.toDtoList(shippingList);
     }
 
-    private List<UserDto> convertUserListToUserDtoList(List<User> userList) { // when product pushed to git , the method will be removed
-        List<UserDto> userDtoList = new ArrayList<>();
-        for (User user : userList) {
-            UserDto userDto = new UserDto();
-            userDto.setUuid(user.getUuid());
-            userDto.setUserName(user.getUserName());
-            userDto.setEmail(user.getEmail());
-            userDto.setPassword(user.getPassword());
-            userDto.setTelephone(user.getTelephone());
-            userDto.setAddress(user.getAddress());
-            userDto.setUserRole(String.valueOf(UserRole.valueOf(user.getUserRole().name())));
-            userDto.setCreatedAt(user.getCreatedAt());
-            userDto.setUpdatedAt(user.getUpdatedAt());
-            userDtoList.add(userDto);
-        }
-        return userDtoList;
-    }
+
 }

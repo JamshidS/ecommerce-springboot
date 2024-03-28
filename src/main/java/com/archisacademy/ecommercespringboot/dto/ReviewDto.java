@@ -1,23 +1,22 @@
 package com.archisacademy.ecommercespringboot.dto;
 
-import com.archisacademy.ecommercespringboot.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class CategoryDto {
+public class ReviewDto {
     private String uuid;
-    private String name;
-    private String description;
+    private short rating;
+    private String comment;
     private Date createdAt;
-    private Date updatedAt;
-    private List<ProductDto> productList;
+    private String userUuid;
+    private String productUuid;
+    private Boolean isApproved;
 }

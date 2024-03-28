@@ -1,23 +1,25 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.CategoryDto;
+import com.archisacademy.ecommercespringboot.dto.ProductDto;
+import com.archisacademy.ecommercespringboot.mapper.ProductMapper;
 import com.archisacademy.ecommercespringboot.model.Category;
 import com.archisacademy.ecommercespringboot.repository.CategoryRepository;
 import com.archisacademy.ecommercespringboot.service.CategoryService;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ProductMapper productMapper;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, ProductMapper productMapper) {
         this.categoryRepository = categoryRepository;
+        this.productMapper = productMapper;
     }
 
     @Override
@@ -76,15 +78,22 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         Category category = categoryOptional.get();
+        List<ProductDto> productDtos = new ArrayList<>();
+        category.getProductList().forEach(product -> {
+            ProductDto productDto = productMapper.toProductDto(product);
 
-        return new CategoryDto(
-                category.getName(),
-                category.getUuid(),
-                category.getDescription(),
-                category.getCreatedAt(),
-                category.getUpdatedAt(),
-                Collections.singletonList(category.getProductList())
-        );
+            productDtos.add(productDto);
+        });
+
+        return CategoryDto.builder()
+                .productList(productDtos)
+                .uuid(categoryUuid)
+                .createdAt(category.getCreatedAt())
+                .name(category.getName())
+                .description(category.getDescription())
+                .updatedAt(category.getUpdatedAt())
+                .build();
+
 
     }
 

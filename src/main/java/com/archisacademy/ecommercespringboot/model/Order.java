@@ -6,7 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -18,10 +20,12 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(name = "uuid")
+    private String uuid;
     @Column(name = "order_number")
     private String orderNumber;
     @Column(name = "order_date")
-    private Date orderDate;
+    private Timestamp orderDate;
     @Column(name = "total_amount")
     private Double totalAmount;
     @Column(name = "order_status")
@@ -29,8 +33,10 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-   /* @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<Return> returnList;*/
-
+    @ManyToMany
+    @JoinTable(
+            name = "order_product",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
+    private List<Product> productList;
 }
