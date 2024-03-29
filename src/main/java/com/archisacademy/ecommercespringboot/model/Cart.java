@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.List;
+import java.sql.Timestamp;
 
 @Entity
 @NoArgsConstructor
@@ -18,14 +17,17 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(name = "uuid")
+    private String uuid;
     @Column(name = "order_date")
-    private Date orderDate;
-    @ManyToOne //todo: this should one to one
+    private Timestamp orderDate;
+    @Column(name = "product_uuids")
+    private String productUUIDs;
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
     @OneToOne
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
-    //todo: this class should has relation with order class
 
 }
