@@ -1,20 +1,23 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.CartDto;
+import com.archisacademy.ecommercespringboot.dto.ProductDto;
 import com.archisacademy.ecommercespringboot.dto.response.CartResponse;
-import com.archisacademy.ecommercespringboot.model.Cart;
-import com.archisacademy.ecommercespringboot.model.Product;
-import com.archisacademy.ecommercespringboot.model.Promotion;
-import com.archisacademy.ecommercespringboot.model.User;
+import com.archisacademy.ecommercespringboot.dto.response.WishlistResponse;
+import com.archisacademy.ecommercespringboot.model.*;
 import com.archisacademy.ecommercespringboot.repository.*;
 import com.archisacademy.ecommercespringboot.service.CartService;
+import com.archisacademy.ecommercespringboot.service.ProductService;
 import com.archisacademy.ecommercespringboot.utils.CommonUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.ContextAnnotationAutowireCandidateResolver;
 import org.springframework.stereotype.Service;
 
+import java.sql.Array;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,13 +26,13 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
     private final PromotionRepository promotionRepository;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
-    public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, PromotionRepository promotionRepository, ProductRepository productRepository) {
+    public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, PromotionRepository promotionRepository, ProductService productService) {
         this.cartRepository = cartRepository;
         this.userRepository = userRepository;
         this.promotionRepository = promotionRepository;
-        this.productRepository = productRepository;
+        this.productService = productService;
     }
 
     @Override
@@ -79,10 +82,6 @@ public class CartServiceImpl implements CartService {
         if(cart.isEmpty()){
             throw new RuntimeException("Cart not found");
         }
-        CartDto response = convertToDto(cart.get());
-        response.setProductUuids(CommonUtils.commaSeparatedStringToArray(cart.get().getProductUUIDs()));
-
-
         return convertToDto(cart.get());
     }
 
@@ -96,18 +95,31 @@ public class CartServiceImpl implements CartService {
     }
 
     private CartDto convertToDto(Cart cart){
+        String[] uuids = CommonUtils.commaSeparatedStringToArray(cart.getProductUUIDs());
+        List<ProductDto> productDtoList = new ArrayList<>();
+        for(String uuid : uuids){
+            productDtoList.add(productService.getProductByUuid(uuid));
+        }
         CartDto cartDto = new CartDto();
         BeanUtils.copyProperties(cart,cartDto);
+        cartDto.setProductUuids(uuids);
+        cartDto.setProductDtoList(productDtoList);
         return cartDto;
     }
 
     private CartResponse createResponse(Cart cart){
         CartResponse cartResponse = new CartResponse();
-        double actualAmount = cart.getProduct().getPrice();
-        double discount = cart.getPromotion().getDiscount();
-        cartResponse.setTotalActualAmount(actualAmount);
-        cartResponse.setPromotionAmount(discount);
-        cartResponse.setTotalAmountAfterPromotion(actualAmount-discount);
+        if (cart != null) {
+            String[] uuids = CommonUtils.commaSeparatedStringToArray(cart.getProductUUIDs());
+            Double actualAmount = 0.0;
+            for(String uuid : uuids){
+                actualAmount += productService.getProductByUuid(uuid).getPrice();
+            }
+            Double discount = cart.getPromotion().getDiscount();
+            cartResponse.setTotalActualAmount(actualAmount);
+            cartResponse.setPromotionAmount(discount);
+            cartResponse.setTotalAmountAfterPromotion(actualAmount-discount);
+        }
         return cartResponse;
     }
 }

@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class CartResponse {
-    double totalActualAmount;
-    double promotionAmount;
-    double totalAmountAfterPromotion;
+    private Double totalActualAmount;
+    private Double promotionAmount;
+    private Double totalAmountAfterPromotion;
 }

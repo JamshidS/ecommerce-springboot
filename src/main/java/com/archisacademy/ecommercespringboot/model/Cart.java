@@ -31,7 +31,4 @@ public class Cart {
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
 
-    // todo: add relation between Order
-    // todo:
-
 }
