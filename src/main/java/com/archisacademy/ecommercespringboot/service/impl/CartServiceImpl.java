@@ -8,8 +8,10 @@ import com.archisacademy.ecommercespringboot.model.Promotion;
 import com.archisacademy.ecommercespringboot.model.User;
 import com.archisacademy.ecommercespringboot.repository.*;
 import com.archisacademy.ecommercespringboot.service.CartService;
+import com.archisacademy.ecommercespringboot.utils.CommonUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.ContextAnnotationAutowireCandidateResolver;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -35,7 +37,6 @@ public class CartServiceImpl implements CartService {
     public CartResponse saveCart(CartDto cartDto) {
         Optional<User> user = userRepository.findByUuid(cartDto.getUserUuid());
         Promotion promotion = promotionRepository.findByUuid(cartDto.getPromotionUuid());
-        Optional<Product> product = productRepository.findByUuid(cartDto.getProductUuid());
         if(user.isEmpty()){
             throw new RuntimeException("User not found!");
         }
@@ -44,7 +45,7 @@ public class CartServiceImpl implements CartService {
         cart.setOrderDate(new Timestamp(System.currentTimeMillis()));
         cart.setUser(user.get());
         cart.setPromotion(promotion);
-        cart.setProduct(product.get());
+        cart.setProductUUIDs(CommonUtils.arrayToCommaSeparatedString(cartDto.getProductUuids()));
         cartRepository.save(cart);
         return createResponse(cart);
     }
@@ -54,16 +55,13 @@ public class CartServiceImpl implements CartService {
     public CartResponse updateCart(CartDto cartDto, String cartUuid) {
         Optional<Cart> cart = cartRepository.findByUuid(cartUuid);
         Promotion promotion = promotionRepository.findByUuid(cartDto.getPromotionUuid());
-        Optional<Product> product = productRepository.findByUuid(cartDto.getProductUuid());
         if(cart.isEmpty()){
             throw new RuntimeException("Cart not found!");
         }
-        Cart updatedCart = new Cart();
-        updatedCart.setOrderDate(new Timestamp(System.currentTimeMillis()));
-        updatedCart.setPromotion(promotion);
-        updatedCart.setProduct(product.get());
-        cartRepository.save(updatedCart);
-        return createResponse(updatedCart);
+        cart.get().setPromotion(promotion);
+        cart.get().setProductUUIDs(CommonUtils.arrayToCommaSeparatedString(cartDto.getProductUuids()));
+        cartRepository.save(cart.get());
+        return createResponse(cart.get());
     }
 
     @Override
@@ -81,6 +79,10 @@ public class CartServiceImpl implements CartService {
         if(cart.isEmpty()){
             throw new RuntimeException("Cart not found");
         }
+        CartDto response = convertToDto(cart.get());
+        response.setProductUuids(CommonUtils.commaSeparatedStringToArray(cart.get().getProductUUIDs()));
+
+
         return convertToDto(cart.get());
     }
 

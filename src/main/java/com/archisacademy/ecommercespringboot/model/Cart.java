@@ -22,15 +22,16 @@ public class Cart {
     private String uuid;
     @Column(name = "order_date")
     private Timestamp orderDate;
-
+    @Column(name = "product_uuids")
+    private String productUUIDs;
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
     @OneToOne
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
-    @OneToMany
-    @JoinColumn(name = "product_id")
-    private Product product;
+
+    // todo: add relation between Order
+    // todo:
 
 }

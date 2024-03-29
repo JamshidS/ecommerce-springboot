@@ -14,5 +14,6 @@ public class CartDto {
     private LocalDate orderDate;
     private String userUuid;
     private String promotionUuid;
-    private String productUuid;
+    private String[] productUuids;
+    private List<ProductDto> productDtoList;
 }
