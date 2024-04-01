@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         order.setUuid(UUID.randomUUID().toString());
         Order savedOrder = orderRepository.save(order);
-        builderForUpdate(orderDto, user, productList, order,true);
+        builderForUpdate(orderDto, user, productList, savedOrder,true);
         return "Order saved successfully!";
     }
 
