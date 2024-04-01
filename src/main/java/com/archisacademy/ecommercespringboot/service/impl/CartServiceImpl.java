@@ -108,11 +108,11 @@ public class CartServiceImpl implements CartService {
         CartResponse cartResponse = new CartResponse();
         if (cart != null) {
             String[] uuids = CommonUtils.commaSeparatedStringToArray(cart.getProductUUIDs());
-            Double actualAmount = 0.0;
+            double actualAmount = 0.0;
             for(String uuid : uuids){
                 actualAmount += productService.getProductByUuid(uuid).getPrice();
             }
-            Double discount = cart.getPromotion().getDiscount();
+            double discount = cart.getPromotion().getDiscount();
             cartResponse.setTotalActualAmount(actualAmount);
             cartResponse.setPromotionAmount(discount);
             cartResponse.setTotalAmountAfterPromotion(actualAmount-discount);
