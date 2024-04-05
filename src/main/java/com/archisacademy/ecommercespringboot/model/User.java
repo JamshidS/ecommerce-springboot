@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
@@ -35,9 +35,9 @@ public class User {
     @Column(name = "address")
     private String address;
     @Column(name = "created_at")
-    private Date createdAt;
+    private Timestamp createdAt;
     @Column(name = "updated_at")
-    private Date updatedAt;
+    private Timestamp updatedAt;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_product",

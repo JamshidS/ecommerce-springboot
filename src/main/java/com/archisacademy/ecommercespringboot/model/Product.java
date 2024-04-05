@@ -28,7 +28,7 @@ public class Product {
     @Column(name = "description")
     private String description;
 
-    @Column(name ="price")
+    @Column(name = "price")
     private double price;
 
     @Column(name = "created_at")
@@ -54,16 +54,16 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<Wishlist> wishlists;
 
-  @ManyToMany
-  @JoinTable(
+    @ManyToMany
+    @JoinTable(
             name = "product_promotion",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "promotion_id"))
     private List<Promotion> promotionList;
 
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "inventory_id", referencedColumnName = "id")
-  private Inventory inventory;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "inventory_id", referencedColumnName = "id")
+    private Inventory inventory;
 
     @ManyToMany(mappedBy = "productList")
     private List<Order> orderList;

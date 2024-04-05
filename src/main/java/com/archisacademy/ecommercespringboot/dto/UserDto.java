@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 @Data
 @Getter
@@ -18,6 +18,7 @@ public class UserDto {
     private String telephone;
     private String address;
     private UserRole userRole;
-    private Date createdAt;
-    private Date updatedAt;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
+
 }
