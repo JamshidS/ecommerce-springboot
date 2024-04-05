@@ -37,7 +37,7 @@ public class CartServiceImpl implements CartService {
     public CartResponse saveCart(CartDto cartDto) {
         Optional<User> user = userRepository.findByUuid(cartDto.getUserUuid());
         Promotion promotion = promotionRepository.findByUuid(cartDto.getPromotionUuid());
-        if(user.isEmpty()){
+        if (user.isEmpty()) {
             throw new RuntimeException("User not found!");
         }
         Cart cart = new Cart();
@@ -55,7 +55,7 @@ public class CartServiceImpl implements CartService {
     public CartResponse updateCart(CartDto cartDto, String cartUuid) {
         Optional<Cart> cart = cartRepository.findByUuid(cartUuid);
         Promotion promotion = promotionRepository.findByUuid(cartDto.getPromotionUuid());
-        if(cart.isEmpty()){
+        if (cart.isEmpty()) {
             throw new RuntimeException("Cart not found!");
         }
         cart.get().setPromotion(promotion);
@@ -67,7 +67,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public void deleteCart(String cartUuid) {
         Optional<Cart> cart = cartRepository.findByUuid(cartUuid);
-        if(cart.isEmpty()){
+        if (cart.isEmpty()) {
             throw new RuntimeException("Cart not found!");
         }
         cartRepository.delete(cart.get());
@@ -76,46 +76,46 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartDto getCartByUuid(String cartUuid) {
         Optional<Cart> cart = cartRepository.findByUuid(cartUuid);
-        if(cart.isEmpty()){
+        if (cart.isEmpty()) {
             throw new RuntimeException("Cart not found");
         }
         return convertToDto(cart.get());
     }
 
     @Override
-    public CartDto getCartByUserUuid(String userUuid){
+    public CartDto getCartByUserUuid(String userUuid) {
         Optional<Cart> cart = cartRepository.findByUserUuid(userUuid);
-        if(cart.isEmpty()){
+        if (cart.isEmpty()) {
             throw new RuntimeException("Cart not found");
         }
         return convertToDto(cart.get());
     }
 
-    private CartDto convertToDto(Cart cart){
+    private CartDto convertToDto(Cart cart) {
         String[] uuids = CommonUtils.commaSeparatedStringToArray(cart.getProductUUIDs());
         List<ProductDto> productDtoList = new ArrayList<>();
-        for(String uuid : uuids){
+        for (String uuid : uuids) {
             productDtoList.add(productService.getProductByUuid(uuid));
         }
         CartDto cartDto = new CartDto();
-        BeanUtils.copyProperties(cart,cartDto);
+        BeanUtils.copyProperties(cart, cartDto);
         cartDto.setProductUuids(uuids);
         cartDto.setProductDtoList(productDtoList);
         return cartDto;
     }
 
-    private CartResponse createResponse(Cart cart){
+    private CartResponse createResponse(Cart cart) {
         CartResponse cartResponse = new CartResponse();
         if (cart != null) {
             String[] uuids = CommonUtils.commaSeparatedStringToArray(cart.getProductUUIDs());
             double actualAmount = 0.0;
-            for(String uuid : uuids){
+            for (String uuid : uuids) {
                 actualAmount += productService.getProductByUuid(uuid).getPrice();
             }
             double discount = cart.getPromotion().getDiscount();
             cartResponse.setTotalActualAmount(actualAmount);
             cartResponse.setPromotionAmount(discount);
-            cartResponse.setTotalAmountAfterPromotion(actualAmount-discount);
+            cartResponse.setTotalAmountAfterPromotion(actualAmount - discount);
         }
         return cartResponse;
     }

@@ -1,5 +1,6 @@
 package com.archisacademy.ecommercespringboot.repository;
 
+import com.archisacademy.ecommercespringboot.model.User;
 import com.archisacademy.ecommercespringboot.model.Wishlist;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +12,9 @@ import java.util.Optional;
 
 public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     Wishlist findByUuid(String uuid);
+
+    Optional<Wishlist> findByUser(User user);
+
     @Query("SELECT w FROM Wishlist w JOIN w.user u WHERE u.uuid = :userUuid")
     Wishlist findByUserUuid(@Param("userUuid") String userUuid);
 }

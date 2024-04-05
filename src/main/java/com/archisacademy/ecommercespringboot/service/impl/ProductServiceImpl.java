@@ -1,7 +1,6 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 
-
 import com.archisacademy.ecommercespringboot.dto.ProductDto;
 import com.archisacademy.ecommercespringboot.dto.UserDto;
 import com.archisacademy.ecommercespringboot.mapper.ProductMapper;
@@ -38,8 +37,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public String createProduct(ProductDto productDto) {
         Optional<Category> category = categoryRepository.findByUuid(productDto.getCategoryUuid());
-        if(category.isEmpty()){
-            throw new RuntimeException("Category not found with this UUID: "+productDto.getCategoryUuid());
+        if (category.isEmpty()) {
+            throw new RuntimeException("Category not found with this UUID: " + productDto.getCategoryUuid());
         }
         Product product = new Product();
         product.setName(productDto.getName());
@@ -55,16 +54,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String  updateProduct(ProductDto productDto) {
+    public String updateProduct(ProductDto productDto) {
         Optional<Category> category = categoryRepository.findByUuid(productDto.getCategoryUuid());
 
-        if(category.isEmpty()){
-            throw new RuntimeException("Category not found with this UUID: "+productDto.getCategoryUuid());
+        if (category.isEmpty()) {
+            throw new RuntimeException("Category not found with this UUID: " + productDto.getCategoryUuid());
         }
 
         Optional<Product> productForUpdate = productRepository.findByUuid(productDto.getUuid());
 
-        if (productForUpdate.isEmpty()){
+        if (productForUpdate.isEmpty()) {
             throw new RuntimeException("Product not found");
         }
 
@@ -73,7 +72,6 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(productDto.getDescription());
         product.setPrice(productDto.getPrice());
         product.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-
 
 
         product.setCategory(category.get());
@@ -87,11 +85,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto getProductByUuid(String uuid) {
         Optional<Product> productForDb = productRepository.findByUuid(uuid);
-        if (productForDb.isEmpty()){
+        if (productForDb.isEmpty()) {
             throw new RuntimeException("Product not found");
         }
         Product product = productForDb.get();
-
 
 
         return new ProductDto(
@@ -124,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProductById(Long id) {
         Optional<Product> productForDeletion = productRepository.findById(id);
-        if (productForDeletion.isEmpty()){
+        if (productForDeletion.isEmpty()) {
             throw new RuntimeException("Product not found");
         }
         productRepository.deleteById(id);
@@ -159,7 +156,4 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findByPriceBetween(minPrice, maxPrice);
         return productMapper.toProductDtoList(products);
     }
-
-
-
 }

@@ -9,6 +9,7 @@ import com.archisacademy.ecommercespringboot.repository.ProductRepository;
 import com.archisacademy.ecommercespringboot.repository.UserRepository;
 import com.archisacademy.ecommercespringboot.repository.WishlistRepository;
 import com.archisacademy.ecommercespringboot.service.WishlistService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
