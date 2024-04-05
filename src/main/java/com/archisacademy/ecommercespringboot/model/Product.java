@@ -3,6 +3,7 @@ package com.archisacademy.ecommercespringboot.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -31,10 +32,10 @@ public class Product {
     private double price;
 
     @Column(name = "created_at")
-    private LocalDate createdAt;
+    private Timestamp createdAt;
 
     @Column(name = "updated_at")
-    private LocalDate updatedAt;
+    private Timestamp updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

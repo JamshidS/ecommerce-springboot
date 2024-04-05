@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -42,8 +43,9 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("An error occurred during the save!");
         }
         Order order = new Order();
-        order.setUuid(orderDto.getUuid());
-        builderForUpdate(orderDto, user, productList, order);
+        order.setUuid(UUID.randomUUID().toString());
+        Order savedOrder = orderRepository.save(order);
+        builderForUpdate(orderDto, user, productList, savedOrder,true);
         return "Order saved successfully!";
     }
 
@@ -59,13 +61,13 @@ public class OrderServiceImpl implements OrderService {
         if(order.isEmpty() || user.isEmpty() || productList.isEmpty()){
             throw new RuntimeException("An error occurred during the update!");
         }
-        Order updatedOrder = new Order();
-        builderForUpdate(orderDto, user, productList, updatedOrder);
+        builderForUpdate(orderDto, user, productList, order.get(),false);
         return "Order updated successfully!";
     }
 
-    private void builderForUpdate(OrderDto orderDto, Optional<User> user, List<Product> productList, Order updatedOrder) {
-        updatedOrder.setOrderNumber(generateOrderNumber(updatedOrder.getId()));
+    private void builderForUpdate(OrderDto orderDto, Optional<User> user, List<Product> productList, Order updatedOrder, boolean isRequired) {
+        if(isRequired)
+            updatedOrder.setOrderNumber(generateOrderNumber(updatedOrder.getId()));
         updatedOrder.setOrderDate(new Timestamp(System.currentTimeMillis()));
         updatedOrder.setTotalAmount(orderDto.getTotalAmount());
         updatedOrder.setOrderStatus(orderDto.getOrderStatus());

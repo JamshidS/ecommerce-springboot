@@ -22,18 +22,11 @@ public class Shipping {
     private String address;
     @Column(name = "shipped_at")
     private Date shippedAt;
-    @ManyToMany
-    @JoinTable(
-            name = "shipping_product",
-            joinColumns = @JoinColumn(name = "shipping_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private List<Product> productList;
-    @ManyToMany
-    @JoinTable(
-            name = "shipping_user",
-            joinColumns = @JoinColumn(name = "shipping_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> userList;
+    @Column(name = "senderuuids")
+    private String senderuuid;
+    @OneToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 
 
 }

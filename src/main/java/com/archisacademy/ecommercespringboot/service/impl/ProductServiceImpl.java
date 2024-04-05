@@ -14,6 +14,7 @@ import com.archisacademy.ecommercespringboot.repository.ProductRepository;
 import com.archisacademy.ecommercespringboot.service.ProductService;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
         product.setUuid(UUID.randomUUID().toString());
         product.setDescription(productDto.getDescription());
         product.setPrice(productDto.getPrice());
-        product.setCreatedAt(LocalDate.now());
+        product.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         product.setCategory(category.get());
 
         productRepository.save(product);
@@ -55,6 +56,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public String  updateProduct(ProductDto productDto) {
+        Optional<Category> category = categoryRepository.findByUuid(productDto.getCategoryUuid());
+
+        if(category.isEmpty()){
+            throw new RuntimeException("Category not found with this UUID: "+productDto.getCategoryUuid());
+        }
+
         Optional<Product> productForUpdate = productRepository.findByUuid(productDto.getUuid());
 
         if (productForUpdate.isEmpty()){
@@ -65,14 +72,9 @@ public class ProductServiceImpl implements ProductService {
         product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
         product.setPrice(productDto.getPrice());
-        product.setCreatedAt(productDto.getCreatedAt());
-        product.setUpdatedAt(productDto.getUpdatedAt());
+        product.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
-        Optional<Category> category = categoryRepository.findByUuid(productDto.getCategoryUuid());
 
-        if(category.isEmpty()){
-            throw new RuntimeException("Category not found with this UUID: "+productDto.getCategoryUuid());
-        }
 
         product.setCategory(category.get());
 

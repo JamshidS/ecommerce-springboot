@@ -8,6 +8,7 @@ import com.archisacademy.ecommercespringboot.repository.CategoryRepository;
 import com.archisacademy.ecommercespringboot.service.CategoryService;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,11 +26,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public String createCategory(CategoryDto categoryDto) {
         Category categoryForDb = new Category();
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         categoryForDb.setName(categoryDto.getName());
         categoryForDb.setUuid(UUID.randomUUID().toString());
         categoryForDb.setDescription(categoryDto.getDescription());
-        categoryForDb.setCreatedAt(categoryDto.getCreatedAt());
-        categoryForDb.setUpdatedAt(categoryDto.getUpdatedAt());
+        categoryForDb.setCreatedAt(currentTime);
+        categoryForDb.setUpdatedAt(currentTime);
 
         categoryRepository.save(categoryForDb);
 
@@ -46,8 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryForUpdate.get();
         category.setName(categoryDto.getName());
         category.setDescription(categoryDto.getDescription());
-        category.setCreatedAt(categoryDto.getCreatedAt());
-        category.setUpdatedAt(categoryDto.getUpdatedAt());
+        category.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
         categoryRepository.save(category);
 

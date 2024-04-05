@@ -8,6 +8,7 @@ import com.archisacademy.ecommercespringboot.mapper.ShippingMapper;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.Shipping;
 import com.archisacademy.ecommercespringboot.model.User;
+import com.archisacademy.ecommercespringboot.repository.OrderRepository;
 import com.archisacademy.ecommercespringboot.repository.ProductRepository;
 import com.archisacademy.ecommercespringboot.repository.ShippingRepository;
 import com.archisacademy.ecommercespringboot.repository.UserRepository;
@@ -21,15 +22,13 @@ import java.util.Optional;
 public class ShippingServiceImpl implements ShippingService {
 
     private final ShippingRepository shippingRepository;
-    private final UserRepository userRepository;
-    private final ProductRepository productRepository;
     private final ShippingMapper shippingMapper;
+    private final OrderRepository orderRepository;
 
-    public ShippingServiceImpl(ShippingRepository shippingRepository, UserRepository userRepository, ProductRepository productRepository, ShippingMapper shippingMapper) {
+    public ShippingServiceImpl(ShippingRepository shippingRepository, ShippingMapper shippingMapper, OrderRepository orderRepository) {
         this.shippingRepository = shippingRepository;
-        this.userRepository = userRepository;
-        this.productRepository = productRepository;
         this.shippingMapper = shippingMapper;
+        this.orderRepository = orderRepository;
     }
 
     @Override
@@ -37,30 +36,8 @@ public class ShippingServiceImpl implements ShippingService {
         Shipping shippingForDb = new Shipping();
         shippingForDb.setAddress(shippingDto.getAddress());
         shippingForDb.setShippedAt(shippingDto.getShippedAt());
-
-        List<Product> productList = new ArrayList<>();
-        for (ProductDto product : shippingDto.getProductList()) {
-            Optional<Product> existingProduct = productRepository.findByUuid(product.getUuid());
-            if (!existingProduct.isPresent()) {
-                throw new RuntimeException("Product not found");
-            }
-            productList.add(existingProduct.get());
-
-        }
-        shippingForDb.setProductList(productList);
-
-
-        List<User> userList = new ArrayList<>();
-        for (UserDto userDto : shippingDto.getUserList()) {
-            Optional<User> existingUser = userRepository.findByUuid(userDto.getUuid());
-            if (!existingUser.isPresent()) {
-                throw new RuntimeException("User not found");
-            }
-            userList.add(existingUser.get());
-
-        }
-        shippingForDb.setUserList(userList);
-
+        shippingForDb.setSenderuuid(shippingDto.getSenderuuid());
+        shippingForDb.setOrder(orderRepository.findByUuid(shippingDto.getOrderUuid()).get());
 
 
 
@@ -77,30 +54,8 @@ public class ShippingServiceImpl implements ShippingService {
         Shipping shipping = shippingForUpdate.get();
         shipping.setAddress(shippingDto.getAddress());
         shipping.setShippedAt(shippingDto.getShippedAt());
-
-        List<Product> productList = new ArrayList<>();
-        for (ProductDto product : shippingDto.getProductList()) {
-            Optional<Product> existingProduct = productRepository.findByUuid(product.getUuid());
-            if (!existingProduct.isPresent()) {
-                throw new RuntimeException("Product not found");
-            }
-            productList.add(existingProduct.get());
-
-        }
-        shipping.setProductList(productList);
-
-
-        List<User> userList = new ArrayList<>();
-        for (UserDto userDto : shippingDto.getUserList()) {
-            Optional<User> existingUser = userRepository.findByUuid(userDto.getUuid());
-            if (!existingUser.isPresent()) {
-                throw new RuntimeException("User not found");
-            }
-            userList.add(existingUser.get());
-
-        }
-
-        shipping.setUserList(userList);
+        shipping.setSenderuuid(shippingDto.getSenderuuid());
+        shipping.setOrder(orderRepository.findByUuid(shippingDto.getOrderUuid()).get());
 
         shippingRepository.save(shipping);
 

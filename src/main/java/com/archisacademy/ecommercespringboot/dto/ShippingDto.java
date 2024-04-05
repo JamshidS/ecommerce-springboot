@@ -14,6 +14,6 @@ import java.util.List;
 public class ShippingDto {
     private String address;
     private Date shippedAt;
-    private List<ProductDto> productList;
-    private List<UserDto> userList;
+    private String senderuuid;
+    private String orderUuid;
 }

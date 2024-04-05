@@ -85,7 +85,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setAmount(newAmount);
         paymentRepository.save(payment);
 
-        return "Payment return successful";
+        return "Payment return successful"; //todo: the return type should be a boolean not a string
     }
 
     @Override

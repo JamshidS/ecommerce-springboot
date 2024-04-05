@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -22,9 +23,9 @@ public class ProductDto {
 
     private double price;
 
-    private LocalDate createdAt;
+    private Timestamp createdAt;
 
-    private LocalDate updatedAt;
+    private Timestamp updatedAt;
 
     private String categoryUuid;
 

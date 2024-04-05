@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -24,10 +28,14 @@ public class Category {
     private String name;
     @Column(name = "description")
     private String description;
+
+    @CreationTimestamp
     @Column(name = "created_at")
-    private Date createdAt;
+    private Timestamp createdAt;
+
+    @UpdateTimestamp
     @Column(name = "updated_at")
-    private Date updatedAt;
+    private Timestamp updatedAt;
 
     @OneToMany(mappedBy = "category")
     private List<Product> productList;

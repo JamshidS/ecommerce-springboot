@@ -8,6 +8,7 @@ import com.archisacademy.ecommercespringboot.model.Category;
 import com.archisacademy.ecommercespringboot.model.Product;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,8 +47,8 @@ public class CategoryMapperImpl implements CategoryMapper {
         category.setUuid(categoryDto.getUuid());
         category.setName(categoryDto.getName());
         category.setDescription(categoryDto.getDescription());
-        category.setCreatedAt(categoryDto.getCreatedAt());
-        category.setUpdatedAt(categoryDto.getUpdatedAt());
+        category.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        category.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
         List<Product> productList = new ArrayList<>();
         for (ProductDto productDto : categoryDto.getProductList()) {

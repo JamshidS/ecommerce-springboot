@@ -8,6 +8,7 @@ import com.archisacademy.ecommercespringboot.mapper.ShippingMapper;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.Shipping;
 import com.archisacademy.ecommercespringboot.model.User;
+import com.archisacademy.ecommercespringboot.repository.OrderRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,6 +16,12 @@ import java.util.List;
 
 @Component
 public class ShippingMapperImpl implements ShippingMapper {
+    private final OrderRepository orderRepository;
+
+    public ShippingMapperImpl(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
+
     @Override
     public ShippingDto toDto(Shipping shipping) {
         if (shipping == null) {
@@ -23,39 +30,9 @@ public class ShippingMapperImpl implements ShippingMapper {
         ShippingDto shippingDto = new ShippingDto();
         shippingDto.setAddress(shipping.getAddress());
         shippingDto.setShippedAt(shipping.getShippedAt());
+        shippingDto.setSenderuuid(shipping.getSenderuuid());
+        shippingDto.setOrderUuid(shipping.getOrder().getUuid());
 
-        if (shipping.getProductList() != null){
-            List<ProductDto> productDtoList = new ArrayList<>();
-            for (Product product : shipping.getProductList()) {
-                ProductDto productDto = new ProductDto();
-                productDto.setUuid(product.getUuid());
-                productDto.setName(product.getName());
-                productDto.setDescription(product.getDescription());
-                productDto.setPrice(product.getPrice());
-                productDto.setCreatedAt(product.getCreatedAt());
-                productDto.setUpdatedAt(product.getUpdatedAt());
-
-                productDtoList.add(productDto);
-            }
-            shippingDto.setProductList(productDtoList);
-        }
-
-        if (shipping.getUserList() != null){
-            List<UserDto> userDtoList = new ArrayList<>();
-            for (User user : shipping.getUserList()) {
-                UserDto userDto = new UserDto();
-                userDto.setUuid(user.getUuid());
-                userDto.setUserName(user.getUserName());
-                userDto.setEmail(user.getEmail());
-                userDto.setCreatedAt(user.getCreatedAt());
-                userDto.setUpdatedAt(user.getUpdatedAt());
-                userDto.setAddress(user.getAddress());
-                userDto.setTelephone(user.getTelephone());
-
-                userDtoList.add(userDto);
-            }
-            shippingDto.setUserList(userDtoList);
-        }
         return shippingDto;
     }
 
@@ -67,39 +44,8 @@ public class ShippingMapperImpl implements ShippingMapper {
         Shipping shipping = new Shipping();
         shipping.setAddress(shippingDto.getAddress());
         shipping.setShippedAt(shippingDto.getShippedAt());
-
-        if (shippingDto.getProductList() != null){
-            List<Product> productList = new ArrayList<>();
-            for (ProductDto productDto : shippingDto.getProductList()) {
-                Product product = new Product();
-                product.setUuid(productDto.getUuid());
-                product.setName(productDto.getName());
-                product.setDescription(productDto.getDescription());
-                product.setPrice(productDto.getPrice());
-                product.setCreatedAt(productDto.getCreatedAt());
-                product.setUpdatedAt(productDto.getUpdatedAt());
-
-                productList.add(product);
-            }
-            shipping.setProductList(productList);
-        }
-
-        if (shippingDto.getUserList() != null){
-            List<User> userList = new ArrayList<>();
-            for (UserDto userDto : shippingDto.getUserList()) {
-                User user = new User();
-                user.setUuid(userDto.getUuid());
-                user.setUserName(userDto.getUserName());
-                user.setEmail(userDto.getEmail());
-                user.setCreatedAt(userDto.getCreatedAt());
-                user.setUpdatedAt(userDto.getUpdatedAt());
-                user.setAddress(userDto.getAddress());
-                user.setTelephone(userDto.getTelephone());
-
-                userList.add(user);
-            }
-            shipping.setUserList(userList);
-        }
+        shipping.setSenderuuid(shippingDto.getSenderuuid());
+        shipping.setOrder(orderRepository.findByUuid(shippingDto.getOrderUuid()).get());
         return shipping;
     }
 
