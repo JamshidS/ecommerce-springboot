@@ -118,8 +118,11 @@ public class UserServiceImpl implements UserService {
 
         List<Product> products = new ArrayList<>();
         for (String productUuid : productUuids) {
-            Product product = productRepository.findByUuid(productUuid)
-                    .orElseThrow(() -> new RuntimeException("Product not found with UUID: " + productUuid));
+            Optional<Product> optionalProduct = productRepository.findByUuid(productUuid);
+            if (optionalProduct.isEmpty()) {
+                continue;
+            }
+            Product product = optionalProduct.get();
             products.add(product);
         }
         wishlist.setProducts(products);
