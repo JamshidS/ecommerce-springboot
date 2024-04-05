@@ -20,6 +20,6 @@ public class PromotionDto {
 
     private String code;
 
-    private List<ProductDto> productList;
+    private List<String> productUuid;
 
 }
