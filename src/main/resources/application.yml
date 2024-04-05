@@ -7,7 +7,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/my_ecommerce
     driverClassName: org.postgresql.Driver
     username: postgres
-    password: 2276680
+    password: 12345
 
   jpa:
     properties:
