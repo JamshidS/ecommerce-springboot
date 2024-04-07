@@ -3,7 +3,6 @@ package com.archisacademy.ecommercespringboot.mapper.impl;
 import com.archisacademy.ecommercespringboot.dto.CategoryDto;
 import com.archisacademy.ecommercespringboot.dto.ProductDto;
 import com.archisacademy.ecommercespringboot.mapper.CategoryMapper;
-import com.archisacademy.ecommercespringboot.mapper.ProductMapper;
 import com.archisacademy.ecommercespringboot.model.Category;
 import com.archisacademy.ecommercespringboot.model.Product;
 import org.springframework.stereotype.Component;

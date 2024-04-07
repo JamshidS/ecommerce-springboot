@@ -4,6 +4,7 @@ import com.archisacademy.ecommercespringboot.dto.InventoryDto;
 import com.archisacademy.ecommercespringboot.model.Inventory;
 import com.archisacademy.ecommercespringboot.repository.InventoryRepository;
 import com.archisacademy.ecommercespringboot.service.InventoryService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    @Transactional
     public String createInventory(InventoryDto inventoryDto) {
         Inventory inventoryForDb = new Inventory();
         inventoryForDb.setQuantity(inventoryDto.getQuantity());
@@ -28,6 +30,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    @Transactional
     public String updateInventory(InventoryDto inventoryDto, Long inventoryId) {
         Inventory inventoryForUpdate = inventoryRepository.getById(inventoryId);
 
@@ -51,7 +54,7 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     public InventoryDto getInventoryById(Long inventoryId) {
         Optional<Inventory> inventoryOptional = inventoryRepository.findById(inventoryId);
-        if(inventoryOptional.isEmpty()){
+        if (inventoryOptional.isEmpty()) {
             throw new RuntimeException("Inventory not found");
         }
         Inventory inventory = inventoryOptional.get();
@@ -60,6 +63,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    @Transactional
     public void deleteInventory(Long inventoryId) {
         getInventoryById(inventoryId);
 

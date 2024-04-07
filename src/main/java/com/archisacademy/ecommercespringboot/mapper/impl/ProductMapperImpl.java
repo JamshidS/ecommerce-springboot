@@ -1,21 +1,15 @@
 package com.archisacademy.ecommercespringboot.mapper.impl;
 
-import com.archisacademy.ecommercespringboot.dto.CategoryDto;
 import com.archisacademy.ecommercespringboot.dto.ProductDto;
 import com.archisacademy.ecommercespringboot.dto.PromotionDto;
-import com.archisacademy.ecommercespringboot.mapper.CategoryMapper;
 import com.archisacademy.ecommercespringboot.mapper.ProductMapper;
-import com.archisacademy.ecommercespringboot.mapper.PromotionMapper;
-import com.archisacademy.ecommercespringboot.mapper.UserMapper;
 import com.archisacademy.ecommercespringboot.model.Category;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.Promotion;
-import com.archisacademy.ecommercespringboot.service.CategoryService;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component

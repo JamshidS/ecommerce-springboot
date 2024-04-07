@@ -1,6 +1,7 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.PaymentDto;
+import com.archisacademy.ecommercespringboot.mapper.PaymentMapper;
 import com.archisacademy.ecommercespringboot.model.Payment;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.User;
@@ -9,6 +10,7 @@ import com.archisacademy.ecommercespringboot.repository.ProductRepository;
 import com.archisacademy.ecommercespringboot.repository.UserRepository;
 import com.archisacademy.ecommercespringboot.service.PaymentService;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,20 +21,23 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final PaymentMapper paymentMapper;
 
-    public PaymentServiceImpl(PaymentRepository paymentRepository, UserRepository userRepository, ProductRepository productRepository) {
+    public PaymentServiceImpl(PaymentRepository paymentRepository, UserRepository userRepository, ProductRepository productRepository, PaymentMapper paymentMapper) {
         this.paymentRepository = paymentRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.paymentMapper = paymentMapper;
     }
 
     @Override
+    @Transactional
     public Payment saveCustomerCartDetails(PaymentDto paymentDto) {
         Optional<Product> product = productRepository.findByUuid(paymentDto.getProductUuid().trim());
         Optional<User> user = userRepository.findByUuid(paymentDto.getUserUuid().trim());
 
         if (product.isEmpty() || user.isEmpty()) {
-           throw new RuntimeException("uuid not found");
+            throw new RuntimeException("uuid not found");
         }
         Payment payment = new Payment();
         payment.setName(paymentDto.getName());
@@ -53,25 +58,12 @@ public class PaymentServiceImpl implements PaymentService {
             throw new RuntimeException("payment nout found");
         }
 
-        return convertToDto(payment);
-    }
-
-    private PaymentDto convertToDto(Payment payment) {
-        PaymentDto paymentDto = new PaymentDto();
-        paymentDto.setUuid(payment.getUuid());
-        paymentDto.setName(payment.getName());
-        paymentDto.setCardNumber(payment.getCardNumber());
-        paymentDto.setExpirationDate(payment.getExpirationDate());
-        paymentDto.setCvc(payment.getCvc());
-        paymentDto.setAmount(payment.getAmount());
-        paymentDto.setProductUuid(payment.getProduct().getUuid());
-        paymentDto.setUserUuid(payment.getUser().getUuid());
-
-        return paymentDto;
+        return paymentMapper.convertToDto(payment);
     }
 
     @Override
-    public String  returnPaymentBackToUser(String userUuid, PaymentDto paymentDto) {
+    @Transactional
+    public String returnPaymentBackToUser(String userUuid, PaymentDto paymentDto) {
         Payment payment = paymentRepository.findByUserUuid(userUuid.trim());
         if (payment == null) {
             throw new RuntimeException("payment not found");
@@ -95,10 +87,11 @@ public class PaymentServiceImpl implements PaymentService {
             throw new RuntimeException("payment not found");
         }
 
-        return convertToDto(payment);
+        return paymentMapper.convertToDto(payment);
     }
 
     @Override
+    @Transactional
     public void updatePaymentByUserUuid(String userUuid, PaymentDto updatedPaymentDto) {
         Payment existingPayment = paymentRepository.findByUserUuid(userUuid.trim());
         if (existingPayment != null) {
@@ -111,6 +104,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional
     public void deletePaymentByUserUuid(String userUuid) {
         Payment existingPayment = paymentRepository.findByUserUuid(userUuid.trim());
         if (existingPayment != null) {

@@ -1,6 +1,7 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.response.WishlistResponse;
+import com.archisacademy.ecommercespringboot.mapper.WishlistMapper;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.User;
 import com.archisacademy.ecommercespringboot.model.Wishlist;
@@ -22,11 +23,13 @@ public class WishlistServiceImpl implements WishlistService {
     private final WishlistRepository wishlistRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final WishlistMapper wishlistMapper;
 
-    public WishlistServiceImpl(WishlistRepository wishlistRepository, UserRepository userRepository, ProductRepository productRepository) {
+    public WishlistServiceImpl(WishlistRepository wishlistRepository, UserRepository userRepository, ProductRepository productRepository, WishlistMapper wishlistMapper) {
         this.wishlistRepository = wishlistRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.wishlistMapper = wishlistMapper;
     }
 
     @Override
@@ -80,21 +83,12 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     public WishlistResponse getWishlistByUserUuid(String userUuid) {
         Wishlist wishlist = wishlistRepository.findByUserUuid(userUuid);
-        return convertToResponse(wishlist);
+        return wishlistMapper.convertToResponse(wishlist);
     }
 
     @Override
     public WishlistResponse getWishlistByUuid(String wishlistUuid) {
         Wishlist wishlist = wishlistRepository.findByUuid(wishlistUuid);
-        return convertToResponse(wishlist);
-    }
-
-    private WishlistResponse convertToResponse(Wishlist wishlist) {
-        WishlistResponse response = new WishlistResponse();
-        if (wishlist != null) {
-            response.setProductList(wishlist.getProducts());
-            response.setUserUuid(wishlist.getUuid());
-        }
-        return response;
+        return wishlistMapper.convertToResponse(wishlist);
     }
 }

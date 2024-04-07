@@ -1,6 +1,7 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.ReviewDto;
+import com.archisacademy.ecommercespringboot.mapper.ReviewMapper;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.Review;
 import com.archisacademy.ecommercespringboot.model.User;
@@ -8,6 +9,7 @@ import com.archisacademy.ecommercespringboot.repository.ProductRepository;
 import com.archisacademy.ecommercespringboot.repository.ReviewRepository;
 import com.archisacademy.ecommercespringboot.repository.UserRepository;
 import com.archisacademy.ecommercespringboot.service.ReviewService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -19,14 +21,17 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final ReviewMapper reviewMapper;
 
-    public ReviewServiceImpl(ReviewRepository reviewRepository, ProductRepository productRepository, UserRepository userRepository) {
+    public ReviewServiceImpl(ReviewRepository reviewRepository, ProductRepository productRepository, UserRepository userRepository, ReviewMapper reviewMapper) {
         this.reviewRepository = reviewRepository;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
+        this.reviewMapper = reviewMapper;
     }
 
     @Override
+    @Transactional
     public ReviewDto saveReview(ReviewDto reviewDto) {
         Optional<Product> product = productRepository.findByUuid(reviewDto.getProductUuid());
         Optional<User> user = userRepository.findByUuid(reviewDto.getUserUuid());
@@ -43,7 +48,7 @@ public class ReviewServiceImpl implements ReviewService {
         review.setUser(user.get());
         review.setProduct(product.get());
         reviewRepository.save(review);
-        return convertToDto(review);
+        return reviewMapper.convertToDto(review);
     }
 
     @Override
@@ -53,7 +58,7 @@ public class ReviewServiceImpl implements ReviewService {
             throw new RuntimeException("Review not found for userUuid: " + userUuid + " and productUuid: " + productUuid);
         }
 
-        return convertToDto(review);
+        return reviewMapper.convertToDto(review);
     }
 
 
@@ -65,14 +70,15 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         return reviews.stream()
-                .map(this::convertToDto)
+                .map(reviewMapper::convertToDto)
                 .collect(Collectors.toList());
     }
 
 
     @Override
+    @Transactional
     public String updateReviewByUserUuid(String userUuid, String productUuid, ReviewDto updatedReviewDto) {
-        Review existingReview = reviewRepository.findByUserUuidAndProductUuid(userUuid,productUuid);
+        Review existingReview = reviewRepository.findByUserUuidAndProductUuid(userUuid, productUuid);
         if (existingReview != null) {
             existingReview.setRating(updatedReviewDto.getRating());
             existingReview.setComment(updatedReviewDto.getComment());
@@ -83,6 +89,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public String deleteReviewByUserUuid(String userUuid, String productUuid) {
         Review existingReview = reviewRepository.findByUserUuidAndProductUuid(userUuid, productUuid);
         if (existingReview != null) {
@@ -93,6 +100,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public String deleteReviewsByReviewUuid(String reviewUuid) {
         List<Review> existingReviews = reviewRepository.findAllByUuid(reviewUuid);
         if (!existingReviews.isEmpty()) {
@@ -111,7 +119,7 @@ public class ReviewServiceImpl implements ReviewService {
         List<ReviewDto> response = new ArrayList<>();
         for (Review review : reviews) {
             if (review.getIsApproved()) {
-                response.add(convertToDto(review));
+                response.add(reviewMapper.convertToDto(review));
             }
         }
         return response;
@@ -127,21 +135,5 @@ public class ReviewServiceImpl implements ReviewService {
             return "Review has been approved successfully";
         }
         throw new RuntimeException("Review not found");
-    }
-
-    public ReviewDto convertToDto(Review review) {
-        ReviewDto reviewDto = new ReviewDto();
-        reviewDto.setUuid(review.getUuid());
-        reviewDto.setRating(review.getRating());
-        reviewDto.setComment(review.getComment());
-        reviewDto.setCreatedAt(review.getCreatedAt());
-        if (review.getUser() != null) {
-            reviewDto.setUserUuid(review.getUser().getUuid());
-        }
-        if (review.getProduct() != null) {
-            reviewDto.setProductUuid(review.getProduct().getUuid());
-        }
-        reviewDto.setIsApproved(review.getIsApproved());
-        return reviewDto;
     }
 }
