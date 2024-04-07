@@ -7,10 +7,7 @@ import com.archisacademy.ecommercespringboot.dto.UserDto;
 import com.archisacademy.ecommercespringboot.dto.response.WishlistResponse;
 import com.archisacademy.ecommercespringboot.enums.UserRole;
 import com.archisacademy.ecommercespringboot.exceptions.UserNotFoundException;
-import com.archisacademy.ecommercespringboot.mapper.CartMapper;
-import com.archisacademy.ecommercespringboot.mapper.ProductMapper;
-import com.archisacademy.ecommercespringboot.mapper.UserMapper;
-import com.archisacademy.ecommercespringboot.mapper.WishlistMapper;
+import com.archisacademy.ecommercespringboot.mapper.*;
 import com.archisacademy.ecommercespringboot.model.*;
 import com.archisacademy.ecommercespringboot.repository.CartRepository;
 import com.archisacademy.ecommercespringboot.repository.ProductRepository;
@@ -21,7 +18,6 @@ import com.archisacademy.ecommercespringboot.service.OrderService;
 import com.archisacademy.ecommercespringboot.service.UserService;
 import com.archisacademy.ecommercespringboot.service.WishlistService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -42,9 +38,10 @@ public class UserServiceImpl implements UserService {
     private final CartRepository cartRepository;
     private final CartService cartService;
     private final UserMapper userMapper;
+    private final OrderMapper orderMapper;
 
 
-    public UserServiceImpl(UserRepository userRepository, ProductMapper productMapper, OrderService orderService, WishlistRepository wishlistRepository, WishlistService wishlistService, WishlistMapper wishlistMapper, ProductRepository productRepository, CartMapper cartMapper, CartRepository cartRepository, CartService cartService, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository, ProductMapper productMapper, OrderService orderService, WishlistRepository wishlistRepository, WishlistService wishlistService, WishlistMapper wishlistMapper, ProductRepository productRepository, CartMapper cartMapper, CartRepository cartRepository, CartService cartService, UserMapper userMapper, OrderMapper orderMapper) {
         this.userRepository = userRepository;
         this.productMapper = productMapper;
         this.orderService = orderService;
@@ -56,6 +53,7 @@ public class UserServiceImpl implements UserService {
         this.cartRepository = cartRepository;
         this.cartService = cartService;
         this.userMapper = userMapper;
+        this.orderMapper = orderMapper;
     }
 
     @Override
@@ -160,7 +158,7 @@ public class UserServiceImpl implements UserService {
         List<Order> orders = user.getOrderList();
 
         return orders.stream()
-                .map(OrderServiceImpl::convertToDto)
+                .map(orderMapper::convertToDto)
                 .collect(Collectors.toList());
     }
 
@@ -176,6 +174,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteCardDetailsWithUserUUID(String userUuid) {
         User user = userRepository.findByUuid(userUuid)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -198,6 +197,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void updateUserCartWithUserUUID(String userUuid, CartDto updatedCartDto) {
         User user = userRepository.findByUuid(userUuid)
                 .orElseThrow(() -> new RuntimeException("User not found"));

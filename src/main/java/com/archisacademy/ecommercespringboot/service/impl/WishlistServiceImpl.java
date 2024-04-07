@@ -1,6 +1,5 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
-import com.archisacademy.ecommercespringboot.dto.WishlistDto;
 import com.archisacademy.ecommercespringboot.dto.response.WishlistResponse;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.User;
@@ -9,7 +8,7 @@ import com.archisacademy.ecommercespringboot.repository.ProductRepository;
 import com.archisacademy.ecommercespringboot.repository.UserRepository;
 import com.archisacademy.ecommercespringboot.repository.WishlistRepository;
 import com.archisacademy.ecommercespringboot.service.WishlistService;
-import org.springframework.beans.BeanUtils;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -31,6 +30,7 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
+    @Transactional
     public String addToWishlist(String userUuid, String productUuid) {
         Optional<User> userOptional = userRepository.findByUuid(userUuid);
         Optional<Product> productOptional = productRepository.findByUuid(productUuid);
@@ -54,6 +54,7 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
+    @Transactional
     public String removeFromWishlist(String userUuid, String productUuid) {
         Optional<User> userOptional = userRepository.findByUuid(userUuid);
 
