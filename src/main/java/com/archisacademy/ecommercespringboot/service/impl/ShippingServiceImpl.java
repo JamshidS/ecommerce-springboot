@@ -30,7 +30,7 @@ public class ShippingServiceImpl implements ShippingService {
         Shipping shippingForDb = new Shipping();
         shippingForDb.setAddress(shippingDto.getAddress());
         shippingForDb.setShippedAt(shippingDto.getShippedAt());
-        shippingForDb.setSenderuuid(shippingDto.getSenderuuid());
+        shippingForDb.setSenderUuid(shippingDto.getSenderUuid());
         shippingForDb.setOrder(orderRepository.findByUuid(shippingDto.getOrderUuid()).get());
 
         shippingRepository.save(shippingForDb);
@@ -47,7 +47,7 @@ public class ShippingServiceImpl implements ShippingService {
         Shipping shipping = shippingForUpdate.get();
         shipping.setAddress(shippingDto.getAddress());
         shipping.setShippedAt(shippingDto.getShippedAt());
-        shipping.setSenderuuid(shippingDto.getSenderuuid());
+        shipping.setSenderUuid(shippingDto.getSenderUuid());
         shipping.setOrder(orderRepository.findByUuid(shippingDto.getOrderUuid()).get());
 
         shippingRepository.save(shipping);

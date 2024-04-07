@@ -1,12 +1,10 @@
 package com.archisacademy.ecommercespringboot.dto;
 
-import com.archisacademy.ecommercespringboot.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,6 +12,14 @@ import java.util.List;
 public class ShippingDto {
     private String address;
     private Date shippedAt;
-    private String senderuuid;
+    private String senderUuid;
     private String orderUuid;
+
+    public String getSenderUuid() {
+        return this.senderUuid;
+    }
+
+    public void setSenderUuid(String senderUuid) {
+        this.senderUuid = senderUuid;
+    }
 }
