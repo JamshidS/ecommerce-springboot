@@ -65,7 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
                 category.getDescription(),
                 category.getCreatedAt(),
                 category.getUpdatedAt(),
-                null
+                category.getProductList().stream().map(productMapper::toProductDto).toList()
         )).toList();
 
     }
@@ -92,6 +92,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .name(category.getName())
                 .description(category.getDescription())
                 .updatedAt(category.getUpdatedAt())
+                .productList(category.getProductList().stream().map(productMapper::toProductDto).toList())
                 .build();
 
 

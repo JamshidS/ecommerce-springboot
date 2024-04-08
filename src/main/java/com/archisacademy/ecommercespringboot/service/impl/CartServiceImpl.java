@@ -20,7 +20,7 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
     private final PromotionRepository promotionRepository;
-    private final ProductService productService;
+    private final ProductService productService; //todo: remove this because no one is using it
     private final CartMapper cartMapper;
 
     public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, PromotionRepository promotionRepository, ProductService productService, CartMapper cartMapper) {
@@ -35,7 +35,7 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public CartResponse saveCart(CartDto cartDto) {
         Optional<User> user = userRepository.findByUuid(cartDto.getUserUuid());
-        Promotion promotion = promotionRepository.findByUuid(cartDto.getPromotionUuid());
+        Promotion promotion = promotionRepository.findByUuid(cartDto.getPromotionUuid()); //todo: this needs to be optional and check if it is empty or not
         if (user.isEmpty()) {
             throw new RuntimeException("User not found!");
         }

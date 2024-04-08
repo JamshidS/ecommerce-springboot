@@ -37,12 +37,16 @@ public class PromotionServiceImpl implements PromotionService {
         promotion.setName(promotionDto.getName());
         promotion.setDescription(promotionDto.getDescription());
         promotion.setDiscount(promotionDto.getDiscount());
+        getPromotionCodeAndSavePromotionToDB(promotionDto, productList, promotion);
+        return "Promotion saved successfully!";
+    }
+
+    private void getPromotionCodeAndSavePromotionToDB(PromotionDto promotionDto, List<Product> productList, Promotion promotion) {
         promotion.setCode(generateCode(promotionDto.getFullName(), promotionDto.getDiscount()));
         promotion.setCratedBy(promotionDto.getFullName());
         promotion.setExpirationDate(new Timestamp(System.currentTimeMillis() + (promotionDto.getDaysToAdd() * 24 * 60 * 60 * 1000)));
         promotion.setProductList(productList);
         promotionRepository.save(promotion);
-        return "Promotion saved successfully!";
     }
 
     @Override
@@ -59,11 +63,7 @@ public class PromotionServiceImpl implements PromotionService {
         promotion.setName(promotionDto.getName());
         promotion.setDescription(promotionDto.getDescription());
         promotion.setDiscount(promotionDto.getDiscount());
-        promotion.setCode(generateCode(promotionDto.getFullName(), promotionDto.getDiscount()));
-        promotion.setCratedBy(promotionDto.getFullName());
-        promotion.setExpirationDate(new Timestamp(System.currentTimeMillis() + (promotionDto.getDaysToAdd() * 24 * 60 * 60 * 1000)));
-        promotion.setProductList(productList);
-        promotionRepository.save(promotion);
+        getPromotionCodeAndSavePromotionToDB(promotionDto, productList, promotion);
         return "Promotion updated successfully!";
     }
 
@@ -105,6 +105,8 @@ public class PromotionServiceImpl implements PromotionService {
         }
         return promotionDtoList;
     }
+
+    //todo: implement a method that checks if a promotion is valid or not
 
     private PromotionDto convertToDto(Promotion promotion) {
         PromotionDto promotionDto = new PromotionDto();
