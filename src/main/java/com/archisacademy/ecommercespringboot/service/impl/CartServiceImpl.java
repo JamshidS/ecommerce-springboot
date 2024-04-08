@@ -44,7 +44,7 @@ public class CartServiceImpl implements CartService {
         cart.setOrderDate(new Timestamp(System.currentTimeMillis()));
         cart.setUser(user.get());
         cart.setPromotion(promotion);
-        cart.setProductUUIDs(CommonUtils.arrayToCommaSeparatedString(cartDto.getProductUuids()));
+        cart.setProductUUIDs(CommonUtils.arrayToCommaSeparatedString(cartDto.getProductUuids())); //todo: we should consider checking the quantity of the product
         cartRepository.save(cart);
         return cartMapper.createResponse(cart);
     }

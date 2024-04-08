@@ -42,6 +42,8 @@ public class InventoryServiceImpl implements InventoryService {
         return "Inventory successfully updated";
     }
 
+    //todo: there should a method to check the quantity of the product and it should return a boolean
+
     @Override
     public List<InventoryDto> getAllInventories() {
         List<Inventory> inventoryList = inventoryRepository.findAll();

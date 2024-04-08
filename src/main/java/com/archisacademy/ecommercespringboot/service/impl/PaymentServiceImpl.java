@@ -92,7 +92,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional
-    public void updatePaymentByUserUuid(String userUuid, PaymentDto updatedPaymentDto) {
+    public void updatePaymentByUserUuid(String userUuid, PaymentDto updatedPaymentDto) { //todo: this method should return a String
         Payment existingPayment = paymentRepository.findByUserUuid(userUuid.trim());
         if (existingPayment != null) {
             existingPayment.setName(updatedPaymentDto.getName());
@@ -101,6 +101,7 @@ public class PaymentServiceImpl implements PaymentService {
             existingPayment.setCvc(updatedPaymentDto.getCvc());
             paymentRepository.save(existingPayment);
         }
+        // todo: if the payment is not found, we should return a proper message
     }
 
     @Override

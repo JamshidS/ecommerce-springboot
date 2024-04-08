@@ -23,7 +23,7 @@ public class Review {
     private String comment;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private Date createdAt; //timestamp
     @Column(name = "is_approved")
     private Boolean isApproved;
 

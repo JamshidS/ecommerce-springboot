@@ -47,6 +47,7 @@ public class ReviewServiceImpl implements ReviewService {
         review.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         review.setUser(user.get());
         review.setProduct(product.get());
+        review.setIsApproved(false);
         reviewRepository.save(review);
         return reviewMapper.convertToDto(review);
     }
