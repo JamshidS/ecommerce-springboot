@@ -22,7 +22,7 @@ public class WishlistController {
         return new ResponseEntity<>(message, HttpStatus.CREATED);
     }
 
-    @PutMapping("/remove")
+    @PutMapping
     public ResponseEntity<String> removeFromWishlist(@RequestBody WishlistDto wishlistDto) {
         String message = wishlistService.removeFromWishlist(wishlistDto.getUserUuid(), wishlistDto.getProductUuid());
         return new ResponseEntity<>(message, HttpStatus.OK);
