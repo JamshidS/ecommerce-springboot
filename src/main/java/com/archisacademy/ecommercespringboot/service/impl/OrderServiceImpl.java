@@ -1,6 +1,7 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.OrderDto;
+import com.archisacademy.ecommercespringboot.mapper.OrderMapper;
 import com.archisacademy.ecommercespringboot.model.Order;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.User;
@@ -9,7 +10,6 @@ import com.archisacademy.ecommercespringboot.repository.ProductRepository;
 import com.archisacademy.ecommercespringboot.repository.UserRepository;
 import com.archisacademy.ecommercespringboot.service.OrderService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -24,11 +24,13 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final OrderMapper orderMapper;
 
-    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, ProductRepository productRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, ProductRepository productRepository, OrderMapper orderMapper) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.orderMapper = orderMapper;
     }
 
     @Override
@@ -91,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDto> orderDtoList = new ArrayList<>();
         List<Order> orderList = orderRepository.findAll();
         for (Order order : orderList) {
-            orderDtoList.add(convertToDto(order));
+            orderDtoList.add(orderMapper.convertToDto(order));
         }
         return orderDtoList;
     }
@@ -102,7 +104,7 @@ public class OrderServiceImpl implements OrderService {
         if (order.isEmpty()) {
             throw new RuntimeException("Order not found");
         }
-        return convertToDto(order.get());
+        return orderMapper.convertToDto(order.get());
     }
 
     @Override
@@ -113,15 +115,9 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("Orders not found for user with UUID: " + userUuid);
         }
         for (Order order : orders) {
-            orderList.add(convertToDto(order));
+            orderList.add(orderMapper.convertToDto(order));
         }
         return orderList;
-    }
-
-    public static OrderDto convertToDto(Order order) {
-        OrderDto orderDto = new OrderDto();
-        BeanUtils.copyProperties(order, orderDto);
-        return orderDto;
     }
 
     private String generateOrderNumber(Long id) {

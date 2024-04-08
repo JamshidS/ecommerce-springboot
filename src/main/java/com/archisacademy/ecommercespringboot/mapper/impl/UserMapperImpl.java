@@ -1,7 +1,6 @@
 package com.archisacademy.ecommercespringboot.mapper.impl;
 
 import com.archisacademy.ecommercespringboot.dto.UserDto;
-import com.archisacademy.ecommercespringboot.enums.UserRole;
 import com.archisacademy.ecommercespringboot.mapper.UserMapper;
 import com.archisacademy.ecommercespringboot.model.User;
 import org.springframework.stereotype.Component;

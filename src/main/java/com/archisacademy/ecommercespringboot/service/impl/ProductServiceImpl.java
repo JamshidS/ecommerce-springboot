@@ -2,19 +2,17 @@ package com.archisacademy.ecommercespringboot.service.impl;
 
 
 import com.archisacademy.ecommercespringboot.dto.ProductDto;
-import com.archisacademy.ecommercespringboot.dto.UserDto;
 import com.archisacademy.ecommercespringboot.mapper.ProductMapper;
 import com.archisacademy.ecommercespringboot.mapper.PromotionMapper;
-import com.archisacademy.ecommercespringboot.mapper.UserMapper;
 import com.archisacademy.ecommercespringboot.model.Category;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.repository.CategoryRepository;
 import com.archisacademy.ecommercespringboot.repository.ProductRepository;
 import com.archisacademy.ecommercespringboot.service.ProductService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,6 +33,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public String createProduct(ProductDto productDto) {
         Optional<Category> category = categoryRepository.findByUuid(productDto.getCategoryUuid());
         if (category.isEmpty()) {
@@ -54,6 +53,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public String updateProduct(ProductDto productDto) {
         Optional<Category> category = categoryRepository.findByUuid(productDto.getCategoryUuid());
 
@@ -119,6 +119,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProductById(Long id) {
         Optional<Product> productForDeletion = productRepository.findById(id);
         if (productForDeletion.isEmpty()) {

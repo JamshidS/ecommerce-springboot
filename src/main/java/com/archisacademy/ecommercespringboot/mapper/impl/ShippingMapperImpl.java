@@ -30,7 +30,7 @@ public class ShippingMapperImpl implements ShippingMapper {
         ShippingDto shippingDto = new ShippingDto();
         shippingDto.setAddress(shipping.getAddress());
         shippingDto.setShippedAt(shipping.getShippedAt());
-        shippingDto.setSenderuuid(shipping.getSenderuuid());
+        shippingDto.setSenderUuid(shipping.getSenderUuid());
         shippingDto.setOrderUuid(shipping.getOrder().getUuid());
 
         return shippingDto;
@@ -44,7 +44,7 @@ public class ShippingMapperImpl implements ShippingMapper {
         Shipping shipping = new Shipping();
         shipping.setAddress(shippingDto.getAddress());
         shipping.setShippedAt(shippingDto.getShippedAt());
-        shipping.setSenderuuid(shippingDto.getSenderuuid());
+        shipping.setSenderUuid(shippingDto.getSenderUuid());
         shipping.setOrder(orderRepository.findByUuid(shippingDto.getOrderUuid()).get());
         return shipping;
     }

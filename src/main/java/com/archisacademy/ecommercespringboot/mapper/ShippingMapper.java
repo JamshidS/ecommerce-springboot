@@ -8,6 +8,7 @@ import java.util.List;
 public interface ShippingMapper {
 
     ShippingDto toDto(Shipping shipping);
+
     Shipping toEntity(ShippingDto shippingDto);
 
     List<ShippingDto> toDtoList(List<Shipping> shippingList);

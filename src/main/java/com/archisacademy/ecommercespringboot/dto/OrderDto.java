@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 public class OrderDto {
     private String uuid;
     private String orderNumber;
-    private LocalDate orderDate;
+    private Timestamp orderDate;
     private Double totalAmount;
     private String orderStatus;
     private String userUuid;

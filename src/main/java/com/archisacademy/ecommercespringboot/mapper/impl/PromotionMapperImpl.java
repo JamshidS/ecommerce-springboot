@@ -2,7 +2,6 @@ package com.archisacademy.ecommercespringboot.mapper.impl;
 
 import com.archisacademy.ecommercespringboot.dto.ProductDto;
 import com.archisacademy.ecommercespringboot.dto.PromotionDto;
-import com.archisacademy.ecommercespringboot.mapper.ProductMapper;
 import com.archisacademy.ecommercespringboot.mapper.PromotionMapper;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.Promotion;
