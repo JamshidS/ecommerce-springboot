@@ -3,6 +3,7 @@ package com.archisacademy.ecommercespringboot.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,10 +24,10 @@ public class Promotion {
     private double discount;
     @Column(name = "code")
     private String code;
-    @Column(name = "full_name")
-    private String fullName;
+    @Column(name = "created_by")
+    private String cratedBy;
     @Column(name = "expiration_date")
-    private LocalDate expirationDate;
+    private Timestamp expirationDate;
 
     @ManyToMany(mappedBy = "promotionList")
     private List<Product> productList;

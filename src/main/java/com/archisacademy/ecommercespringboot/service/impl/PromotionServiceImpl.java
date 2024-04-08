@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,8 +38,8 @@ public class PromotionServiceImpl implements PromotionService {
         promotion.setDescription(promotionDto.getDescription());
         promotion.setDiscount(promotionDto.getDiscount());
         promotion.setCode(generateCode(promotionDto.getFullName(), promotionDto.getDiscount()));
-        promotion.setFullName(promotionDto.getFullName());
-        promotion.setExpirationDate(promotionDto.getExpirationDate());
+        promotion.setCratedBy(promotionDto.getFullName());
+        promotion.setExpirationDate(new Timestamp(System.currentTimeMillis() + (promotionDto.getDaysToAdd() * 24 * 60 * 60 * 1000)));
         promotion.setProductList(productList);
         promotionRepository.save(promotion);
         return "Promotion saved successfully!";
@@ -59,8 +60,8 @@ public class PromotionServiceImpl implements PromotionService {
         promotion.setDescription(promotionDto.getDescription());
         promotion.setDiscount(promotionDto.getDiscount());
         promotion.setCode(generateCode(promotionDto.getFullName(), promotionDto.getDiscount()));
-        promotion.setFullName(promotionDto.getFullName());
-        promotion.setExpirationDate(promotionDto.getExpirationDate());
+        promotion.setCratedBy(promotionDto.getFullName());
+        promotion.setExpirationDate(new Timestamp(System.currentTimeMillis() + (promotionDto.getDaysToAdd() * 24 * 60 * 60 * 1000)));
         promotion.setProductList(productList);
         promotionRepository.save(promotion);
         return "Promotion updated successfully!";

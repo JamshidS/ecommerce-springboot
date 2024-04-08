@@ -18,6 +18,5 @@ public class PromotionDto {
     private String code;
     private List<String> productUuid;
     private String fullName;
-    private LocalDate expirationDate;
-
+    private Long daysToAdd ;
 }
