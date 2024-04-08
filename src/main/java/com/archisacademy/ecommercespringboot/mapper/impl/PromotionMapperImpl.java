@@ -20,24 +20,17 @@ public class PromotionMapperImpl implements PromotionMapper {
             throw new IllegalArgumentException("Null promotion can not be mapped to promotionDto");
         }
 
-        List<ProductDto> productDtoList = new ArrayList<>();
-        for (Product product : promotion.getProductList()) {
-            ProductDto productDto = new ProductDto();
-            productDto.setUuid(product.getUuid());
-            productDto.setName(product.getName());
-            productDto.setDescription(product.getDescription());
-            productDto.setPrice(product.getPrice());
-            productDtoList.add(productDto);
-        }
+        List<String> productDtoList = new ArrayList<>();
+        promotion.getProductList().forEach(product -> productDtoList.add(product.getUuid()));
 
-        return new PromotionDto(
-                promotion.getUuid(),
-                promotion.getName(),
-                promotion.getDescription(),
-                promotion.getDiscount(),
-                promotion.getCode(),
-                productDtoList
-        );
+        return PromotionDto.builder()
+                .uuid(promotion.getUuid())
+                .name(promotion.getName())
+                .description(promotion.getDescription())
+                .discount(promotion.getDiscount())
+                .code(promotion.getCode())
+                .productUuid(productDtoList)
+                .build();
     }
 
     @Override
@@ -45,25 +38,13 @@ public class PromotionMapperImpl implements PromotionMapper {
         if (promotionDto == null) {
             throw new IllegalArgumentException("Null promotionDto can not be mapped to promotion");
         }
-
-        List<Product> productList = new ArrayList<>();
-        for (ProductDto productDto : promotionDto.getProductList()) {
-            Product product = new Product();
-            product.setUuid(productDto.getUuid());
-            product.setName(productDto.getName());
-            product.setDescription(productDto.getDescription());
-            product.setPrice(productDto.getPrice());
-            productList.add(product);
-        }
-
+        //note: if your using this method make sure to add the product list
         Promotion promotion = new Promotion();
         promotion.setUuid(promotionDto.getUuid());
         promotion.setName(promotionDto.getName());
         promotion.setDescription(promotionDto.getDescription());
         promotion.setDiscount(promotionDto.getDiscount());
         promotion.setCode(promotionDto.getCode());
-
-        promotion.setProductList(productList);
         return promotion;
     }
 

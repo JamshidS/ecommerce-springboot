@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Component
@@ -25,26 +26,31 @@ public class ProductMapperImpl implements ProductMapper {
 
         List<PromotionDto> promotionDtoList = new ArrayList<>();
         for (Promotion promotion : product.getPromotionList()) {
-            PromotionDto promotionDto = new PromotionDto(
-                    promotion.getUuid(),
-                    promotion.getName(),
-                    promotion.getDescription(),
-                    promotion.getDiscount(),
-                    promotion.getCode(),
-                    null
-            );
+            PromotionDto promotionDto = PromotionDto.builder()
+                    .fullName(promotion.getCratedBy())
+                    .uuid(promotion.getUuid())
+                    .name(promotion.getName())
+                    .description(promotion.getDescription())
+                    .discount(promotion.getDiscount())
+                    .code(promotion.getCode())
+                    .daysToAdd(promotion.getExpirationDate().getTime())
+                    .productUuid(promotion.getProductList().stream()
+                            .map(Product::getUuid)
+                            .collect(Collectors.toList()))
+                    .build();
             promotionDtoList.add(promotionDto);
         }
 
-        return new ProductDto(
-                product.getName(),
-                product.getUuid(),
-                product.getDescription(),
-                product.getPrice(),
-                product.getCreatedAt(),
-                product.getUpdatedAt(),
-                product.getCategory().getUuid(),
-                promotionDtoList
+        return ProductDto.builder()
+                .uuid(product.getUuid())
+                .name(product.getName())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
+                .categoryUuid(product.getCategory().getUuid())
+                .promotionList(promotionDtoList)
+                .build(
         );
     }
 
@@ -66,6 +72,13 @@ public class ProductMapperImpl implements ProductMapper {
         category.setUuid(productDto.getCategoryUuid());
         product.setCategory(category);
 
+        List<Promotion> promotionList = getPromotions(productDto);
+        product.setPromotionList(promotionList);
+
+        return product;
+    }
+
+    private static List<Promotion> getPromotions(ProductDto productDto) {
         List<Promotion> promotionList = new ArrayList<>();
         for (PromotionDto promotionDto : productDto.getPromotionList()) {
 
@@ -79,9 +92,7 @@ public class ProductMapperImpl implements ProductMapper {
 
             promotionList.add(promotion);
         }
-        product.setPromotionList(promotionList);
-
-        return product;
+        return promotionList;
     }
 
     @Override
