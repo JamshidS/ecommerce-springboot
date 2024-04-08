@@ -36,7 +36,9 @@ public class PromotionServiceImpl implements PromotionService {
         promotion.setName(promotionDto.getName());
         promotion.setDescription(promotionDto.getDescription());
         promotion.setDiscount(promotionDto.getDiscount());
-        promotion.setCode(generateCode(promotion.getId())); // (?)
+        promotion.setCode(generateCode(promotionDto.getFullName(), promotionDto.getDiscount()));
+        promotion.setFullName(promotionDto.getFullName());
+        promotion.setExpirationDate(promotionDto.getExpirationDate());
         promotion.setProductList(productList);
         promotionRepository.save(promotion);
         return "Promotion saved successfully!";
@@ -56,7 +58,9 @@ public class PromotionServiceImpl implements PromotionService {
         promotion.setName(promotionDto.getName());
         promotion.setDescription(promotionDto.getDescription());
         promotion.setDiscount(promotionDto.getDiscount());
-        promotion.setCode(generateCode(promotion.getId()));
+        promotion.setCode(generateCode(promotionDto.getFullName(), promotionDto.getDiscount()));
+        promotion.setFullName(promotionDto.getFullName());
+        promotion.setExpirationDate(promotionDto.getExpirationDate());
         promotion.setProductList(productList);
         promotionRepository.save(promotion);
         return "Promotion updated successfully!";
@@ -82,6 +86,7 @@ public class PromotionServiceImpl implements PromotionService {
         return promotionDtoList;
     }
 
+    @Override
     public PromotionDto getPromotionByUuid(String promotionUuid){
         Promotion promotion = promotionRepository.findByUuid(promotionUuid);
         if(promotion == null){
@@ -90,6 +95,7 @@ public class PromotionServiceImpl implements PromotionService {
         return convertToDto(promotion);
     }
 
+    @Override
     public List<PromotionDto> getAllPromotionsByProductUuid(String productUuid){
         List<PromotionDto> promotionDtoList = new ArrayList<>();
         Optional<Product> product = productRepository.findByUuid(productUuid);
@@ -99,27 +105,23 @@ public class PromotionServiceImpl implements PromotionService {
         return promotionDtoList;
     }
 
-    /*
-    // This is not used in cart or order or ... (?)
-    public boolean checkPromotionValidity(String code, String productUuid){
-        Promotion promotion = promotionRepository.findByCode(code);
-        for (Product products : promotion.getProductList()) {
-            return products.getUuid().equals(productUuid);
-        }
-        return false;
-    }
-    */
-
     private PromotionDto convertToDto(Promotion promotion) {
         PromotionDto promotionDto = new PromotionDto();
         BeanUtils.copyProperties(promotion, promotionDto);
         return promotionDto;
     }
 
-    // (?)
-    private String generateCode(Long id){
-        return id + "10";
+    private String generateCode(String fullName, double discount) {
+        String[] words = fullName.split(" ");
+        StringBuilder codeBuilder = new StringBuilder();
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                char firstLetter = word.charAt(0);
+                codeBuilder.append(firstLetter);
+            }
+        }
+        codeBuilder.append(discount);
+        return codeBuilder.toString();
     }
-
 
 }
