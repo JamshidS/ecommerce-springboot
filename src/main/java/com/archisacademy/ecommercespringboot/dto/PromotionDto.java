@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,4 +22,6 @@ public class PromotionDto {
     private List<String> productUuid;
     private String fullName;
     private Long daysToAdd ;
+    private Timestamp startDate;
+    private Timestamp endDate;
 }
