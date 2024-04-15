@@ -1,5 +1,6 @@
 package com.archisacademy.ecommercespringboot.dto.response;
 
+import com.archisacademy.ecommercespringboot.dto.ProductDto;
 import com.archisacademy.ecommercespringboot.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +14,6 @@ import java.util.List;
 public class WishlistResponse {
 
     //todo:change to product dto
-    private List<Product> productList;
+    private List<ProductDto> productList;
     private String userUuid;
 }
