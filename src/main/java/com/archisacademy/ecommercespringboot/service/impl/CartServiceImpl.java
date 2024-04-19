@@ -94,6 +94,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public void deleteCart(String cartUuid) {
         Optional<Cart> cartOptional = cartRepository.findByUuid(cartUuid);
         if (cartOptional.isEmpty()) {
