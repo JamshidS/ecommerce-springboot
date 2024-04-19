@@ -18,26 +18,22 @@ public class PaymentController {
 
     @PostMapping("/save")
     public ResponseEntity<Payment> saveCustomerCartDetails(@RequestBody PaymentDto paymentDto) {
-        Payment payment = paymentService.saveCustomerCartDetails(paymentDto);
-        return new ResponseEntity<>(payment, HttpStatus.CREATED);
+        return new ResponseEntity<>(paymentService.saveCustomerCartDetails(paymentDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/user/{userUuid}")
     public ResponseEntity<PaymentDto> getUserCartDetailsWithUserUuid(@PathVariable String userUuid) {
-        PaymentDto paymentDto = paymentService.getUserCartDetailsWithUserUuid(userUuid);
-        return new ResponseEntity<>(paymentDto, HttpStatus.OK);
+        return new ResponseEntity<>(paymentService.getUserCartDetailsWithUserUuid(userUuid), HttpStatus.OK);
     }
 
     @PutMapping("/return/{userUuid}")
     public ResponseEntity<String> returnPaymentBackToUser(@PathVariable String userUuid, @RequestBody PaymentDto paymentDto) {
-        String message = paymentService.returnPaymentBackToUser(userUuid, paymentDto);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        return new ResponseEntity<>(paymentService.returnPaymentBackToUser(userUuid, paymentDto), HttpStatus.OK);
     }
 
     @GetMapping("/{paymentUuid}")
     public ResponseEntity<PaymentDto> getPaymentWithPaymentUuid(@PathVariable String paymentUuid) {
-        PaymentDto paymentDto = paymentService.getPaymentWithPaymentUuid(paymentUuid);
-        return new ResponseEntity<>(paymentDto, HttpStatus.OK);
+        return new ResponseEntity<>(paymentService.getPaymentWithPaymentUuid(paymentUuid), HttpStatus.OK);
     }
 
     @PutMapping("/update/{userUuid}")
