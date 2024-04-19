@@ -19,31 +19,27 @@ public class InventoryController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createInventory(@RequestBody InventoryDto inventoryDto) {
-        String message = inventoryService.createInventory(inventoryDto);
-        return new ResponseEntity<>(message, HttpStatus.CREATED);
+        return new ResponseEntity<>(inventoryService.createInventory(inventoryDto), HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{inventoryId}")
-    public ResponseEntity<String> updateInventory(@RequestBody InventoryDto inventoryDto, @PathVariable Long inventoryId) {
-        String message = inventoryService.updateInventory(inventoryDto, inventoryId);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updateInventory(@RequestBody InventoryDto inventoryDto, @PathVariable Long id) {
+        return new ResponseEntity<>(inventoryService.updateInventory(inventoryDto, id), HttpStatus.OK);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<InventoryDto>> getAllInventories() {
-        List<InventoryDto> inventories = inventoryService.getAllInventories();
-        return new ResponseEntity<>(inventories, HttpStatus.OK);
+        return new ResponseEntity<>(inventoryService.getAllInventories(), HttpStatus.OK);
     }
 
-    @GetMapping("/{inventoryId}")
-    public ResponseEntity<InventoryDto> getInventoryById(@PathVariable Long inventoryId) {
-        InventoryDto inventory = inventoryService.getInventoryById(inventoryId);
-        return new ResponseEntity<>(inventory, HttpStatus.OK);
+    @GetMapping("/{id}")
+    public ResponseEntity<InventoryDto> getInventoryById(@PathVariable Long id) {
+        return new ResponseEntity<>(inventoryService.getInventoryById(id), HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{inventoryId}")
-    public ResponseEntity<String> deleteInventory(@PathVariable Long inventoryId) {
-        inventoryService.deleteInventory(inventoryId);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteInventory(@PathVariable Long id) {
+        inventoryService.deleteInventory(id);
         return new ResponseEntity<>("Inventory successfully deleted", HttpStatus.OK);
     }
 }
