@@ -36,7 +36,7 @@ public class ReturnServiceImpl implements ReturnService {
 
 
         String returnPaymentMessage = paymentService.returnPaymentBackToUser(returnDto.getUserUuid(), paymentDto); // Return the payment to the user
-        if (returnPaymentMessage.equals("Payment return successful")) { // todo: this kind of messages should be in english not Turkish or other language
+        if (returnPaymentMessage.equals("Payment return successful")) {
 
             Product product = productRepository.findByUuid(returnDto.getProductUuid()).orElseThrow(() -> new RuntimeException("Product not found"));
 
@@ -55,7 +55,7 @@ public class ReturnServiceImpl implements ReturnService {
 
             return "Return successfully created";
         } else {
-            throw new RuntimeException("Geri ödeme işleminde hata oluştu: " + returnPaymentMessage);
+            throw new RuntimeException("Error occurred in payment return: " + returnPaymentMessage);
         }
     }
 
