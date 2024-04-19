@@ -1,9 +1,6 @@
 package com.archisacademy.ecommercespringboot.service;
 
-
 import com.archisacademy.ecommercespringboot.dto.PromotionDto;
-import com.archisacademy.ecommercespringboot.model.Promotion;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 

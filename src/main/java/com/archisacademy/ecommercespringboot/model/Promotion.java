@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -32,7 +31,6 @@ public class Promotion {
     private String cratedBy;
     @Column(name = "expiration_date")
     private Timestamp expirationDate;
-
     @ManyToMany(mappedBy = "promotionList")
     private List<Product> productList;
 }

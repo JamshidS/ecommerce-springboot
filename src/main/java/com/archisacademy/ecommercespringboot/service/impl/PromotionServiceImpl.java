@@ -88,16 +88,16 @@ public class PromotionServiceImpl implements PromotionService {
 
         Promotion promotion = promotionOptional.get();
 
-        // Promosyonun geçerli olup olmadığını kontrol etmek için başlangıç ve bitiş tarihlerini kullanabiliriz.
+        // We can use start and end dates to check if the promotion is valid.
         Date now = new Date(); // Şu anki tarih
         Date startDate = promotion.getStartDate();
         Date endDate = promotion.getEndDate();
 
-        // Şu anki tarih, promosyonun başlangıç ve bitiş tarihleri arasında mı?
+        // Is the current date between the start and end dates of the promotion?
         if (now.after(startDate) && now.before(endDate)) {
-            return true; // Geçerli
+            return true; // Valid
         } else {
-            return false; // Geçersiz
+            return false; // Invalid
         }
     }
 
@@ -149,5 +149,4 @@ public class PromotionServiceImpl implements PromotionService {
         codeBuilder.append(discount);
         return codeBuilder.toString();
     }
-
 }
