@@ -12,6 +12,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,15 +21,17 @@ import java.util.UUID;
 public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
+    private final ProductService productService;
+    private final InventoryRepository inventoryRepository;
     private final PromotionRepository promotionRepository;
-    private final ProductService productService; //todo: remove this because no one is using it
     private final CartMapper cartMapper;
 
-    public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, PromotionRepository promotionRepository, ProductService productService, CartMapper cartMapper) {
+    public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, ProductService productService, InventoryRepository inventoryRepository, PromotionRepository promotionRepository, CartMapper cartMapper) {
         this.cartRepository = cartRepository;
         this.userRepository = userRepository;
-        this.promotionRepository = promotionRepository;
         this.productService = productService;
+        this.inventoryRepository = inventoryRepository;
+        this.promotionRepository = promotionRepository;
         this.cartMapper = cartMapper;
     }
 
@@ -35,16 +39,37 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public CartResponse saveCart(CartDto cartDto) {
         Optional<User> user = userRepository.findByUuid(cartDto.getUserUuid());
-        Promotion promotion = promotionRepository.findByUuid(cartDto.getPromotionUuid()); //todo: this needs to be optional and check if it is empty or not
+        Optional<Promotion> promotionOptional = promotionRepository.findByUuid(cartDto.getPromotionCode());
+
         if (user.isEmpty()) {
             throw new RuntimeException("User not found!");
         }
+
+        Promotion promotion = promotionOptional.orElse(null);
+
         Cart cart = new Cart();
         cart.setUuid(UUID.randomUUID().toString());
         cart.setOrderDate(new Timestamp(System.currentTimeMillis()));
         cart.setUser(user.get());
         cart.setPromotion(promotion);
-        cart.setProductUUIDs(CommonUtils.arrayToCommaSeparatedString(cartDto.getProductUuids())); //todo: we should consider checking the quantity of the product
+
+        // Check product quantities and add product UUIDs to the cart
+        List<String> productUuids = new ArrayList<>();
+        for (String productUuid : cartDto.getProductUuids()) {
+            Optional<Inventory> inventoryOptional = inventoryRepository.findByReferenceCode(productUuid);
+            if (inventoryOptional.isEmpty() || inventoryOptional.get().getQuantity() <= 0) {
+                throw new RuntimeException("Product quantity not available for product with UUID: " + productUuid);
+            }
+            // Assuming each product is added once
+            productUuids.add(productUuid);
+
+            // Update inventory
+            Inventory inventory = inventoryOptional.get();
+            inventory.setQuantity(inventory.getQuantity() - 1);
+            inventoryRepository.save(inventory);
+        }
+
+        cart.setProductUUIDs(CommonUtils.arrayToCommaSeparatedString(productUuids.toArray(productUuids.toArray(new String[0]))));
         cartRepository.save(cart);
         return cartMapper.createResponse(cart);
     }
@@ -52,41 +77,47 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public CartResponse updateCart(CartDto cartDto, String cartUuid) {
-        Optional<Cart> cart = cartRepository.findByUuid(cartUuid);
-        Promotion promotion = promotionRepository.findByUuid(cartDto.getPromotionUuid());
-        if (cart.isEmpty()) {
+        Optional<Cart> cartOptional = cartRepository.findByUuid(cartUuid);
+        Optional<Promotion> promotionOptional = promotionRepository.findByUuid(cartDto.getPromotionCode());
+
+        if (cartOptional.isEmpty()) {
             throw new RuntimeException("Cart not found!");
         }
-        cart.get().setPromotion(promotion);
-        cart.get().setProductUUIDs(CommonUtils.arrayToCommaSeparatedString(cartDto.getProductUuids()));
-        cartRepository.save(cart.get());
-        return cartMapper.createResponse(cart.get());
+
+        Cart cart = cartOptional.get();
+        Promotion promotion = promotionOptional.orElse(null);
+
+        cart.setPromotion(promotion);
+        cart.setProductUUIDs(CommonUtils.arrayToCommaSeparatedString(cartDto.getProductUuids()));
+        cartRepository.save(cart);
+        return cartMapper.createResponse(cart);
     }
 
     @Override
+    @Transactional
     public void deleteCart(String cartUuid) {
-        Optional<Cart> cart = cartRepository.findByUuid(cartUuid);
-        if (cart.isEmpty()) {
+        Optional<Cart> cartOptional = cartRepository.findByUuid(cartUuid);
+        if (cartOptional.isEmpty()) {
             throw new RuntimeException("Cart not found!");
         }
-        cartRepository.delete(cart.get());
+        cartRepository.delete(cartOptional.get());
     }
 
     @Override
     public CartDto getCartByUuid(String cartUuid) {
-        Optional<Cart> cart = cartRepository.findByUuid(cartUuid);
-        if (cart.isEmpty()) {
+        Optional<Cart> cartOptional = cartRepository.findByUuid(cartUuid);
+        if (cartOptional.isEmpty()) {
             throw new RuntimeException("Cart not found");
         }
-        return cartMapper.convertToDto(cart.get());
+        return cartMapper.convertToDto(cartOptional.get());
     }
 
     @Override
     public CartDto getCartByUserUuid(String userUuid) {
-        Optional<Cart> cart = cartRepository.findByUserUuid(userUuid);
-        if (cart.isEmpty()) {
+        Optional<Cart> cartOptional = cartRepository.findByUserUuid(userUuid);
+        if (cartOptional.isEmpty()) {
             throw new RuntimeException("Cart not found");
         }
-        return cartMapper.convertToDto(cart.get());
+        return cartMapper.convertToDto(cartOptional.get());
     }
 }

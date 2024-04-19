@@ -1,9 +1,7 @@
 package com.archisacademy.ecommercespringboot.mapper.impl;
 
-import com.archisacademy.ecommercespringboot.dto.ProductDto;
 import com.archisacademy.ecommercespringboot.dto.PromotionDto;
 import com.archisacademy.ecommercespringboot.mapper.PromotionMapper;
-import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.Promotion;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +28,8 @@ public class PromotionMapperImpl implements PromotionMapper {
                 .discount(promotion.getDiscount())
                 .code(promotion.getCode())
                 .productUuid(productDtoList)
+                .startDate(promotion.getStartDate())
+                .endDate(promotion.getEndDate())
                 .build();
     }
 
@@ -45,6 +45,8 @@ public class PromotionMapperImpl implements PromotionMapper {
         promotion.setDescription(promotionDto.getDescription());
         promotion.setDiscount(promotionDto.getDiscount());
         promotion.setCode(promotionDto.getCode());
+        promotion.setStartDate(promotionDto.getStartDate());
+        promotion.setEndDate(promotionDto.getEndDate());
         return promotion;
     }
 
