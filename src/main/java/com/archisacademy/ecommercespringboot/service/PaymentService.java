@@ -5,9 +5,9 @@ import com.archisacademy.ecommercespringboot.model.Payment;
 
 public interface PaymentService {
     Payment saveCustomerCartDetails(PaymentDto paymentDto);
-    void updatePaymentByUserUuid(String userUuid, PaymentDto updatedPaymentDto);
+    String updatePaymentByUserUuid(String userUuid, PaymentDto updatedPaymentDto);
     void deletePaymentByUserUuid(String userUuid);
     PaymentDto getUserCartDetailsWithUserUuid(String userUuid);
-    String returnPaymentBackToUser(String userUuid, PaymentDto paymentDto);
+    boolean returnPaymentBackToUser(String userUuid, PaymentDto paymentDto);
     PaymentDto getPaymentWithPaymentUuid(String paymentUuid);
 }
