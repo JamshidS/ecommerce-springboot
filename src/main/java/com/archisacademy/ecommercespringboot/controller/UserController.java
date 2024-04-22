@@ -53,49 +53,49 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{uuid}/wishlist")
+    @GetMapping("/wishlist/{uuid}")
     public ResponseEntity<WishlistResponse> getWishlistByUserUUID(@PathVariable String uuid) {
         WishlistResponse wishlistResponse = userService.getWishlistByUserUUID(uuid);
         return ResponseEntity.ok(wishlistResponse);
     }
 
-    @PostMapping("/{uuid}/wishlist")
+    @PutMapping("/wishlist/{uuid}")
     public ResponseEntity<Void> updateWishlistForUser(@PathVariable String uuid, @RequestBody List<String> productUuids) {
         userService.updateWishlistForUser(uuid, productUuids);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{uuid}/products")
+    @GetMapping("/products/{uuid}")
     public ResponseEntity<List<ProductDto>> getAllProductsByUserUuid(@PathVariable String uuid) {
         List<ProductDto> products = userService.getAllProductsByUserUuid(uuid);
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/{uuid}/orders")
+    @GetMapping("/orders/{uuid}")
     public ResponseEntity<List<OrderDto>> getUserOrders(@PathVariable String uuid) {
         List<OrderDto> orders = userService.getUserOrders(uuid);
         return ResponseEntity.ok(orders);
     }
 
-    @GetMapping("/{uuid}/cart/details")
+    @GetMapping("/cart/details/{uuid}")
     public ResponseEntity<CartDto> getUserCardDetailsWithUserUUID(@PathVariable String uuid) {
         CartDto cartDto = userService.getUserCardDetailsWithUserUUID(uuid);
         return ResponseEntity.ok(cartDto);
     }
 
-    @GetMapping("/{uuid}/cart")
+    @GetMapping("/cart/{uuid}")
     public ResponseEntity<CartDto> getUserCartByUserUUID(@PathVariable String uuid) {
         CartDto cartDto = userService.getUserCartByUserUUID(uuid);
         return ResponseEntity.ok(cartDto);
     }
 
-    @DeleteMapping("/{uuid}/cart")
+    @DeleteMapping("/cart/{uuid}")
     public ResponseEntity<Void> deleteCardDetailsWithUserUUID(@PathVariable String uuid) {
         userService.deleteCardDetailsWithUserUUID(uuid);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{uuid}/cart")
+    @PutMapping("/cart/{uuid}")
     public ResponseEntity<Void> updateUserCartWithUserUUID(@PathVariable String uuid, @RequestBody CartDto updatedCartDto) {
         userService.updateUserCartWithUserUUID(uuid, updatedCartDto);
         return ResponseEntity.ok().build();
