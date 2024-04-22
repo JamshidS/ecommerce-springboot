@@ -53,63 +53,67 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentDto getUserCartDetailsWithUserUuid(String userUuid) {
-        Payment payment = paymentRepository.findByUserUuid(userUuid.trim());
-        if (payment == null) {
-            throw new RuntimeException("payment nout found");
+        Optional<Payment> paymentOptional = paymentRepository.findByUserUuid(userUuid.trim());
+        if (paymentOptional.isEmpty()) {
+            throw new RuntimeException("payment not found");
         }
-
+        Payment payment = paymentOptional.get();
         return paymentMapper.convertToDto(payment);
     }
 
     @Override
     @Transactional
-    public String returnPaymentBackToUser(String userUuid, PaymentDto paymentDto) {
-        Payment payment = paymentRepository.findByUserUuid(userUuid.trim());
-        if (payment == null) {
-            throw new RuntimeException("payment not found");
+    public boolean returnPaymentBackToUser(String userUuid, PaymentDto paymentDto) {
+        Optional<Payment> paymentOptional = paymentRepository.findByUserUuid(userUuid.trim());
+
+        if (paymentOptional.isEmpty()) {
+            throw new RuntimeException("Payment not found");
         }
+
+        Payment payment = paymentOptional.get();
 
         double newAmount = payment.getAmount() - paymentDto.getAmount();
         if (newAmount < 0) {
-            throw new RuntimeException("Insufficient funds for return");
+            return false;
         }
 
         payment.setAmount(newAmount);
         paymentRepository.save(payment);
 
-        return "Payment return successful"; //todo: the return type should be a boolean not a string
+        return true;
     }
 
     @Override
     public PaymentDto getPaymentWithPaymentUuid(String paymentUuid) {
-        Payment payment = paymentRepository.findByUuid(paymentUuid.trim());
-        if (payment == null) {
+        Optional<Payment> paymentOptional = paymentRepository.findByUuid(paymentUuid.trim());
+        if (paymentOptional.isEmpty()) {
             throw new RuntimeException("payment not found");
         }
-
+        Payment payment = paymentOptional.get();
         return paymentMapper.convertToDto(payment);
     }
 
     @Override
     @Transactional
-    public void updatePaymentByUserUuid(String userUuid, PaymentDto updatedPaymentDto) { //todo: this method should return a String
-        Payment existingPayment = paymentRepository.findByUserUuid(userUuid.trim());
-        if (existingPayment != null) {
-            existingPayment.setName(updatedPaymentDto.getName());
-            existingPayment.setCardNumber(updatedPaymentDto.getCardNumber());
-            existingPayment.setExpirationDate(updatedPaymentDto.getExpirationDate());
-            existingPayment.setCvc(updatedPaymentDto.getCvc());
-            paymentRepository.save(existingPayment);
+    public String updatePaymentByUserUuid(String userUuid, PaymentDto updatedPaymentDto) {
+        Optional<Payment> existingPayment = paymentRepository.findByUserUuid(userUuid.trim());
+        if (existingPayment.isPresent()) {
+            Payment payment = existingPayment.get();
+            payment.setName(updatedPaymentDto.getName());
+            payment.setCardNumber(updatedPaymentDto.getCardNumber());
+            payment.setExpirationDate(updatedPaymentDto.getExpirationDate());
+            payment.setCvc(updatedPaymentDto.getCvc());
+            paymentRepository.save(payment);
+            return "Payment updated successfully";
+        } else {
+            return "Payment not found";
         }
-        // todo: if the payment is not found, we should return a proper message
     }
 
     @Override
     @Transactional
     public void deletePaymentByUserUuid(String userUuid) {
-        Payment existingPayment = paymentRepository.findByUserUuid(userUuid.trim());
-        if (existingPayment != null) {
-            paymentRepository.delete(existingPayment);
-        }
+        Optional<Payment> existingPayment = paymentRepository.findByUserUuid(userUuid.trim());
+        existingPayment.ifPresent(paymentRepository::delete);
     }
 }
