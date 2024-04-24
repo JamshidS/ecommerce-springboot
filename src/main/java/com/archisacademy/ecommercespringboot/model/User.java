@@ -52,5 +52,7 @@ public class User {
     private List<Return> returnList;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orderList;
-
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_account_id", referencedColumnName = "id")
+    private UserAccount userAccount;
 }
