@@ -46,10 +46,10 @@ public class InventoryServiceImpl implements InventoryService {
     public boolean checkProductQuantity(String productUuid, int requiredQuantity) {
         Optional<Inventory> optionalInventory = inventoryRepository.findByReferenceCode(productUuid);
         if (optionalInventory.isPresent()) {
-            Inventory inventory = optionalInventory.get();
-            return inventory.getQuantity() >= requiredQuantity;
+            throw new RuntimeException("Inventory not found!");
         }
-        return false;
+        Inventory inventory = optionalInventory.get();
+        return inventory.getQuantity() >= requiredQuantity;
     }
 
     @Override
