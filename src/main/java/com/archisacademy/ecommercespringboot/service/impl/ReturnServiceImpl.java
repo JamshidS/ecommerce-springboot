@@ -32,11 +32,11 @@ public class ReturnServiceImpl implements ReturnService {
 
     @Override
     public String createReturn(ReturnDto returnDto, String paymentUuid) {
+
         PaymentDto paymentDto = paymentService.getPaymentWithPaymentUuid(paymentUuid); // Get the payment details
+        boolean paymentReturned = paymentService.returnPaymentBackToUser(returnDto.getUserUuid(), paymentDto); // Return the payment to the user
 
-
-        String returnPaymentMessage = paymentService.returnPaymentBackToUser(returnDto.getUserUuid(), paymentDto); // Return the payment to the user
-        if (returnPaymentMessage.equals("Payment return successful")) {
+        if (paymentReturned) {
 
             Product product = productRepository.findByUuid(returnDto.getProductUuid()).orElseThrow(() -> new RuntimeException("Product not found"));
 
@@ -55,7 +55,7 @@ public class ReturnServiceImpl implements ReturnService {
 
             return "Return successfully created";
         } else {
-            throw new RuntimeException("Error occurred in payment return: " + returnPaymentMessage);
+            throw new RuntimeException("Error occurred in payment return: Insufficient funds for return");
         }
     }
 

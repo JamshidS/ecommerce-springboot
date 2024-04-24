@@ -28,7 +28,12 @@ public class PaymentController {
 
     @PutMapping("/return/{userUuid}")
     public ResponseEntity<String> returnPaymentBackToUser(@PathVariable String userUuid, @RequestBody PaymentDto paymentDto) {
-        return new ResponseEntity<>(paymentService.returnPaymentBackToUser(userUuid, paymentDto), HttpStatus.OK);
+        boolean paymentReturned = paymentService.returnPaymentBackToUser(userUuid, paymentDto);
+        if (paymentReturned) {
+            return ResponseEntity.ok("Payment returned successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient funds for return");
+        }
     }
 
     @GetMapping("/{paymentUuid}")
