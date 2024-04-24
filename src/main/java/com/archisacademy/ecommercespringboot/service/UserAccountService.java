@@ -5,5 +5,5 @@ import com.archisacademy.ecommercespringboot.dto.UserAccountDto;
 public interface UserAccountService {
     String createUserAccount(UserAccountDto userAccountDto);
 
-    UserAccountDto getUserAccountById(Long id);
+    UserAccountDto getUserAccountById(String uuid);
 }

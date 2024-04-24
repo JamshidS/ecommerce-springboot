@@ -11,7 +11,6 @@ public class UserAccountMapperImpl implements UserAccountMapper {
         UserAccountDto userAccountDto = new UserAccountDto();
         userAccountDto.setUuid(userAccount.getUuid());
         userAccountDto.setPrice(userAccount.getPrice());
-        // Burada diğer alanları da doldurabilirsiniz, eğer gerekirse
         return userAccountDto;
     }
 
@@ -19,7 +18,6 @@ public class UserAccountMapperImpl implements UserAccountMapper {
         UserAccount userAccount = new UserAccount();
         userAccount.setUuid(userAccountDto.getUuid());
         userAccount.setPrice(userAccountDto.getPrice());
-        // Burada diğer alanları da doldurabilirsiniz, eğer gerekirse
         return userAccount;
     }
 }

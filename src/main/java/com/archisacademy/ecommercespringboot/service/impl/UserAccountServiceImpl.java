@@ -32,27 +32,22 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     @Transactional
     public String createUserAccount(UserAccountDto userAccountDto) {
-        // Kullanıcı hesabı oluştur
         UserAccount userAccount = new UserAccount();
         userAccount.setUuid(UUID.randomUUID().toString());
         userAccount.setPrice(userAccountDto.getPrice());
 
-        // Ürünlerin UUID'lerini al ve Product nesnelerini bul
         List<String> productUuids = Arrays.asList(userAccountDto.getProductUuids());
         List<Product> products = productRepository.findByUuidIn(productUuids);
         userAccount.setProducts(products);
 
-        // Kullanıcıyı bul
         Optional<User> userOptional = userRepository.findByUuid(userAccountDto.getUserUuid());
         if (userOptional.isEmpty()) {
             throw new RuntimeException("User not found with UUID: " + userAccountDto.getUserUuid());
         }
         User user = userOptional.get();
 
-        // Kullanıcı hesabını kullanıcıya ata
         user.setUserAccount(userAccount);
 
-        // Kullanıcı hesabını kaydet
         userAccountRepository.save(userAccount);
 
         return "User account created successfully";
@@ -60,13 +55,13 @@ public class UserAccountServiceImpl implements UserAccountService {
 
 
     @Override
-    public UserAccountDto getUserAccountById(Long id) {
-        Optional<UserAccount> userAccountOptional = userAccountRepository.findById(id);
+    public UserAccountDto getUserAccountById(String uuid) {
+        Optional<UserAccount> userAccountOptional = userAccountRepository.findByUuid(uuid);
         if (userAccountOptional.isPresent()) {
             UserAccount userAccount = userAccountOptional.get();
             return userAccountMapper.toUserAccountDto(userAccount);
         } else {
-            throw new RuntimeException("User account not found with ID: " + id);
+            throw new RuntimeException("User account not found with ID: " + uuid);
         }
     }
 }
