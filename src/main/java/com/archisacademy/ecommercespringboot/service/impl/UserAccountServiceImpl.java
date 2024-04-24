@@ -55,7 +55,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
 
     @Override
-    public UserAccountDto getUserAccountById(String uuid) {
+    public UserAccountDto getUserAccountByUuid(String uuid) {
         Optional<UserAccount> userAccountOptional = userAccountRepository.findByUuid(uuid);
         if (userAccountOptional.isPresent()) {
             UserAccount userAccount = userAccountOptional.get();
