@@ -20,14 +20,12 @@ public class ShippingController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createShipping(@RequestBody ShippingDto shippingDto) {
-        String message = shippingService.createShipping(shippingDto);
-        return new ResponseEntity<>(message, HttpStatus.CREATED);
+        return new ResponseEntity<>(shippingService.createShipping(shippingDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateShipping(@PathVariable Long id, @RequestBody ShippingDto shippingDto) {
-        String message = shippingService.updateShipping(id, shippingDto);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        return new ResponseEntity<>(shippingService.updateShipping(id, shippingDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -38,13 +36,11 @@ public class ShippingController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ShippingDto> getShippingById(@PathVariable Long id) {
-        ShippingDto shippingDto = shippingService.getShippingById(id);
-        return new ResponseEntity<>(shippingDto, HttpStatus.OK);
+        return new ResponseEntity<>(shippingService.getShippingById(id), HttpStatus.OK);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<ShippingDto>> getAllShippings() {
-        List<ShippingDto> shippingDtos = shippingService.getAllShippings();
-        return new ResponseEntity<>(shippingDtos, HttpStatus.OK);
+        return new ResponseEntity<>(shippingService.getAllShippings(), HttpStatus.OK);
     }
 }
