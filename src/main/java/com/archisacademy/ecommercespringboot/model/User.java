@@ -45,13 +45,12 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> productList;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Payment> payment;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Return> returnList;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orderList;
+    //onetomany olacak list seklinde accounthistory
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_account_id", referencedColumnName = "id")
     private UserAccount userAccount;

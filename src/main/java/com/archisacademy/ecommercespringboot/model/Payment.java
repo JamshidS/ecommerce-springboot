@@ -31,11 +31,8 @@ public class Payment {
     @Column(name = "amount")
     private Double amount;
 
-    @ManyToOne
-    @JoinColumn(name="product_id")
-    private Product product;
-  
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    //order ile payment onetone
+
+  //useruuid String kimin odeme yapıldıgını
+
 }

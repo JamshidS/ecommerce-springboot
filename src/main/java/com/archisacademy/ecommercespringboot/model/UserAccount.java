@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
@@ -20,7 +21,13 @@ public class UserAccount {
     @Column(name = "uuid")
     private String uuid;
     @Column(name = "price")
-    private String price;
+    private Double price;
+    @Column(name = "created_at")
+    private Timestamp createdAt;
+    //sipariş numarası olustur orderNumber orderstatus string teslim edildi iade edildi refundamount da tutulabilir iadetarihi
+
+
+    //onetone yapı olucak
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_account_product",
