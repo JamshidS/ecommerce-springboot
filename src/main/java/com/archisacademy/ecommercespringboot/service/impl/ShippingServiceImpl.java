@@ -8,10 +8,11 @@ import com.archisacademy.ecommercespringboot.repository.OrderRepository;
 import com.archisacademy.ecommercespringboot.repository.ShippingRepository;
 import com.archisacademy.ecommercespringboot.service.ShippingService;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Service
 public class ShippingServiceImpl implements ShippingService {
 
     private final ShippingRepository shippingRepository;

@@ -9,6 +9,8 @@ public interface InventoryService {
 
     String updateInventory(InventoryDto inventoryDto, Long inventoryId);
 
+    boolean checkProductQuantity(String productUuid, int requiredQuantity);
+
     List<InventoryDto> getAllInventories();
 
     InventoryDto getInventoryById(Long inventoryId);
