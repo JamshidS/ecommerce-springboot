@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Data
@@ -15,7 +16,7 @@ public class ReviewDto {
     private String uuid;
     private short rating;
     private String comment;
-    private Date createdAt;
+    private Timestamp createdAt;
     private String userUuid;
     private String productUuid;
     private Boolean isApproved;

@@ -16,8 +16,7 @@ public class PaymentMapperImpl implements PaymentMapper {
         paymentDto.setExpirationDate(payment.getExpirationDate());
         paymentDto.setCvc(payment.getCvc());
         paymentDto.setAmount(payment.getAmount());
-        paymentDto.setProductUuid(payment.getProduct().getUuid());
-        paymentDto.setUserUuid(payment.getUser().getUuid());
+        paymentDto.setUserUuid(payment.getUserUuid());
 
         return paymentDto;
     }
