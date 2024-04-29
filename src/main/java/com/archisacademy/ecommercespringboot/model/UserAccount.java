@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -36,6 +37,6 @@ public class UserAccount {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToOne(cascade = CascadeType.ALL)
-    private Product product;
+    @OneToMany(mappedBy = "userAccount", cascade = CascadeType.ALL)
+    private List<Product> products;
 }

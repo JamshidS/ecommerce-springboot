@@ -1,12 +1,15 @@
 package com.archisacademy.ecommercespringboot.service.impl;
 
 import com.archisacademy.ecommercespringboot.dto.OrderDto;
+import com.archisacademy.ecommercespringboot.enums.OrderStatus;
 import com.archisacademy.ecommercespringboot.mapper.OrderMapper;
 import com.archisacademy.ecommercespringboot.model.Order;
 import com.archisacademy.ecommercespringboot.model.Product;
 import com.archisacademy.ecommercespringboot.model.User;
+import com.archisacademy.ecommercespringboot.model.UserAccount;
 import com.archisacademy.ecommercespringboot.repository.OrderRepository;
 import com.archisacademy.ecommercespringboot.repository.ProductRepository;
+import com.archisacademy.ecommercespringboot.repository.UserAccountRepository;
 import com.archisacademy.ecommercespringboot.repository.UserRepository;
 import com.archisacademy.ecommercespringboot.service.OrderService;
 import jakarta.transaction.Transactional;
@@ -23,12 +26,14 @@ import java.util.UUID;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
+    private final UserAccountRepository userAccountRepository;
     private final ProductRepository productRepository;
     private final OrderMapper orderMapper;
 
-    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, ProductRepository productRepository, OrderMapper orderMapper) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository, UserAccountRepository userAccountRepository, ProductRepository productRepository, OrderMapper orderMapper) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
+        this.userAccountRepository = userAccountRepository;
         this.productRepository = productRepository;
         this.orderMapper = orderMapper;
     }
@@ -44,11 +49,25 @@ public class OrderServiceImpl implements OrderService {
         if (user.isEmpty() || productList.isEmpty()) {
             throw new RuntimeException("An error occurred during the save!");
         }
-        Order order = new Order();
+        Order order = orderMapper.convertToEntity(orderDto);
         order.setUuid(UUID.randomUUID().toString());
-        Order savedOrder = orderRepository.save(order);
-        builderForUpdate(orderDto, user, productList, savedOrder, true);
-        return "Order saved successfully!";
+        order.setOrderDate(new Timestamp(System.currentTimeMillis()));
+        order.setUser(user.get());
+        order.setProductList(productList);
+        orderRepository.save(order);
+
+        UserAccount userAccount = new UserAccount();
+        userAccount.setUuid(UUID.randomUUID().toString());
+        userAccount.setPrice(orderDto.getTotalAmount());
+        userAccount.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        userAccount.setOrderNumber(generateOrderNumber(order.getId()));
+        userAccount.setOrderStatus(OrderStatus.PREPARING);
+        userAccount.setUser(user.get());
+        userAccount.setProducts(productList);
+
+        userAccountRepository.save(userAccount);
+
+        return "Order and user account saved successfully!";
     }
 
     @Override
