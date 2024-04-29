@@ -45,8 +45,6 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setExpirationDate(paymentDto.getExpirationDate());
         payment.setCvc(paymentDto.getCvc());
         payment.setAmount(paymentDto.getAmount());
-        payment.setUser(user.get());
-        payment.setProduct(product.get());
 
         return paymentRepository.save(payment);
     }

@@ -45,12 +45,11 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> productList;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Payment> payment;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Return> returnList;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orderList;
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserAccount> userAccountList;
 }

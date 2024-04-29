@@ -14,4 +14,10 @@ public class OrderMapperImpl implements OrderMapper {
         BeanUtils.copyProperties(order, orderDto);
         return orderDto;
     }
+    @Override
+    public Order convertToEntity(OrderDto orderDto) {
+        Order order = new Order();
+        BeanUtils.copyProperties(orderDto, order);
+        return order;
+    }
 }

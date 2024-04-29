@@ -67,4 +67,7 @@ public class Product {
 
     @ManyToMany(mappedBy = "productList")
     private List<Order> orderList;
+    @ManyToOne
+    @JoinColumn(name = "user_account_id")
+    private UserAccount userAccount;
 }

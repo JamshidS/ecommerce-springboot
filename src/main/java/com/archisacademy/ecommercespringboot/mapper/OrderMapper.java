@@ -5,5 +5,5 @@ import com.archisacademy.ecommercespringboot.model.Order;
 
 public interface OrderMapper {
     OrderDto convertToDto(Order order);
-
+    Order convertToEntity(OrderDto orderDto);
 }

@@ -3,6 +3,7 @@ package com.archisacademy.ecommercespringboot.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Data
@@ -23,7 +24,7 @@ public class Review {
     private String comment;
 
     @Column(name = "created_at")
-    private Date createdAt; //timestamp
+    private Timestamp createdAt;
     @Column(name = "is_approved")
     private Boolean isApproved;
 

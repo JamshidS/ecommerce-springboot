@@ -5,6 +5,8 @@ import com.archisacademy.ecommercespringboot.mapper.ReviewMapper;
 import com.archisacademy.ecommercespringboot.model.Review;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
+
 @Component
 public class ReviewMapperImpl implements ReviewMapper {
     @Override
@@ -13,7 +15,7 @@ public class ReviewMapperImpl implements ReviewMapper {
         reviewDto.setUuid(review.getUuid());
         reviewDto.setRating(review.getRating());
         reviewDto.setComment(review.getComment());
-        reviewDto.setCreatedAt(review.getCreatedAt());
+        reviewDto.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         if (review.getUser() != null) {
             reviewDto.setUserUuid(review.getUser().getUuid());
         }

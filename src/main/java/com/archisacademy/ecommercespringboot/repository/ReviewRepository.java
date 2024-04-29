@@ -10,8 +10,6 @@ import java.util.Optional;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<Review> findByUuid(String uuid);
 
-    List<Review> findAllByUser(User user); // uuid
-
     List<Review> findAllByProductUuid(String productUuid);
 
     Review findByUserUuidAndProductUuid(String userUuid, String productUuid);
