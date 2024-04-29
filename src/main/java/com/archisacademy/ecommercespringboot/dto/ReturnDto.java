@@ -17,6 +17,4 @@ public class ReturnDto {
     private String productUuid;
     private Long cartId;
     private Long orderId;
-
-
 }
