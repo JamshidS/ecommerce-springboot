@@ -44,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
     public String saveOrder(OrderDto orderDto) {
         Optional<User> user = userRepository.findByUuid(orderDto.getUserUuid());
         List<Product> productList = new ArrayList<>();
-        for (String productUuid : orderDto.getProductUuid()) {
+        for (String productUuid : orderDto.getProductUuids()) {
             productList.add(productRepository.findByUuid(productUuid).get());
         }
         if (user.isEmpty() || productList.isEmpty()) {
@@ -87,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
         Optional<Order> order = orderRepository.findByUuid(orderUuid);
         Optional<User> user = userRepository.findByUuid(orderDto.getUserUuid());
         List<Product> productList = new ArrayList<>();
-        for (String productUuid : orderDto.getProductUuid()) {
+        for (String productUuid : orderDto.getProductUuids()) {
             productList.add(productRepository.findByUuid(productUuid).get());
         }
         if (order.isEmpty() || user.isEmpty() || productList.isEmpty()) {
