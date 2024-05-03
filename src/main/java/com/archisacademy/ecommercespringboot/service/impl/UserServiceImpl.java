@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -73,6 +74,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void saveUser(UserDto userDto) {
         User user = userMapper.toUser(userDto);
+        user.setUuid(UUID.randomUUID().toString());
         userRepository.save(user);
     }
 

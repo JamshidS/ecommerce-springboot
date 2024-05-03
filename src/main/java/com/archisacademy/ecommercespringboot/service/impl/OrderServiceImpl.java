@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -49,22 +50,32 @@ public class OrderServiceImpl implements OrderService {
         if (user.isEmpty() || productList.isEmpty()) {
             throw new RuntimeException("An error occurred during the save!");
         }
+        AtomicReference<Double> totalAmount = new AtomicReference<>((double) 0);
+        productList.forEach(p ->{
+            totalAmount.updateAndGet(v ->  (v + p.getPrice()));
+        });
+
         Order order = orderMapper.convertToEntity(orderDto);
         order.setUuid(UUID.randomUUID().toString());
         order.setOrderDate(new Timestamp(System.currentTimeMillis()));
         order.setUser(user.get());
         order.setProductList(productList);
-        orderRepository.save(order);
+        order.setTotalAmount(totalAmount.get());
+        order.setOrderStatus(String.valueOf(OrderStatus.PREPARING));
+        Order savedOrder =  orderRepository.save(order);
+
+        savedOrder.setOrderNumber(generateOrderNumber(savedOrder.getId()));
 
         UserAccount userAccount = new UserAccount();
         userAccount.setUuid(UUID.randomUUID().toString());
         userAccount.setPrice(orderDto.getTotalAmount());
         userAccount.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        userAccount.setOrderNumber(generateOrderNumber(order.getId()));
+        userAccount.setOrderNumber(generateOrderNumber(savedOrder.getId()));
         userAccount.setOrderStatus(OrderStatus.PREPARING);
         userAccount.setUser(user.get());
         userAccount.setProducts(productList);
 
+        orderRepository.save(savedOrder);
         userAccountRepository.save(userAccount);
 
         return "Order and user account saved successfully!";
