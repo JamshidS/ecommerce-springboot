@@ -1,93 +1,159 @@
-## İade Oluşturma
+# Return Controller API Documentation
 
-### Endpoint
-`POST /returns/create/{paymentUuid}`
+This document outlines the API for the Return Controller.
 
-### Açıklama
-Bu endpoint, bir ödeme ile ilişkilendirilmiş bir iade oluşturur.
+## Table of Contents
 
-### İstek Body Parametreleri
-- `address` (String, zorunlu): İade adresi.
-- `reason` (String, zorunlu): İade nedeni.
-- `returnDate` (Date, zorunlu): İade tarihi.
-- `userUuid` (String, zorunlu): Kullanıcının UUID'si.
-- `productUuid` (String, zorunlu): İade edilen ürünün UUID'si.
-- `cartId` (Long, zorunlu): Sepet ID'si.
-- `orderId` (Long, zorunlu): Sipariş ID'si.
+1. [Create Return](#create-return)
+2. [Update Return](#update-return)
+3. [Get Return by ID](#get-return-by-id)
+4. [Get All Returns](#get-all-returns)
+5. [Delete Return](#delete-return)
 
-### Başarılı Yanıt
-`201 Created` status code ile iade başarıyla oluşturulduğuna dair mesaj.
+## Create Return
 
-### Hata Durumları
-- `400 Bad Request`: Eksik veya hatalı istek body parametreleri.
-- `404 Not Found`: Belirtilen UUID'ye sahip ödeme, kullanıcı veya ürün bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
+**Description**: Create a new return associated with a payment.
 
-## İade Güncelleme
+- **Request**: POST
+- **URL**: /returns/create/{paymentUuid}
+- **Path Parameters**: paymentUuid
+- **Body**:
+```json
+{
+    "address": "Return Address",
+    "reason": "Return Reason",
+    "returnDate": "2024-05-03T00:00:00",
+    "userUuid": "user_uuid",
+    "productUuid": "product_uuid",
+    "cartId": 1,
+    "orderId": 1
+}
+```
+Response:
 
-### Endpoint
-`PUT /returns/update`
+* Status code: 201 CREATED on successful creation.
+* Response body: String indicating the success message.
 
-### Açıklama
-Bu endpoint, bir iadeyi günceller.
 
-### İstek Body Parametreleri
-- `address` (String, zorunlu): İade adresi.
-- `reason` (String, zorunlu): İade nedeni.
-- `returnDate` (Date, zorunlu): İade tarihi.
-- `userUuid` (String, zorunlu): Kullanıcının UUID'si.
-- `productUuid` (String, zorunlu): İade edilen ürünün UUID'si.
-- `cartId` (Long, zorunlu): Sepet ID'si.
-- `orderId` (Long, zorunlu): Sipariş ID'si.
+## Update Return
+**Description**: Update an existing return.
 
-### Başarılı Yanıt
-`200 OK` status code ile iade başarıyla güncellendiğine dair mesaj.
+* **Request**: PUT
+* **URL**: /returns/update
+* **Body**:
 
-### Hata Durumları
-- `400 Bad Request`: Eksik veya hatalı istek body parametreleri.
-- `404 Not Found`: Belirtilen UUID'ye sahip iade bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
+```json
+{
+    "address": "Updated Return Address",
+    "reason": "Updated Return Reason",
+    "returnDate": "2024-05-03T00:00:00",
+    "userUuid": "updated_user_uuid",
+    "productUuid": "updated_product_uuid",
+    "cartId": 2,
+    "orderId": 2
+}
+```
+Response:
 
-## İade Bilgilerini Getirme
+* Status code: 200 OK on successful update.
+* Response body: String indicating the success message.
 
-### Endpoint
-`GET /returns/{returnId}`
+## Get Return by ID
+**Description**: Retrieve a return by its ID.
 
-### Açıklama
-Bu endpoint, belirtilen ID'ye sahip bir iadenin bilgilerini getirir.
+* **Request**: GET
+* **URL**: /returns/{returnId}
+* **Path Parameters**: returnId
 
-### Başarılı Yanıt
-`200 OK` status code ile belirtilen ID'ye sahip iadenin bilgileri.
 
-### Hata Durumları
-- `404 Not Found`: Belirtilen ID'ye sahip iade bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
+* **Response**:
+```json
+{
+"address": "Return Address",
+"reason": "Return Reason",
+"returnDate": "2024-05-03T00:00:00",
+"userUuid": "user_uuid",
+"productUuid": "product_uuid",
+"cartId": 1,
+"orderId": 1
+}
+```
 
-## Tüm İadeleri Listeleme
+* Status code: 200 OK on successful retrieval.
+* Response body: JSON object representing the retrieved ReturnDto with details.
 
-### Endpoint
-`GET /returns`
+## Get All Returns
+**Description**: Retrieve all returns.
 
-### Açıklama
-Bu endpoint, tüm iadelerin listesini getirir.
+**Request**: GET
+**URL**: /returns
 
-### Başarılı Yanıt
-`200 OK` status code ile tüm iadelerin listesi.
+Response:
+```json
+[
+    {
+        "address": "Return Address 1",
+        "reason": "Return Reason 1",
+        "returnDate": "2024-05-03T00:00:00",
+        "userUuid": "user_uuid_1",
+        "productUuid": "product_uuid_1",
+        "cartId": 1,
+        "orderId": 1
+    },
+    {
+        "address": "Return Address 2",
+        "reason": "Return Reason 2",
+        "returnDate": "2024-05-03T00:00:00",
+        "userUuid": "user_uuid_2",
+        "productUuid": "product_uuid_2",
+        "cartId": 2,
+        "orderId": 2
+    }
+]
+```
+* Status code: 200 OK on successful retrieval.
+* Response body: List of ReturnDto containing all returns.
 
-### Hata Durumları
-- `500 Internal Server Error`: Sunucu hatası.
 
-## İade Silme
+## Delete Return
+**Description**: Delete a return by its ID.
 
-### Endpoint
-`DELETE /returns/delete/{returnId}`
+* **Request**: DELETE
+* **URL**: /returns/delete/{returnId}
+* **Path Parameters**: returnId
 
-### Açıklama
-Bu endpoint, belirtilen ID'ye sahip bir iadeyi siler.
 
-### Başarılı Yanıt
-`200 OK` status code ile iade başarıyla silindiğine dair mesaj.
+**Response**:
+* Status code: 200 OK on successful deletion.
+* Response body: No content.
 
-### Hata Durumları
-- `404 Not Found`: Belirtilen ID'ye sahip iade bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

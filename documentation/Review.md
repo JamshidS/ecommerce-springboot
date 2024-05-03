@@ -1,154 +1,184 @@
-## İnceleme Oluşturma
+# Review Controller API Documentation
 
-### Endpoint
-`POST /reviews/save`
+This document outlines the API for the Review Controller.
 
-### Açıklama
-Bu endpoint, bir inceleme oluşturur.
+## Table of Contents
 
-### İstek Body Parametreleri
-- `rating` (short, zorunlu): İncelemenin puanı.
-- `comment` (String, isteğe bağlı): İnceleme metni.
-- `userUuid` (String, zorunlu): Kullanıcının UUID'si.
-- `productUuid` (String, zorunlu): İncelenen ürünün UUID'si.
+1. [Save Review](#save-review)
+2. [Get Review by User and Product](#get-review-by-user-and-product)
+3. [Get Reviews by Product](#get-reviews-by-product)
+4. [Update Review by User and Product](#update-review-by-user-and-product)
+5. [Delete Review by User and Product](#delete-review-by-user-and-product)
+6. [Delete Reviews by Review UUID](#delete-reviews-by-review-uuid)
+7. [Get All Approved Reviews by Product](#get-all-approved-reviews-by-product)
+8. [Approve Review](#approve-review)
 
-### Başarılı Yanıt
-`201 Created` status code ile inceleme başarıyla oluşturulduğuna dair mesaj.
+## Save Review
 
-### Hata Durumları
-- `400 Bad Request`: Eksik veya hatalı istek body parametreleri.
-- `500 Internal Server Error`: Sunucu hatası.
+**Description**: Save a new review.
 
-## Kullanıcı ve Ürüne Göre İncelemeyi Getirme
+- **Request**: POST
+- **URL**: /reviews/save
+- **Body**:
+```json
+{
+    "uuid": "review_uuid",
+    "rating": 4,
+    "comment": "This product is great!",
+    "createdAt": "2024-05-03T12:00:00",
+    "userUuid": "user_uuid",
+    "productUuid": "product_uuid",
+    "isApproved": true
+}
+```
+Response:
+```json
+{
+    "uuid": "review_uuid",
+    "rating": 4,
+    "comment": "This product is great!",
+    "createdAt": "2024-05-03T12:00:00",
+    "userUuid": "user_uuid",
+    "productUuid": "product_uuid",
+    "isApproved": true
+}
+```
+## Get Review by User and Product
+**Description**: Retrieve a review by user UUID and product UUID.
 
-### Endpoint
-`GET /reviews`
+* **Request**: GET
+* **URL**: /reviews
+* **Query Parameters**:
+* userUuid
+* productUuid
 
-### Açıklama
-Bu endpoint, belirtilen kullanıcı ve ürüne göre bir incelemeyi getirir.
+Response:
+```json
+{
+    "uuid": "review_uuid",
+    "rating": 4,
+    "comment": "This product is great!",
+    "createdAt": "2024-05-03T12:00:00",
+    "userUuid": "user_uuid",
+    "productUuid": "product_uuid",
+    "isApproved": true
+}
+```
+## Get Reviews by Product
+**Description**: Retrieve all reviews for a product.
 
-### Query Parametreleri
-- `userUuid` (String, zorunlu): Kullanıcının UUID'si.
-- `productUuid` (String, zorunlu): İncelenen ürünün UUID'si.
+* **Request**: GET
+* **URL**: /reviews/product
+* **Query Parameters:**
+* productUuid
 
-### Başarılı Yanıt
-`200 OK` status code ile belirtilen kullanıcı ve ürüne göre inceleme.
+Response:
+```json
+[
+    {
+        "uuid": "review_uuid_1",
+        "rating": 4,
+        "comment": "This product is great!",
+        "createdAt": "2024-05-03T12:00:00",
+        "userUuid": "user_uuid_1",
+        "productUuid": "product_uuid",
+        "isApproved": true
+    },
+    {
+        "uuid": "review_uuid_2",
+        "rating": 5,
+        "comment": "Excellent product!",
+        "createdAt": "2024-05-04T10:00:00",
+        "userUuid": "user_uuid_2",
+        "productUuid": "product_uuid",
+        "isApproved": true
+    }
+]
+```
+Update Review by User and Product
+Description: Update a review by user UUID and product UUID.
 
-### Hata Durumları
-- `404 Not Found`: Belirtilen kullanıcı ve ürüne göre inceleme bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
+* **Request**: PUT
+* **URL**: /reviews/update
+* **Query Parameters:**
+* userUuid
+* productUuid
+* Body:
+```json
+{
+    "rating": 5,
+    "comment": "Updated review comment",
+    "isApproved": true
+}
+```
+Response:
+```json
+"Review successfully updated"
+```
 
-## Ürüne Göre İncelemeleri Listeleme
+## Delete Review by User and Product
+**Description**: Delete a review by user UUID and product UUID.
 
-### Endpoint
-`GET /reviews/product`
+* **Request**: DELETE
+* **URL**: /reviews/delete
+* **Query Parameters:**
+* userUuid
+* productUuid
 
-### Açıklama
-Bu endpoint, belirtilen ürüne göre tüm incelemeleri listeler.
+Response:
+```json
+"Review successfully deleted"
+```
+## Delete Reviews by Review UUID
+**Description**: Delete a review by its UUID.
 
-### Query Parametresi
-- `productUuid` (String, zorunlu): İncelenen ürünün UUID'si.
+* **Request**: DELETE
+* **URL**: /reviews/delete/{reviewUuid}
 
-### Başarılı Yanıt
-`200 OK` status code ile belirtilen ürüne göre tüm incelemelerin listesi.
+Response:
+```json
+"Review successfully deleted"
+```
+## Get All Approved Reviews by Product
+**Description**: Retrieve all approved reviews for a product.
 
-### Hata Durumları
-- `404 Not Found`: Belirtilen ürüne göre inceleme bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
+* **Request**: GET
+* **URL**: /reviews/approved
+* **Query Parameters:**
+* productUuid
 
-## Kullanıcı ve Ürüne Göre İncelemeyi Güncelleme
+Response:
+````json
+[
+    {
+        "uuid": "review_uuid_1",
+        "rating": 4,
+        "comment": "This product is great!",
+        "createdAt": "2024-05-03T12:00:00",
+        "userUuid": "user_uuid_1",
+        "productUuid": "product_uuid",
+        "isApproved": true
+    },
+    {
+        "uuid": "review_uuid_2",
+        "rating": 5,
+        "comment": "Excellent product!",
+        "createdAt": "2024-05-04T10:00:00",
+        "userUuid": "user_uuid_2",
+        "productUuid": "product_uuid",
+        "isApproved": true
+    }
+]
+````
+## Approve Review
+**Description**: Approve a review by its UUID.
 
-### Endpoint
-`PUT /reviews/update`
+* **Request**: PUT
+* **URL**: /reviews/approve
+* **Query Parameters:**
+* reviewUuid
 
-### Açıklama
-Bu endpoint, belirtilen kullanıcı ve ürüne göre bir incelemeyi günceller.
-
-### Query Parametreleri
-- `userUuid` (String, zorunlu): Kullanıcının UUID'si.
-- `productUuid` (String, zorunlu): İncelenen ürünün UUID'si.
-
-### İstek Body Parametreleri
-- `rating` (short, zorunlu): İncelemenin puanı.
-- `comment` (String, isteğe bağlı): İnceleme metni.
-
-### Başarılı Yanıt
-`200 OK` status code ile inceleme başarıyla güncellendiğine dair mesaj.
-
-### Hata Durumları
-- `400 Bad Request`: Eksik veya hatalı istek body parametreleri.
-- `404 Not Found`: Belirtilen kullanıcı ve ürüne göre inceleme bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
-
-## Kullanıcı ve Ürüne Göre İncelemeyi Silme
-
-### Endpoint
-`DELETE /reviews/delete`
-
-### Açıklama
-Bu endpoint, belirtilen kullanıcı ve ürüne göre bir incelemeyi siler.
-
-### Query Parametreleri
-- `userUuid` (String, zorunlu): Kullanıcının UUID'si.
-- `productUuid` (String, zorunlu): İncelenen ürünün UUID'si.
-
-### Başarılı Yanıt
-`200 OK` status code ile inceleme başarıyla silindiğine dair mesaj.
-
-### Hata Durumları
-- `404 Not Found`: Belirtilen kullanıcı ve ürüne göre inceleme bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
-
-## İnceleme UUID'sine Göre İncelemeleri Silme
-
-### Endpoint
-`DELETE /reviews/delete/{reviewUuid}`
-
-### Açıklama
-Bu endpoint, belirtilen inceleme UUID'sine sahip tüm incelemeleri siler.
-
-### Path Parametresi
-- `reviewUuid` (String, zorunlu): İnceleme UUID'si.
-
-### Başarılı Yanıt
-`200 OK` status code ile belirtilen inceleme UUID'sine sahip tüm incelemeler silindiğine dair mesaj.
-
-### Hata Durumları
-- `404 Not Found`: Belirtilen inceleme UUID'sine sahip inceleme bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
-
-## Onaylanmış İncelemeleri Ürüne Göre Listeleme
-
-### Endpoint
-`GET /reviews/approved`
-
-### Açıklama
-Bu endpoint, belirtilen ürüne ait tüm onaylanmış incelemeleri listeler.
-
-### Query Parametresi
-- `productUuid` (String, zorunlu): İncelenen ürünün UUID'si.
-
-### Başarılı Yanıt
-`200 OK` status code ile belirtilen ürüne ait tüm onaylanmış incelemelerin listesi.
-
-### Hata Durumları
-- `404 Not Found`: Belirtilen ürüne ait onaylanmış inceleme bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
-
-## İncelemeyi Onaylama
-
-### Endpoint
-`PUT /reviews/approve`
-
-### Açıklama
-Bu endpoint, belirtilen incelemeyi onaylar.
-
-### Query Parametresi
-- `reviewUuid` (String, zorunlu): İncelenen ürünün UUID'si.
-
-### Başarılı Yanıt
-`200 OK` status code ile inceleme başarıyla onaylandı.
-
-### Hata Durumları
-- `404 Not Found`: Belirtilen inceleme UUID'sine sahip inceleme bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
+Response:
+```json
+"Review successfully approved"
+```
