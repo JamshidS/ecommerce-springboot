@@ -1,96 +1,111 @@
-## Kargo Oluşturma
+# Shipping Controller API Documentation
 
-### Endpoint
-`POST /shippings/create`
+This document outlines the API for the Shipping Controller.
 
-### Açıklama
-Bu endpoint, bir kargo oluşturur.
+## Table of Contents
 
-### İstek Body Parametreleri
-- `address` (String, zorunlu): Kargo adresi.
-- `shippedAt` (Date, isteğe bağlı): Kargonun gönderildiği tarih.
-- `senderUuid` (String, zorunlu): Gönderenin UUID'si.
-- `orderUuid` (String, zorunlu): Kargonun ilişkilendirildiği siparişin UUID'si.
+1. [Create Shipping](#create-shipping)
+2. [Update Shipping](#update-shipping)
+3. [Delete Shipping](#delete-shipping)
+4. [Get Shipping by ID](#get-shipping-by-id)
+5. [Get All Shippings](#get-all-shippings)
 
-### Başarılı Yanıt
-`201 Created` status code ile kargo başarıyla oluşturulduğuna dair mesaj.
+## Create Shipping
 
-### Hata Durumları
-- `400 Bad Request`: Eksik veya hatalı istek body parametreleri.
-- `500 Internal Server Error`: Sunucu hatası.
+**Description**: Create a new shipping record.
 
-## Kargo Güncelleme
+- **Request**: POST
+- **URL**: /shippings/create
+- **Body**:
+```json
+{
+    "address": "Shipping Address",
+    "shippedAt": "2024-05-03T12:00:00",
+    "senderUuid": "sender_uuid",
+    "orderUuid": "order_uuid"
+}
+```
+Response
+:
+````json
+{
+    "status": 201,
+    "message": "Shipping successfully created"
+}
+````
+## Update Shipping
+**Description**: Update an existing shipping record.
 
-### Endpoint
-`PUT /shippings/update/{id}`
+* **Request**: PUT
+* **URL**: /shippings/update/{id}
+* **Path Parameters**: id (Shipping ID)
+* **Body**:
 
-### Açıklama
-Bu endpoint, belirtilen bir kargonun bilgilerini günceller.
+```json
+{
+    "address": "Updated Shipping Address",
+    "shippedAt": "2024-05-03T12:00:00",
+    "senderUuid": "updated_sender_uuid",
+    "orderUuid": "updated_order_uuid"
+}
+```
+Response:
+```json
+{
+    "status": 200,
+    "message": "Shipping successfully updated"
+}
+```
+## Delete Shipping
+**Description**: Delete a shipping record by its ID.
 
-### Path Parametresi
-- `id` (Long, zorunlu): Güncellenmek istenen kargonun ID'si.
+* **Request**: DELETE
+* **URL**: /shippings/delete/{id}
+* **Path Parameters**: id (Shipping ID)
 
-### İstek Body Parametreleri
-- `address` (String, zorunlu): Kargo adresi.
-- `shippedAt` (Date, isteğe bağlı): Kargonun gönderildiği tarih.
-- `senderUuid` (String, zorunlu): Gönderenin UUID'si.
-- `orderUuid` (String, zorunlu): Kargonun ilişkilendirildiği siparişin UUID'si.
+Response:
+```json
+{
+    "status": 200,
+    "message": "Shipping successfully deleted"
+}
+```
+## Get Shipping by ID
+**Description**: Retrieve a shipping record by its ID.
 
-### Başarılı Yanıt
-`200 OK` status code ile kargo başarıyla güncellendiğine dair mesaj.
+* **Request**: GET
+* **URL**: /shippings/{id}
+* **Path Parameters**: id (Shipping ID)
 
-### Hata Durumları
-- `400 Bad Request`: Eksik veya hatalı istek body parametreleri.
-- `404 Not Found`: Belirtilen ID'ye sahip kargo bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
+Response:
+```json
+{
+    "address": "Shipping Address",
+    "shippedAt": "2024-05-03T12:00:00",
+    "senderUuid": "sender_uuid",
+    "orderUuid": "order_uuid"
+}
+```
+## Get All Shippings
+**Description**: Retrieve all shipping records.
 
-## Kargo Silme
+* **Request**: GET
+* **URL**: /shippings/all
 
-### Endpoint
-`DELETE /shippings/delete/{id}`
-
-### Açıklama
-Bu endpoint, belirtilen bir kargoyu siler.
-
-### Path Parametresi
-- `id` (Long, zorunlu): Silinmek istenen kargonun ID'si.
-
-### Başarılı Yanıt
-`200 OK` status code ile kargo başarıyla silindiğine dair mesaj.
-
-### Hata Durumları
-- `404 Not Found`: Belirtilen ID'ye sahip kargo bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
-
-## Kargo Bilgilerini Getirme
-
-### Endpoint
-`GET /shippings/{id}`
-
-### Açıklama
-Bu endpoint, belirtilen bir kargonun bilgilerini getirir.
-
-### Path Parametresi
-- `id` (Long, zorunlu): Getirilmek istenen kargonun ID'si.
-
-### Başarılı Yanıt
-`200 OK` status code ile belirtilen kargonun bilgileri.
-
-### Hata Durumları
-- `404 Not Found`: Belirtilen ID'ye sahip kargo bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
-
-## Tüm Kargoları Listeleme
-
-### Endpoint
-`GET /shippings/all`
-
-### Açıklama
-Bu endpoint, tüm kargoların listesini getirir.
-
-### Başarılı Yanıt
-`200 OK` status code ile tüm kargoların listesi.
-
-### Hata Durumları
-- `404 Not Found`: Kargo bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
+Response:
+```json
+[
+    {
+        "address": "Shipping Address 1",
+        "shippedAt": "2024-05-03T12:00:00",
+        "senderUuid": "sender_uuid_1",
+        "orderUuid": "order_uuid_1"
+    },
+    {
+        "address": "Shipping Address 2",
+        "shippedAt": "2024-05-04T10:00:00",
+        "senderUuid": "sender_uuid_2",
+        "orderUuid": "order_uuid_2"
+    }
+]
+```

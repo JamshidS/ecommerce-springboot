@@ -1,123 +1,207 @@
-# Promotion Controller API Dokümantasyonu
+# Promotion Controller API Documentation
 
-Bu API dokümantasyonu, Promosyonlarla ilgili HTTP isteklerinin kullanımını ve yanıtını açıklar.
+This document outlines the API for the Promotion Controller.
 
-## Promosyon Kaydetme
+## Table of Contents
 
-### Endpoint
-`POST /promotions/save`
+1. [Save Promotion](#save-promotion)
+2. [Update Promotion](#update-promotion)
+3. [Delete Promotion](#delete-promotion)
+4. [Check Promotion Validity](#check-promotion-validity)
+5. [Get All Promotions](#get-all-promotions)
+6. [Get Promotion by UUID](#get-promotion-by-uuid)
+7. [Get Promotions by Product UUID](#get-promotions-by-product-uuid)
 
-### Açıklama
-Bu endpoint, yeni bir promosyonu kaydeder.
+## Save Promotion
 
-### İstek Body Parametreleri
-- `name` (String, zorunlu): Promosyonun adı.
-- `description` (String, opsiyonel): Promosyonun açıklaması.
-- `discount` (double, zorunlu): Promosyonun indirim miktarı.
-- `code` (String, zorunlu): Promosyonun kodu.
-- `productUuid` (List<String>, zorunlu): Promosyonun geçerli olduğu ürünlerin UUID'leri.
-- `fullName` (String, opsiyonel): Promosyonun tam adı.
-- `daysToAdd` (Long, opsiyonel): Promosyonun geçerlilik süresini gün olarak ekler.
-- `startDate` (Timestamp, opsiyonel): Promosyonun başlangıç tarihi.
-- `endDate` (Timestamp, opsiyonel): Promosyonun bitiş tarihi.
+**Description**: Save a new promotion to the database.
 
-### Başarılı Yanıt
-`201 Created` status code ile kaydedilen promosyonun UUID'si.
+- **Request**: POST
+- **URL**: /promotions/save
+- **Body**:
 
-### Hata Durumları
-- `400 Bad Request`: Eksik veya hatalı istek body parametreleri.
-- `500 Internal Server Error`: Sunucu hatası.
+```json
+{
+  "name": "Promotion Name",
+  "description": "Promotion Description",
+  "discount": 0.1,
+  "code": "PROMO123",
+  "productUuid": [
+    "product_uuid_1",
+    "product_uuid_2"
+  ],
+  "fullName": "Full Promotion Name",
+  "daysToAdd": 30,
+  "startDate": "2024-05-03T00:00:00",
+  "endDate": "2024-06-02T00:00:00"
+}
+```
 
-## Promosyon Güncelleme
+Response:
 
-### Endpoint
-`PUT /promotions/update`
+```json
+{
+  "status": 201,
+  "message": "Promotion successfully created"
+}
 
-### Açıklama
-Bu endpoint, varolan bir promosyonu günceller.
+```
 
-### İstek Body Parametreleri
-(Tüm parametrelerin Promosyon Kaydetme ile aynı olduğunu varsayalım)
+## Update Promotion
 
-### Başarılı Yanıt
-`200 OK` status code ile promosyonun güncellendiğine dair mesaj.
+**Description**: Update an existing promotion in the database.
 
-### Hata Durumları
-- `400 Bad Request`: Eksik veya hatalı istek body parametreleri.
-- `404 Not Found`: Güncellenecek promosyon bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
+- **Request**: PUT
+- **URL**: /promotions/update
+- **Body**:
 
-## Promosyon Silme
+```json
+{
+    "uuid": "promotion_uuid",
+    "name": "Updated Promotion Name",
+    "description": "Updated Promotion Description",
+    "discount": 0.2,
+    "code": "UPDATED123",
+    "productUuid": ["product_uuid_1", "product_uuid_2"],
+    "fullName": "Updated Full Promotion Name",
+    "daysToAdd": 45,
+    "startDate": "2024-05-03T00:00:00",
+    "endDate": "2024-07-02T00:00:00"
+}
+```
+Response:
 
-### Endpoint
-`DELETE /promotions/delete/{promotionUuid}`
+```json
+{
+  "status": 200,
+  "message": "Promotion successfully updated"
+}
+```
 
-### Açıklama
-Bu endpoint, belirtilen promosyonu siler.
+## Delete Promotion
+Description: Delete a promotion from the database.
 
-### Başarılı Yanıt
-`200 OK` status code ile promosyonun başarıyla silindiğine dair mesaj.
+**Description**: Update an existing promotion in the database.
 
-### Hata Durumları
-- `404 Not Found`: Silinecek promosyon bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
+- **Request**: DELETE
+- **URL**: /promotions/delete/{promotionUuid}
+- **Body**: promotionUuid
 
-## Promosyonun Geçerliliğini Kontrol Etme
+Response:
+```json
+{
+"status": 200,
+"message": "Promotion successfully deleted"
+}
+```
+## Check Promotion Validity
 
-### Endpoint
-`GET /promotions/validate/{promotionUuid}`
+**Description**: Check if a promotion is valid.
 
-### Açıklama
-Bu endpoint, belirtilen promosyonun geçerli olup olmadığını kontrol eder.
+- **Request**: GET
+- **URL**: /promotions/validate/{promotionUuid}
+- **Body**: promotionUuid
 
-### Başarılı Yanıt
-`200 OK` status code ile promosyonun geçerli olup olmadığına dair boolean bir değer.
+Response:
+```json
+{
+  "valid": true
+}
+```
 
-### Hata Durumları
-- `404 Not Found`: Kontrol edilecek promosyon bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
+## Get All Promotions
+**Description**: Retrieve all promotions.
 
-## Tüm Promosyonları Listeleme
+* Request: GET
+* URL: /promotions/all
 
-### Endpoint
-`GET /promotions/all`
+Response:
 
-### Açıklama
-Bu endpoint, sistemdeki tüm promosyonları listeler.
+```json
+[
+  {
+    "uuid": "promotion_uuid_1",
+    "name": "Promotion 1",
+    "description": "Promotion Description 1",
+    "discount": 0.1,
+    "code": "PROMO123",
+    "productUuid": ["product_uuid_1", "product_uuid_2"],
+    "fullName": "Full Promotion Name 1",
+    "daysToAdd": 30,
+    "startDate": "2024-05-03T00:00:00",
+    "endDate": "2024-06-02T00:00:00"
+  },
+  {
+    "uuid": "promotion_uuid_2",
+    "name": "Promotion 2",
+    "description": "Promotion Description 2",
+    "discount": 0.2,
+    "code": "PROMO456",
+    "productUuid": ["product_uuid_3"],
+    "fullName": "Full Promotion Name 2",
+    "daysToAdd": 45,
+    "startDate": "2024-05-03T00:00:00",
+    "endDate": "2024-07-02T00:00:00"
+  }
+]
+```
 
-### Başarılı Yanıt
-`200 OK` status code ile tüm promosyonların listesi.
+## Get Promotion by UUID
+**Description**: Retrieve a promotion by its UUID.
 
-### Hata Durumları
-- `500 Internal Server Error`: Sunucu hatası.
+- **Request**: GET
+- **URL**: /promotions/{promotionUuid}
+- **Path Parameters**: promotionUuid
 
-## UUID ile Promosyon Getirme
+Response:
 
-### Endpoint
-`GET /promotions/{promotionUuid}`
+```json
+{
+  "uuid": "promotion_uuid",
+  "name": "Promotion Name",
+  "description": "Promotion Description",
+  "discount": 0.1,
+  "code": "PROMO123",
+  "productUuid": ["product_uuid_1", "product_uuid_2"],
+  "fullName": "Full Promotion Name",
+  "daysToAdd": 30,
+  "startDate": "2024-05-03T00:00:00",
+  "endDate": "2024-06-02T00:00:00"
+}
+```
+## Get Promotions by Product UUID
 
-### Açıklama
-Bu endpoint, belirtilen UUID'ye sahip promosyonu getirir.
+**Description**: Retrieve all promotions associated with a product UUID.
 
-### Başarılı Yanıt
-`200 OK` status code ile belirtilen promosyonun detayları.
+- **Request**: GET
+- **URL**: /promotions/product/{productUuid}
+- **Path Parameters**: productUuid
 
-### Hata Durumları
-- `404 Not Found`: Belirtilen UUID'ye sahip promosyon bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
-
-## Ürün UUID'sine Göre Promosyonları Listeleme
-
-### Endpoint
-`GET /promotions/product/{productUuid}`
-
-### Açıklama
-Bu endpoint, belirtilen ürün UUID'sine sahip ürünler için geçerli olan tüm promosyonları listeler.
-
-### Başarılı Yanıt
-`200 OK` status code ile belirtilen ürün için geçerli promosyonların listesi.
-
-### Hata Durumları
-- `404 Not Found`: Belirtilen UUID'ye sahip ürün bulunamadı.
-- `500 Internal Server Error`: Sunucu hatası.
-
+Response:
+```json
+[
+    {
+        "uuid": "promotion_uuid_1",
+        "name": "Promotion 1",
+        "description": "Promotion Description 1",
+        "discount": 0.1,
+        "code": "PROMO123",
+        "productUuid": ["product_uuid_1", "product_uuid_2"],
+        "fullName": "Full Promotion Name 1",
+        "daysToAdd": 30,
+        "startDate": "2024-05-03T00:00:00",
+        "endDate": "2024-06-02T00:00:00"
+    },
+    {
+        "uuid": "promotion_uuid_2",
+        "name": "Promotion 2",
+        "description": "Promotion Description 2",
+        "discount": 0.2,
+        "code": "PROMO456",
+        "productUuid": ["product_uuid_3"],
+        "fullName": "Full Promotion Name 2",
+        "daysToAdd": 45,
+        "startDate": "2024-05-03T00:00:00",
+        "endDate": "2024-07-02T00:00:00"
+    }
+]
