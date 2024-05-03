@@ -22,12 +22,12 @@ Clone the Repository:
 - git clone https://github.com/JamshidS/ecommerce-springboot.git
 
 ## Configure Database:
-* Install MySQL and create a database named ecommerce.
+* Install PostgreSQL and create a database named ecommerce.
 * Update application.properties with your database credentials.
 
 ## Run the Application:
 * cd e-commerce-backend
-* ./mvnw spring-boot:run
+* ./gradlew bootRun
 
 ## Contributors
 * bagtas19 Baran Ağtaş
